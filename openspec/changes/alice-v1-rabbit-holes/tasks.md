@@ -39,19 +39,19 @@
 
 ## 6. Rabbit Holes API and UI
 
-- [ ] 6.1 Implement list / create-from-URL / get / rename / delete Rabbit Hole APIs with ownership checks
-- [ ] 6.2 Build Rabbit Holes list UI with empty state and “Start a new Rabbit Hole”
-- [ ] 6.3 Build create flow (URL input, validation errors, bootstrap progress, incomplete/retry on failure)
-- [ ] 6.4 Build hole header actions (title edit, delete confirm)
+- [x] 6.1 Implement list / create-from-URL / get / rename / delete Rabbit Hole APIs with ownership checks
+- [x] 6.2 Build Rabbit Holes list UI with empty state and “Start a new Rabbit Hole”
+- [x] 6.3 Build create flow (URL input, validation errors, bootstrap progress, incomplete/retry on failure)
+- [x] 6.4 Build hole header actions (title edit, delete confirm)
 
 ## 7. Graph exploration UI
 
-- [ ] 7.1 Build interactive graph view for nodes/edges with client-side layout (desktop + mobile web)
-- [ ] 7.2 Render short direction phrases on forks without AI/label chrome
-- [ ] 7.3 Add explicit Expand control on a focused node and apply returned graph patches
-- [ ] 7.4 Deep-link watch action to YouTube and mark node visited on Path
-- [ ] 7.5 Highlight Path nodes vs frontier on load and after updates
-- [ ] 7.6 Verify core actions work with the same model on a mobile viewport (focus/zoom defaults as needed)
+- [x] 7.1 Build interactive graph view for nodes/edges with client-side layout (desktop + mobile web)
+- [x] 7.2 Render short direction phrases on forks without AI/label chrome
+- [x] 7.3 Add explicit Expand control on a focused node and apply returned graph patches
+- [x] 7.4 Deep-link watch action to YouTube and mark node visited on Path
+- [x] 7.5 Highlight Path nodes vs frontier on load and after updates
+- [x] 7.6 Verify core actions work with the same model on a mobile viewport (focus/zoom defaults as needed)
 
 ## 8. Site policies and shell
 
