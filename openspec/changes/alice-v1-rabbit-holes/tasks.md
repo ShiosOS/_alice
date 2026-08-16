@@ -2,15 +2,15 @@
 
 - [ ] 1.1 Scaffold Nuxt + TypeScript + Vue app in the repo with lint/typecheck scripts
 - [ ] 1.2 Add env/config skeleton for database, auth, YouTube, AI, and app URL (server-only secrets)
-- [ ] 1.3 Choose and document hosting lane (long-running vs serverless) and wire a single production deploy target
-- [ ] 1.4 Add CI for lint/typecheck on PRs and deploy from main
+- [ ] 1.3 Create Railway project with Nuxt web service deploy (env vars, HTTPS) as the production host
+- [ ] 1.4 Add CI for lint/typecheck on PRs and deploy from main to Railway
 
 ## 2. Database and domain schema
 
-- [ ] 2.1 Provision managed Postgres and connect the Nuxt server via migrations tooling
+- [ ] 2.1 Provision Railway Postgres, attach `DATABASE_URL` to the Nuxt service, and connect via migrations tooling
 - [ ] 2.2 Create tables for users, rabbit_holes, nodes, edges, path state/events, expand_ledger, youtube_cache
 - [ ] 2.3 Add indexes and uniqueness constraints from design (hole ownership queries, graph load by hole, ledger rate limits, cache PK)
-- [ ] 2.4 Enable automated DB backups on the managed provider and verify restore docs exist
+- [ ] 2.4 Enable automated Postgres backups on Railway and verify restore docs exist
 
 ## 3. User auth
 

@@ -30,6 +30,6 @@ YouTube rabbit holes are easy to fall into and hard to steer: related videos are
 ## Impact
 
 - New application codebase (Nuxt + Vue + TypeScript), managed Postgres, auth provider, YouTube Data API, and an AI provider for fork phrases
-- Hosting must support server-side orchestration of Expand/bootstrap (timeouts and cost guards matter)
+- **Host on Railway** (app + Postgres) so Expand/bootstrap can run on a long-enough server runtime with env secrets, HTTPS, and automated DB backups
 - Compliance-aware retention for API-sourced caches (~30-day refresh/delete) while product graph/Path/phrases persist with the Rabbit Hole until user deletion
 - Future leeway: expand ledger supports later premium caps without changing the core domain model

@@ -2,7 +2,7 @@
 
 Greenfield repo (`README` + empty OpenSpec config). Product direction and vocabulary are captured in `proposal.md`. Stack lean: **Nuxt + Vue + TypeScript**, **Postgres**, server-side **YouTube Data API** and **AI** for invisible fork phrases, watch via **YouTube deep link**, same graph UX on mobile web.
 
-Constraints that shape the design: YouTube quota and AI cost dominate scale; API cache retention (~30-day refresh/delete); no scraping; production-like auth, migrations, backups, rate limits, and policy pages even for early solo use.
+Constraints that shape the design: YouTube quota and AI cost dominate scale; API cache retention (~30-day refresh/delete); no scraping; production-like auth, migrations, backups, rate limits, and policy pages even for early solo use; **Railway** hosts the Nuxt app and Postgres.
 
 ## Goals / Non-Goals
 
@@ -11,7 +11,7 @@ Constraints that shape the design: YouTube quota and AI cost dominate scale; API
 - Postgres as source of truth for users, Rabbit Holes, nodes/edges, Path, expand ledger, and YouTube cache rows
 - One Expand orchestrator reused by bootstrap policy (10-node) and explicit Expand
 - Cost/quota guards and compliance-aware cache TTL from day one
-- Deployable managed app + managed Postgres with HTTPS, migrations, and minimal observability
+- Deploy on **Railway** (Nuxt service + Railway Postgres) with HTTPS, migrations, env secrets, and minimal observability
 
 **Non-Goals:**
 - Microservices, graph database, Redis-required v1, native apps
@@ -46,9 +46,9 @@ Expand(node):
 - AI is infrastructure behind Expand; UI verb remains Expand.
 
 ### D5: Sync Expand with timeout awareness; bootstrap may show progress
-- **Choice:** Prefer sync single Expand on a long-enough server runtime; bootstrap may run sequential expands with progress UI.
-- **If serverless host:** introduce async job row + poll earlier for bootstrap.
-- **Alternatives:** Always-async queue day one — extra complexity before proven need.
+- **Choice:** Sync single Expand on Railway’s long-running Nuxt service; bootstrap may run sequential expands with progress UI.
+- **Why (with Railway):** Avoids premature async job infrastructure that serverless timeouts would force.
+- **Alternatives:** Always-async queue day one — extra complexity before proven need; Vercel/Netlify serverless — likely needs async bootstrap earlier.
 
 ### D6: Auth — one provider
 - **Choice:** One OAuth or magic-link provider; HTTP-only session cookies.
@@ -67,9 +67,11 @@ Expand(node):
 - **Choice:** `youtube_cache` keyed by `video_id` + `fetched_at`; refresh/delete on TTL.
 - **Why:** Cuts quota burn; aligns with API storage expectations; Redis deferred.
 
-### D10: Hosting
-- **Choice:** Managed Nuxt-capable host + managed Postgres; env-based secrets; automated DB backups; CI lint/typecheck/deploy; error tracking (e.g. Sentry).
-- **Prefer** hosts that tolerate Expand latency; if serverless, implement async bootstrap/expand jobs.
+### D10: Hosting on Railway
+- **Choice:** **Railway** for the Nuxt web service and **Railway Postgres** as the managed database.
+- **Why:** One platform for app + DB; long-running server suits sync Expand/bootstrap; env vars for secrets; straightforward HTTPS deploy; Postgres backups available on the platform.
+- **Also:** CI lint/typecheck; deploy from main to Railway; error tracking (e.g. Sentry).
+- **Alternatives:** Vercel/Netlify + external Postgres (faster frontend DX, weaker Expand timeout story); Fly/Render (similar long-running model, split mental billing).
 
 ### D11: Site policies in-app
 - Static or CMS-light `/privacy`, `/terms`, About non-affiliation; footer links; Terms ack on first access.
@@ -100,5 +102,4 @@ Expand(node):
 
 - Exact auth provider (Google OAuth vs magic link) — pick at implement time; specs only require one provider.
 - Exact AI vendor/model — swappable behind `ai` service interface.
-- Hosting vendor (long-running vs serverless) — decide before Expand sync/async finalization; both fit architecture.
 - Whether bootstrap failure leaves seed-only hole vs deletes hole — prefer seed + incomplete + retry for recoverability.
