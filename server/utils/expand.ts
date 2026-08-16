@@ -149,6 +149,7 @@ export async function expandNode(opts: {
       status: 'failed',
       meta: { reason: 'no_candidates' },
     })
+    logError('expand_failed', { reason: 'no_candidates', rabbitHoleId: opts.rabbitHoleId, nodeId: opts.nodeId })
     throw createError({ statusCode: 422, statusMessage: 'No new fork candidates found' })
   }
 
@@ -168,6 +169,12 @@ export async function expandNode(opts: {
       nodeId: opts.nodeId,
       status: 'failed',
       meta: { reason: 'ai_failed', message: e instanceof Error ? e.message : 'unknown' },
+    })
+    logError('expand_failed', {
+      reason: 'ai_failed',
+      rabbitHoleId: opts.rabbitHoleId,
+      nodeId: opts.nodeId,
+      message: e instanceof Error ? e.message : 'unknown',
     })
     throw createError({ statusCode: 502, statusMessage: 'Could not generate forks. Try again.' })
   }
@@ -226,6 +233,15 @@ export async function expandNode(opts: {
       promptTokens: aiResult.promptTokens,
       completionTokens: aiResult.completionTokens,
       meta: { take: opts.take, forkCount: createdEdges.length },
+    })
+
+    logInfo('expand_success', {
+      rabbitHoleId: opts.rabbitHoleId,
+      nodeId: opts.nodeId,
+      forkCount: createdEdges.length,
+      model: aiResult.model,
+      promptTokens: aiResult.promptTokens,
+      completionTokens: aiResult.completionTokens,
     })
 
     await tx

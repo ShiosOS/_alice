@@ -63,6 +63,6 @@
 ## 9. Production hardening
 
 - [ ] 9.1 Add error tracking (e.g. Sentry) for server Expand/bootstrap failures
-- [ ] 9.2 Add structured logging for expand ledger metrics (counts, AI/YT failures) without leaking secrets
+- [x] 9.2 Add structured logging for expand ledger metrics (counts, AI/YT failures) without leaking secrets
 - [ ] 9.3 Configure AI vendor and YouTube billing/quota caps/alerts where available
 - [ ] 9.4 End-to-end smoke: sign in → start Rabbit Hole → see ~10-node graph → Expand → Path → watch on YouTube → reopen on second browser

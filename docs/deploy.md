@@ -33,6 +33,11 @@ Zone: `shiosos.dev` (already on Cloudflare).
    - `https://alice.shiosos.dev/...` (provider-specific)
    - `http://localhost:3000/...` for local dev
 
-## CI
+## Quotas and billing caps
 
-GitHub Actions runs lint + typecheck on PRs. Deploy to Railway from `main` via Railway’s GitHub integration (connect the repo in Railway) or the workflow deploy job once `RAILWAY_TOKEN` is set.
+Before inviting others:
+
+1. **YouTube Data API:** set a budget/quota alert in Google Cloud; keep daily expand budgets low (`NUXT_EXPAND_DAILY_BUDGET`).
+2. **AI provider:** set a hard monthly spend cap in the vendor dashboard; keep `NUXT_EXPAND_DISABLED=true` as an emergency switch.
+3. Confirm Railway spend alerts if available.
+
