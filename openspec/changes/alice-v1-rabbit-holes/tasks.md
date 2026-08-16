@@ -3,7 +3,8 @@
 - [ ] 1.1 Scaffold Nuxt + TypeScript + Vue app in the repo with lint/typecheck scripts
 - [ ] 1.2 Add env/config skeleton for database, auth, YouTube, AI, and app URL (server-only secrets)
 - [ ] 1.3 Create Railway project with Nuxt web service deploy (env vars, HTTPS) as the production host
-- [ ] 1.4 Add CI for lint/typecheck on PRs and deploy from main to Railway
+- [ ] 1.4 Add custom domain `alice.shiosos.dev`: Railway custom domain + Cloudflare DNS on `shiosos.dev`; set `APP_URL=https://alice.shiosos.dev`
+- [ ] 1.5 Add CI for lint/typecheck on PRs and deploy from main to Railway
 
 ## 2. Database and domain schema
 
@@ -14,7 +15,7 @@
 
 ## 3. User auth
 
-- [ ] 3.1 Integrate one identity provider (OAuth or magic link) with HTTP-only sessions
+- [ ] 3.1 Integrate one identity provider (OAuth or magic link) with HTTP-only sessions; configure callbacks for `https://alice.shiosos.dev` and localhost
 - [ ] 3.2 Protect Rabbit Hole and Expand APIs so unauthenticated requests are denied
 - [ ] 3.3 Implement account deletion that removes the user and associated personal product data
 - [ ] 3.4 Require Terms acknowledgment on first-time access before Rabbit Holes are usable

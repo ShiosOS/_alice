@@ -31,5 +31,6 @@ YouTube rabbit holes are easy to fall into and hard to steer: related videos are
 
 - New application codebase (Nuxt + Vue + TypeScript), managed Postgres, auth provider, YouTube Data API, and an AI provider for fork phrases
 - **Host on Railway** (app + Postgres) so Expand/bootstrap can run on a long-enough server runtime with env secrets, HTTPS, and automated DB backups
+- **Public URL:** `https://alice.shiosos.dev` — Cloudflare DNS for `shiosos.dev` pointing the `alice` subdomain at the Railway service (custom domain + TLS)
 - Compliance-aware retention for API-sourced caches (~30-day refresh/delete) while product graph/Path/phrases persist with the Rabbit Hole until user deletion
 - Future leeway: expand ledger supports later premium caps without changing the core domain model

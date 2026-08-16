@@ -2,7 +2,7 @@
 
 Greenfield repo (`README` + empty OpenSpec config). Product direction and vocabulary are captured in `proposal.md`. Stack lean: **Nuxt + Vue + TypeScript**, **Postgres**, server-side **YouTube Data API** and **AI** for invisible fork phrases, watch via **YouTube deep link**, same graph UX on mobile web.
 
-Constraints that shape the design: YouTube quota and AI cost dominate scale; API cache retention (~30-day refresh/delete); no scraping; production-like auth, migrations, backups, rate limits, and policy pages even for early solo use; **Railway** hosts the Nuxt app and Postgres.
+Constraints that shape the design: YouTube quota and AI cost dominate scale; API cache retention (~30-day refresh/delete); no scraping; production-like auth, migrations, backups, rate limits, and policy pages even for early solo use; **Railway** hosts the Nuxt app and Postgres; public origin is **`https://alice.shiosos.dev`** (Cloudflare DNS on `shiosos.dev`).
 
 ## Goals / Non-Goals
 
@@ -12,6 +12,7 @@ Constraints that shape the design: YouTube quota and AI cost dominate scale; API
 - One Expand orchestrator reused by bootstrap policy (10-node) and explicit Expand
 - Cost/quota guards and compliance-aware cache TTL from day one
 - Deploy on **Railway** (Nuxt service + Railway Postgres) with HTTPS, migrations, env secrets, and minimal observability
+- Serve the app at **`https://alice.shiosos.dev`** via Cloudflare DNS on the existing `shiosos.dev` zone
 
 **Non-Goals:**
 - Microservices, graph database, Redis-required v1, native apps
@@ -73,10 +74,17 @@ Expand(node):
 - **Also:** CI lint/typecheck; deploy from main to Railway; error tracking (e.g. Sentry).
 - **Alternatives:** Vercel/Netlify + external Postgres (faster frontend DX, weaker Expand timeout story); Fly/Render (similar long-running model, split mental billing).
 
-### D11: Site policies in-app
-- Static or CMS-light `/privacy`, `/terms`, About non-affiliation; footer links; Terms ack on first access.
+### D11: Custom domain `alice.shiosos.dev` (Cloudflare)
+- **Choice:** Use subdomain **`alice.shiosos.dev`** on the existing Cloudflare-managed zone **`shiosos.dev`**.
+- **How:** Add the Railway custom domain for the Nuxt service; create the Cloudflare DNS record Railway requires (typically CNAME for `alice` → Railway hostname); enable HTTPS on that hostname; set `APP_URL=https://alice.shiosos.dev`.
+- **Auth:** Register OAuth/magic-link callback URLs for `https://alice.shiosos.dev` (plus localhost for dev).
+- **Why:** Reuses an owned domain now; keeps `_alice` namespaced without buying a new apex yet; easy to move or add `www`/apex later.
+- **Alternatives:** Railway `*.up.railway.app` only (fine for private smoke, weaker production surface); separate apex domain (unnecessary for v1).
 
-### D12: Vocabulary
+### D12: Site policies in-app
+- Static or CMS-light `/privacy`, `/terms`, About non-affiliation; footer links; Terms ack on first access; served under `alice.shiosos.dev`.
+
+### D13: Vocabulary
 - User-facing: **Rabbit Holes**, **Start a new Rabbit Hole**, **Expand**, short phrases on forks, **Path**.
 - Internal-only: “label”, “AI”.
 
@@ -94,7 +102,7 @@ Expand(node):
 ## Migration Plan
 
 - Greenfield: no data migration.
-- Deploy order: schema migrations → app with auth → feature flags for Expand if needed → policy pages before opening signups beyond self.
+- Deploy order: Railway + `alice.shiosos.dev` DNS → schema migrations → app with auth (callbacks on that origin) → feature flags for Expand if needed → policy pages before opening signups beyond self.
 - Rollback: revert app deploy; DB migrations forward-only with expand-safe additive schema where possible.
 - Future premium expand: gate on `expand_ledger` counts—no domain rewrite.
 
