@@ -15,10 +15,10 @@
 
 ## 3. User auth
 
-- [ ] 3.1 Integrate one identity provider (OAuth or magic link) with HTTP-only sessions; configure callbacks for `https://alice.shiosos.dev` and localhost
-- [ ] 3.2 Protect Rabbit Hole and Expand APIs so unauthenticated requests are denied
-- [ ] 3.3 Implement account deletion that removes the user and associated personal product data
-- [ ] 3.4 Require Terms acknowledgment on first-time access before Rabbit Holes are usable
+- [x] 3.1 Integrate one identity provider (OAuth or magic link) with HTTP-only sessions; configure callbacks for `https://alice.shiosos.dev` and localhost
+- [x] 3.2 Protect Rabbit Hole and Expand APIs so unauthenticated requests are denied
+- [x] 3.3 Implement account deletion that removes the user and associated personal product data
+- [x] 3.4 Require Terms acknowledgment on first-time access before Rabbit Holes are usable
 
 ## 4. YouTube integration
 
