@@ -2,15 +2,34 @@
   <div class="shell">
     <header class="header">
       <NuxtLink to="/" class="brand">_alice</NuxtLink>
+      <nav class="nav">
+        <template v-if="loggedIn">
+          <NuxtLink to="/rabbit-holes">Rabbit Holes</NuxtLink>
+          <NuxtLink to="/account">Account</NuxtLink>
+          <a href="/auth/logout">Sign out</a>
+        </template>
+        <a v-else href="/auth/google">Sign in with Google</a>
+      </nav>
     </header>
     <main class="main">
       <NuxtPage />
     </main>
     <footer class="footer">
       <span>Wonderland map for YouTube</span>
+      <span class="footer-links">
+        <NuxtLink to="/privacy">Privacy</NuxtLink>
+        ·
+        <NuxtLink to="/terms">Terms</NuxtLink>
+        ·
+        <NuxtLink to="/about">About</NuxtLink>
+      </span>
     </footer>
   </div>
 </template>
+
+<script setup lang="ts">
+const { loggedIn } = useUserSession()
+</script>
 
 <style>
 :root {
@@ -66,10 +85,21 @@ a {
   margin-top: auto;
 }
 
+.footer-links a {
+  color: var(--muted);
+}
+
 .brand {
   font-size: 1.5rem;
   letter-spacing: 0.02em;
   color: var(--accent);
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  font-size: 0.95rem;
 }
 
 .main {
