@@ -22,11 +22,11 @@
 
 ## 4. YouTube integration
 
-- [ ] 4.1 Implement server-side YouTube client for video resolve + related/candidates (API only, no scraping)
-- [ ] 4.2 Parse/validate YouTube URL forms into canonical video ids for seed creation
-- [ ] 4.3 Implement youtube_cache read/write with TTL ≤ 30 days refresh-or-delete behavior
-- [ ] 4.4 Handle unavailable/deleted videos gracefully in API responses used by the graph
-- [ ] 4.5 Add YouTube attribution/branding affordances wherever titles/thumbnails are shown
+- [x] 4.1 Implement server-side YouTube client for video resolve + related/candidates (API only, no scraping)
+- [x] 4.2 Parse/validate YouTube URL forms into canonical video ids for seed creation
+- [x] 4.3 Implement youtube_cache read/write with TTL ≤ 30 days refresh-or-delete behavior
+- [x] 4.4 Handle unavailable/deleted videos gracefully in API responses used by the graph
+- [x] 4.5 Add YouTube attribution/branding affordances wherever titles/thumbnails are shown
 
 ## 5. AI-backed Expand engine
 
