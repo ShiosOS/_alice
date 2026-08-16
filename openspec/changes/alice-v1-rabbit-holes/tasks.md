@@ -30,12 +30,12 @@
 
 ## 5. AI-backed Expand engine
 
-- [ ] 5.1 Implement AI service interface with strict JSON schema output for `{ videoId, phrase }[]`
-- [ ] 5.2 Implement Expand orchestrator: authz, rate limit, candidates, dedupe, AI select/phrase, transactional persist, ledger write
-- [ ] 5.3 Implement bootstrap policy: seed + 3 forks + 2 children each (~10 nodes) reusing Expand
-- [ ] 5.4 Add per-user expand budget checks (bootstrap consumes budget) and clear exhaustion errors
-- [ ] 5.5 Add retry-once / fail-soft behavior for invalid AI output without committing junk edges
-- [ ] 5.6 Add emergency kill switch env flag to disable Expand/AI calls
+- [x] 5.1 Implement AI service interface with strict JSON schema output for `{ videoId, phrase }[]`
+- [x] 5.2 Implement Expand orchestrator: authz, rate limit, candidates, dedupe, AI select/phrase, transactional persist, ledger write
+- [x] 5.3 Implement bootstrap policy: seed + 3 forks + 2 children each (~10 nodes) reusing Expand
+- [x] 5.4 Add per-user expand budget checks (bootstrap consumes budget) and clear exhaustion errors
+- [x] 5.5 Add retry-once / fail-soft behavior for invalid AI output without committing junk edges
+- [x] 5.6 Add emergency kill switch env flag to disable Expand/AI calls
 
 ## 6. Rabbit Holes API and UI
 
