@@ -15,18 +15,18 @@
 
 ## 3. User auth
 
-- [ ] 3.1 Integrate one identity provider (OAuth or magic link) with HTTP-only sessions; configure callbacks for `https://alice.shiosos.dev` and localhost
-- [ ] 3.2 Protect Rabbit Hole and Expand APIs so unauthenticated requests are denied
-- [ ] 3.3 Implement account deletion that removes the user and associated personal product data
-- [ ] 3.4 Require Terms acknowledgment on first-time access before Rabbit Holes are usable
+- [x] 3.1 Integrate one identity provider (OAuth or magic link) with HTTP-only sessions; configure callbacks for `https://alice.shiosos.dev` and localhost
+- [x] 3.2 Protect Rabbit Hole and Expand APIs so unauthenticated requests are denied
+- [x] 3.3 Implement account deletion that removes the user and associated personal product data
+- [x] 3.4 Require Terms acknowledgment on first-time access before Rabbit Holes are usable
 
 ## 4. YouTube integration
 
-- [ ] 4.1 Implement server-side YouTube client for video resolve + related/candidates (API only, no scraping)
-- [ ] 4.2 Parse/validate YouTube URL forms into canonical video ids for seed creation
-- [ ] 4.3 Implement youtube_cache read/write with TTL ≤ 30 days refresh-or-delete behavior
-- [ ] 4.4 Handle unavailable/deleted videos gracefully in API responses used by the graph
-- [ ] 4.5 Add YouTube attribution/branding affordances wherever titles/thumbnails are shown
+- [x] 4.1 Implement server-side YouTube client for video resolve + related/candidates (API only, no scraping)
+- [x] 4.2 Parse/validate YouTube URL forms into canonical video ids for seed creation
+- [x] 4.3 Implement youtube_cache read/write with TTL ≤ 30 days refresh-or-delete behavior
+- [x] 4.4 Handle unavailable/deleted videos gracefully in API responses used by the graph
+- [x] 4.5 Add YouTube attribution/branding affordances wherever titles/thumbnails are shown
 
 ## 5. AI-backed Expand engine
 
