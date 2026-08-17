@@ -43,3 +43,5 @@ Capability specs (until archived into main specs):
 - `openspec/changes/code-craft-standards/specs/automated-testing/spec.md` — unit / integration / thin e2e pyramid and coverage gates
 
 Frozen style: 2-space indent, single quotes, no semicolons (`@nuxt/eslint` stylistic + formatters).
+
+Product SFCs prefer `@layer components` names (`ink-*`, `graph-*`) in `app/assets/css/tailwind.css` over long arbitrary Tailwind strings; leave `app/components/ui` alone.
