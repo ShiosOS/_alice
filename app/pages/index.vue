@@ -5,9 +5,19 @@
       A personal Wonderland map for going deep on a YouTube topic. Paste a seed,
       see how it branches, keep Rabbit Holes for each curiosity.
     </p>
-    <p class="note">Foundation scaffold — Rabbit Holes arrive in later stack layers.</p>
+    <p v-if="!loggedIn">
+      <a class="cta" href="/auth/google">Sign in with Google</a>
+      to start a Rabbit Hole.
+    </p>
+    <p v-else>
+      <NuxtLink class="cta" to="/rabbit-holes">Open Rabbit Holes</NuxtLink>
+    </p>
   </section>
 </template>
+
+<script setup lang="ts">
+const { loggedIn } = useUserSession()
+</script>
 
 <style scoped>
 .home h1 {
@@ -23,8 +33,8 @@
   color: var(--fg);
 }
 
-.note {
-  color: var(--muted);
-  font-size: 0.95rem;
+.cta {
+  color: var(--accent);
+  text-decoration: underline;
 }
 </style>
