@@ -71,34 +71,39 @@ Orange-cloud proxy causes TLS/403 mismatches with Railway certs.
 
 ## Postgres backups & restore
 
-### Enable (dashboard — required once)
+Railway **volume backup schedules / PITR need a paid plan** (not available on Hobby). On Hobby we use **logical dumps** instead.
 
-Railway project `_alice` → **Postgres** service → volume → **Backups**:
+### Hobby (current): `pg_dump` / `pg_restore`
 
-| Environment | Schedule |
-| --- | --- |
-| production | **Daily** + **Weekly** |
-| staging | **Daily** (recommended) |
-| feature | optional |
+1. Enable a **TCP proxy** (or public Postgres URL) on the Postgres service so the host is reachable outside the private network (`*.railway.internal` will not work from your laptop).
+2. Export `DATABASE_URL` with that public host.
+3. Backup:
 
-Workspace/project tokens may not be allowed to toggle schedules via API; use the Railway UI.
+```bash
+chmod +x scripts/pg-backup.sh
+DATABASE_URL='postgresql://…' ./scripts/pg-backup.sh
+# writes ./backups/alice-<utc>.dump
+```
 
-### Verify schedules
+4. Store the `.dump` file somewhere durable (encrypted drive, object storage, etc.).
+5. Optional cron (local or CI with secrets): run the same command daily and retain N copies.
 
-In the same Backups panel, confirm the next scheduled run appears. Optionally create a one-off **manual backup** named `alice-prod-verify` to prove restore plumbing.
+### Restore (Hobby logical dump)
 
-### Restore runbook
+1. Provision a fresh Railway Postgres (or empty local DB). Prefer **not** wiping production in place until verified.
+2. Restore:
 
-1. **Pick a restore point** — scheduled backup or PITR timestamp (if your Railway plan exposes PITR).
-2. **Restore to a new volume / Postgres** — prefer restoring into a *new* Postgres service (do not wipe production in place unless you intend to).
-3. **Repoint web** — on the `_alice` web service in that environment, set `DATABASE_URL` / `NUXT_DATABASE_URL` to the restored Postgres URL (Railway variable reference).
-4. **Migrate if needed** — redeploy so `preDeployCommand` (`node scripts/db-migrate.mjs`) applies any newer migrations; or run migrate manually against the restored DB.
-5. **Smoke** — sign in, open an existing Rabbit Hole, confirm graph loads; create a small new hole if needed.
-6. **Cutover** — once verified, update custom domains / DNS only if you restored into a different service; otherwise keep the same service with the new volume attached.
+```bash
+pg_restore --clean --if-exists --no-owner --no-acl -d "$DATABASE_URL" ./backups/alice-YYYYMMDD.dump
+```
 
-### Rollback note
+3. Point web `DATABASE_URL` / `NUXT_DATABASE_URL` at the restored DB; redeploy so `preDeployCommand` can no-op or apply newer migrations.
+4. Smoke: sign in, open a Rabbit Hole, create a small new hole if needed.
+5. Keep the previous DB until smoke passes.
 
-Keep the previous volume until smoke passes. Deleting the old volume is irreversible.
+### Pro+ (optional later)
+
+If you upgrade: Railway → Postgres → volume → **Backups** → enable Daily (+ Weekly on production). Then restore via the dashboard (new volume / PITR) and repoint `DATABASE_URL` the same way as above.
 
 ## Day-2 commands
 
