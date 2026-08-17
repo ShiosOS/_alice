@@ -75,18 +75,19 @@ const edges = ref<GraphEdge[]>([
 
 const pathIds = ref(new Set<string>(['n0', 'n1']))
 
+const status = ref('')
+
 function onExpand(nodeId: string) {
-  toast.message(`Expand requested for ${nodeId}`)
+  status.value = `Expand requested for ${nodeId}`
 }
 
 function onWatch(nodeId: string) {
-  toast.message(`Watch requested for ${nodeId}`)
+  status.value = `Watch requested for ${nodeId}`
   pathIds.value = new Set([...pathIds.value, nodeId])
 }
 
 function simulateExpand() {
   const id = `n${nodes.value.length}`
-  // Reuse a known public thumb so the demo doesn't 404
   nodes.value = [
     ...nodes.value,
     node(id, 'ZZ5LpwO-An4', `New fork ${id}`, 'Historia'),
@@ -102,6 +103,6 @@ function simulateExpand() {
       createdAt: now,
     },
   ]
-  toast.success('Added a fork from the seed')
+  status.value = 'Added a fork from the seed'
 }
 </script>

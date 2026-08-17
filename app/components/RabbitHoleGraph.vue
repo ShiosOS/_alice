@@ -5,6 +5,7 @@
         class="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(900px_500px_at_50%_15%,rgba(42,31,24,0.4),transparent_65%)]"
       />
       <VueFlow
+        id="alice-graph"
         v-model:nodes="flowNodes"
         v-model:edges="flowEdges"
         :node-types="nodeTypes"
@@ -144,7 +145,7 @@ const edgeTypes = {
   phrase: markRaw(PhraseEdge) as EdgeComponent,
 }
 
-const { zoomIn, zoomOut, viewport } = useVueFlow()
+const { zoomIn, zoomOut, viewport } = useVueFlow({ id: 'alice-graph' })
 const zoomPct = computed(() => Math.round((viewport.value.zoom || 1) * 100))
 
 const flowNodes = ref<Node[]>([])
@@ -192,7 +193,13 @@ function rebuildFromProps(preserveDragged: boolean) {
 }
 
 watch(
-  () => [props.nodes, props.edges, props.pathIds, props.busy, props.seedVideoId] as const,
+  () => ({
+    nodeKey: props.nodes.map((n) => n.id).join('|'),
+    edgeKey: props.edges.map((e) => e.id).join('|'),
+    pathKey: [...props.pathIds].sort().join('|'),
+    busy: !!props.busy,
+    seedVideoId: props.seedVideoId,
+  }),
   () => {
     if (skipNextSync.value) {
       skipNextSync.value = false
@@ -205,7 +212,7 @@ watch(
         || null
     }
   },
-  { immediate: true, deep: true },
+  { immediate: true },
 )
 
 function onNodeClick(ev: NodeMouseEvent) {
