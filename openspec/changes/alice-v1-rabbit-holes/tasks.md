@@ -55,10 +55,10 @@
 
 ## 8. Site policies and shell
 
-- [ ] 8.1 Write and publish `/privacy` covering collection, processors (host/DB/auth/YouTube/AI), retention sketch, deletion
-- [ ] 8.2 Write and publish `/terms` covering acceptable use, non-affiliation, YouTube playback, no-warranty
-- [ ] 8.3 Add About (or equivalent) non-affiliation disclosure
-- [ ] 8.4 Link Privacy and Terms from app shell footer (auth and unauth)
+- [x] 8.1 Write and publish `/privacy` covering collection, processors (host/DB/auth/YouTube/AI), retention sketch, deletion
+- [x] 8.2 Write and publish `/terms` covering acceptable use, non-affiliation, YouTube playback, no-warranty
+- [x] 8.3 Add About (or equivalent) non-affiliation disclosure
+- [x] 8.4 Link Privacy and Terms from app shell footer (auth and unauth)
 
 ## 9. Production hardening
 
