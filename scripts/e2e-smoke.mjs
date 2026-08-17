@@ -10,8 +10,7 @@
  *   SMOKE_BASE_URL (default https://alice.shiosos.dev)
  *   SMOKE_YOUTUBE_URL (default security video)
  */
-import { randomUUID } from 'node:crypto'
-import { webcrypto } from 'node:crypto'
+import { randomUUID, webcrypto } from 'node:crypto'
 import postgres from 'postgres'
 import { seal, defaults as ironDefaults } from 'iron-webcrypto'
 
