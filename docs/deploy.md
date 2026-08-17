@@ -49,7 +49,7 @@ The script:
 1. **Variable references:** On `web` in each env, point `DATABASE_URL` and `NUXT_DATABASE_URL` at the Postgres service’s `DATABASE_URL` (Railway reference variable).
 2. **Secrets:** Set OAuth / YouTube / AI keys on `web` per env (or once in production then copy). Staging/feature can share Google OAuth client if all redirect URIs are registered.
 3. **Migrations:** Applied automatically on each deploy via `preDeployCommand`. One-off from a machine with TCP proxy: `DATABASE_URL=… npm run db:migrate`.
-4. **Postgres backups:** In Railway → Postgres volume → Backups, enable **Daily** (and Weekly on production). API tokens without backup scope cannot toggle this. Restore: Backups → Restore to new volume / PITR if available; then repoint `DATABASE_URL` and redeploy web.
+4. **Postgres backups:** see [Postgres backups & restore](#postgres-backups--restore) below.
 5. **Cloudflare DNS** (`shiosos.dev`) — **DNS-only (grey cloud)**:
 
 | Type | Name | Target |
@@ -68,6 +68,37 @@ Orange-cloud proxy causes TLS/403 mismatches with Railway certs.
 - `http://localhost:3000/auth/google`
 
 7. **Sentry (optional):** set `NUXT_SENTRY_DSN` on web; Expand/bootstrap failures and OAuth DB errors are reported.
+
+## Postgres backups & restore
+
+### Enable (dashboard — required once)
+
+Railway project `_alice` → **Postgres** service → volume → **Backups**:
+
+| Environment | Schedule |
+| --- | --- |
+| production | **Daily** + **Weekly** |
+| staging | **Daily** (recommended) |
+| feature | optional |
+
+Workspace/project tokens may not be allowed to toggle schedules via API; use the Railway UI.
+
+### Verify schedules
+
+In the same Backups panel, confirm the next scheduled run appears. Optionally create a one-off **manual backup** named `alice-prod-verify` to prove restore plumbing.
+
+### Restore runbook
+
+1. **Pick a restore point** — scheduled backup or PITR timestamp (if your Railway plan exposes PITR).
+2. **Restore to a new volume / Postgres** — prefer restoring into a *new* Postgres service (do not wipe production in place unless you intend to).
+3. **Repoint web** — on the `_alice` web service in that environment, set `DATABASE_URL` / `NUXT_DATABASE_URL` to the restored Postgres URL (Railway variable reference).
+4. **Migrate if needed** — redeploy so `preDeployCommand` (`node scripts/db-migrate.mjs`) applies any newer migrations; or run migrate manually against the restored DB.
+5. **Smoke** — sign in, open an existing Rabbit Hole, confirm graph loads; create a small new hole if needed.
+6. **Cutover** — once verified, update custom domains / DNS only if you restored into a different service; otherwise keep the same service with the new volume attached.
+
+### Rollback note
+
+Keep the previous volume until smoke passes. Deleting the old volume is irreversible.
 
 ## Day-2 commands
 
