@@ -35,7 +35,7 @@ export const rabbitHoles = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (t) => [
+  t => [
     index('rabbit_holes_user_updated_idx').on(t.userId, t.updatedAt),
   ],
 )
@@ -54,7 +54,7 @@ export const nodes = pgTable(
     available: boolean('available').notNull().default(true),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (t) => [
+  t => [
     uniqueIndex('nodes_hole_video_uidx').on(t.rabbitHoleId, t.videoId),
     index('nodes_rabbit_hole_idx').on(t.rabbitHoleId),
   ],
@@ -76,7 +76,7 @@ export const edges = pgTable(
     phrase: text('phrase').notNull(),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (t) => [
+  t => [
     uniqueIndex('edges_from_to_uidx').on(t.fromNodeId, t.toNodeId),
     index('edges_rabbit_hole_idx').on(t.rabbitHoleId),
   ],
@@ -95,7 +95,7 @@ export const pathEvents = pgTable(
     kind: text('kind', { enum: pathKinds }).notNull().default('visited'),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (t) => [
+  t => [
     index('path_events_hole_created_idx').on(t.rabbitHoleId, t.createdAt),
     uniqueIndex('path_events_hole_node_kind_uidx').on(t.rabbitHoleId, t.nodeId, t.kind),
   ],
@@ -119,7 +119,7 @@ export const expandLedger = pgTable(
     meta: jsonb('meta').$type<Record<string, unknown>>(),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (t) => [index('expand_ledger_user_created_idx').on(t.userId, t.createdAt)],
+  t => [index('expand_ledger_user_created_idx').on(t.userId, t.createdAt)],
 )
 
 export const youtubeCache = pgTable('youtube_cache', {

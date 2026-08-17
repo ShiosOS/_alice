@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { upsertGoogleUser } from '../../utils/auth-users'
+import { upsertGoogleUser } from '../../services/auth/users'
 import { captureServerException } from '../../utils/sentry'
 
 const googleProfileSchema = z.object({

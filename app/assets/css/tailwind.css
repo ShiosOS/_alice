@@ -1,11 +1,11 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Source Sans 3", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Libre Baskerville", "Iowan Old Style", Palatino, Georgia, serif;
+  --font-sans: 'Source Sans 3', 'Segoe UI', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Libre Baskerville', 'Iowan Old Style', Palatino, Georgia, serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -28,6 +28,9 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-surface-deep: var(--surface-deep);
+  --color-surface-panel: var(--surface-panel);
+  --color-title: var(--title);
 }
 
 :root {
@@ -52,10 +55,26 @@
   --input: #243041;
   --ring: #c4a574;
 
+  /* Surfaces (consume via utilities / component classes — not raw hex in SFCs) */
+  --surface-deep: #0c1117;
+  --surface-panel: #121820;
+  --title: #f0e6d4;
+  --atmosphere-cool: #1a2433;
+  --atmosphere-warm: #2a1f18;
+
+  /* Graph card geometry — keep in sync with app/utils/graph-layout.ts */
+  --graph-node-w: 260px;
+  --graph-node-h: 210px;
+  --graph-thumb-h: 146px;
+
+  /* Shell content width (replaces max-w-[1100px] in app.vue) */
+  --content-max: 1100px;
+
   /* Legacy layout aliases (do not override --muted/--accent — those are shadcn tokens) */
   --bg: var(--background);
   --fg: var(--foreground);
   --line: var(--border);
+  --danger: var(--destructive);
 }
 
 @layer base {
@@ -70,8 +89,8 @@
   body {
     @apply min-h-full bg-background text-foreground font-sans antialiased;
     background-image:
-      radial-gradient(1200px 600px at 10% -10%, #1a2433 0%, transparent 60%),
-      radial-gradient(900px 500px at 100% 0%, #2a1f18 0%, transparent 55%);
+      radial-gradient(1200px 600px at 10% -10%, var(--atmosphere-cool) 0%, transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, var(--atmosphere-warm) 0%, transparent 55%);
     background-attachment: fixed;
   }
 
@@ -80,5 +99,153 @@
   h3,
   .font-display {
     font-family: var(--font-serif);
+  }
+}
+
+/**
+ * Product chrome — prefer these over long Tailwind arbitrary strings in Vue.
+ * Layout utilities (flex/gap/absolute) may still sit beside them in templates.
+ */
+@layer components {
+  .ink-shell-header {
+    @apply z-30 flex shrink-0 items-center justify-between gap-4 border-b border-border/80 bg-background/90 px-5 py-4 backdrop-blur;
+  }
+
+  .ink-brand {
+    @apply font-serif text-2xl tracking-wide text-primary transition-opacity hover:opacity-90;
+  }
+
+  .ink-nav-link {
+    @apply text-muted-foreground transition-colors hover:text-foreground;
+  }
+
+  .ink-shell-main {
+    @apply mx-auto w-full flex-1 px-5 py-6 pb-8;
+    max-width: var(--content-max);
+  }
+
+  .ink-shell-main-bleed {
+    @apply relative min-h-0 w-full flex-1 p-0;
+  }
+
+  .ink-shell-footer {
+    @apply mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-border px-5 py-4 text-sm text-muted-foreground;
+  }
+
+  .ink-glass {
+    @apply rounded-md border border-primary/30 bg-surface-panel/90 backdrop-blur;
+  }
+
+  .ink-title-input {
+    @apply min-w-48 flex-1 rounded border border-border bg-surface-deep px-2 py-1 font-serif text-lg text-foreground;
+  }
+
+  .ink-toolbar-btn {
+    @apply rounded-md border border-primary/35 bg-surface-panel/85 px-3 py-1.5 font-serif text-xs text-primary backdrop-blur hover:bg-primary/10;
+  }
+
+  .ink-icon-btn {
+    @apply flex h-8 w-8 items-center justify-center rounded text-lg leading-none hover:bg-primary/10;
+  }
+
+  .ink-chip-btn {
+    @apply rounded border border-border px-2 py-1 text-xs text-muted-foreground hover:text-foreground;
+  }
+
+  .ink-chip-btn-primary {
+    @apply rounded border border-primary/50 px-2 py-1 text-xs text-primary;
+  }
+
+  .ink-chip-btn-danger {
+    @apply rounded border border-destructive/50 px-2 py-1 text-xs text-destructive;
+  }
+
+  .ink-zoom-dock {
+    @apply flex items-center gap-1 rounded-md border border-primary/40 bg-surface-panel/90 px-1 py-1 text-primary shadow-lg backdrop-blur;
+  }
+
+  .graph-vignette {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: radial-gradient(
+      1200px 700px at 50% 10%,
+      color-mix(in srgb, var(--atmosphere-warm) 45%, transparent),
+      transparent 70%
+    );
+  }
+
+  /* Owns former min()/calc() width soup from Vue templates */
+  .graph-detail-panel {
+    @apply absolute bottom-6 left-1/2 z-10 -translate-x-1/2 rounded-lg border border-primary/45 bg-surface-panel/95 p-4 backdrop-blur;
+    width: min(24rem, calc(100% - 2rem));
+    box-shadow: 0 12px 40px rgb(0 0 0 / 0.45);
+  }
+
+  .graph-video-node {
+    @apply box-border flex flex-col overflow-hidden rounded-lg border border-primary/55 bg-surface-panel/95 text-card-foreground;
+    width: var(--graph-node-w);
+    height: var(--graph-node-h);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 8%, transparent);
+  }
+
+  .graph-video-node.is-seed {
+    @apply border-primary;
+    box-shadow: 0 0 24px color-mix(in srgb, var(--primary) 18%, transparent);
+  }
+
+  .graph-video-node.is-on-path:not(.is-seed) {
+    @apply border-primary;
+  }
+
+  .graph-video-node.is-selected {
+    @apply border-primary ring-1 ring-primary/80;
+  }
+
+  .graph-video-node.is-unavailable {
+    @apply opacity-45;
+  }
+
+  .graph-video-thumb {
+    @apply w-full object-cover;
+    aspect-ratio: 16 / 9;
+    height: var(--graph-thumb-h);
+  }
+
+  .graph-video-thumb-fallback {
+    @apply flex w-full items-center justify-center bg-secondary text-xs text-muted-foreground;
+    height: var(--graph-thumb-h);
+  }
+
+  .graph-path-badge {
+    @apply absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary font-semibold text-primary-foreground;
+    font-size: 10px;
+  }
+
+  .graph-node-title {
+    @apply line-clamp-2 font-serif leading-snug text-title;
+    font-size: 13px;
+  }
+
+  .graph-node-channel {
+    @apply truncate text-muted-foreground;
+    font-size: 11px;
+  }
+
+  .graph-edge-label {
+    @apply pointer-events-none absolute origin-center rounded bg-background/85 px-1.5 py-0.5 font-serif italic tracking-wide text-primary;
+    font-size: 11px;
+  }
+
+  /* Vue Flow sets its own handle box; plain important beats utility soup in SFCs */
+  .graph-handle {
+    width: 0.375rem !important;
+    height: 0.375rem !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    border: 0 !important;
+    background: var(--primary) !important;
+    opacity: 0 !important;
   }
 }

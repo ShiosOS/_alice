@@ -12,12 +12,45 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
+    # Ephemeral CI Postgres — password is the run id (not a production credential).
+    # Avoids committing literal password strings that secret scanners flag.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: alice_ci
+          POSTGRES_PASSWORD: ${{ github.run_id }}
+          POSTGRES_DB: alice_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      # Dummy keys so runtime config exists; PR tests must not call live APIs.
+      NUXT_YOUTUBE_API_KEY: test
+      NUXT_AI_API_KEY: test
+      NUXT_PUBLIC_APP_URL: http://localhost:3000
+      NUXT_EXPAND_DISABLED: 'false'
+      NUXT_TEST_FIXTURES: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: npm
+      - name: Configure ephemeral CI database and session
+        run: |
+          {
+            echo "DATABASE_URL=postgresql://alice_ci:${GITHUB_RUN_ID}@localhost:5432/alice_test"
+            echo "NUXT_DATABASE_URL=postgresql://alice_ci:${GITHUB_RUN_ID}@localhost:5432/alice_test"
+            echo "NUXT_SESSION_PASSWORD=$(openssl rand -hex 24)"
+          } >> "$GITHUB_ENV"
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
+      - run: npm run db:migrate
+      - run: npm run test:coverage
+      - run: npm run test:nuxt
+      - run: npm run test:e2e

@@ -1,5 +1,16 @@
 # End-to-end smoke checklist
 
+## PR CI vs promote gate
+
+| Gate | What runs | Live YouTube / AI? |
+| --- | --- | --- |
+| **PR CI** | `lint` + `typecheck` + unit (`test:coverage`) + Nuxt integration (`test:nuxt`) + thin e2e (`test:e2e`) | No — dummy keys / mocked or unused providers |
+| **Promote gate** | Staging checklist below + `scripts/e2e-smoke.mjs` against staging | Yes — real providers on staging |
+
+PR CI covers auth rejection, terms gate on create, **create → expand → watch with `NUXT_TEST_FIXTURES`** (no live provider spend), public privacy/terms/about HTML, and `/health`. Full create → expand → watch with **real** provider spend stays **promote-only** via `e2e-smoke.mjs` (do not wire it into PR CI).
+
+---
+
 Run on **staging** after a merge to `main` (and locally when developing). Promote to production only after this passes. See `docs/deploy.md`.
 
 Hosts:
@@ -23,7 +34,7 @@ Then promote: `git push origin origin/main:production`.
 
 Ops note: schema is created by `scripts/db-migrate.mjs` on each Railway deploy (`railway.toml` preDeployCommand). If OAuth returns 500 with `relation "users" does not exist`, migrations did not run.
 
-### Automated API smoke
+### Automated API smoke (promote gate)
 
 With **staging** `DATABASE_URL` (TCP proxy) and staging `NUXT_SESSION_PASSWORD`:
 

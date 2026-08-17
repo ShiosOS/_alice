@@ -1,0 +1,9 @@
+# GitGuardian / ggshield — https://docs.gitguardian.com/ggshield-docs/configuration
+version: 2
+
+secret:
+  show_secrets: false
+  ignored_matches:
+    # Removed from tip; keep so historical CI commits do not re-fail local ggshield scans.
+    - name: Former ephemeral CI session placeholder (not a production secret)
+      match: ci-session-password-at-least-32-chars!!

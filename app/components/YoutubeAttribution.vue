@@ -1,7 +1,11 @@
 <template>
   <p class="yt-attr">
     Video metadata and thumbnails from
-    <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer">YouTube</a>.
+    <a
+      href="https://www.youtube.com"
+      target="_blank"
+      rel="noopener noreferrer"
+    >YouTube</a>.
   </p>
 </template>
 

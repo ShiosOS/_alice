@@ -2,25 +2,9 @@
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-15',
+  modules: ['@nuxt/eslint', '@nuxt/test-utils/module', 'nuxt-auth-utils', 'shadcn-nuxt'],
   devtools: { enabled: true },
-  modules: ['@nuxt/eslint', 'nuxt-auth-utils', 'shadcn-nuxt'],
   css: ['~/assets/css/tailwind.css'],
-  vite: {
-    plugins: [tailwindcss()],
-  },
-  shadcn: {
-    prefix: '',
-    componentDir: './app/components/ui',
-  },
-  typescript: {
-    strict: true,
-    tsConfig: {
-      compilerOptions: {
-        noUncheckedIndexedAccess: true,
-      },
-    },
-  },
   runtimeConfig: {
     databaseUrl: '',
     session: {
@@ -43,5 +27,32 @@ export default defineNuxtConfig({
     public: {
       appUrl: 'http://localhost:3000',
     },
+  },
+  compatibilityDate: '2025-07-15',
+  vite: {
+    plugins: [tailwindcss()],
+  },
+  typescript: {
+    strict: true,
+    tsConfig: {
+      compilerOptions: {
+        noUncheckedIndexedAccess: true,
+      },
+    },
+  },
+  eslint: {
+    config: {
+      stylistic: {
+        indent: 2,
+        quotes: 'single',
+        semi: false,
+      },
+      tooling: true,
+      formatters: true,
+    },
+  },
+  shadcn: {
+    prefix: '',
+    componentDir: './app/components/ui',
   },
 })

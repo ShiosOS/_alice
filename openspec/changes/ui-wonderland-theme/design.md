@@ -33,6 +33,7 @@ Nuxt 4 + Vue app with a hand-rolled dark CSS shell and no component or graph lib
 - **Choice:** Deep ink background, warm off-white foreground, cool muted slate, aged brass accent, restrained danger red; literary serif for brand/titles; humanist sans for UI chrome.
 - **Why:** User-approved mockup direction; mood without Alice characters/props.
 - **Rule:** No story illustrations as decoration.
+- **Craft follow-up:** Page and graph SFCs MUST consume shared CSS variables / Tailwind token classes (`bg-surface-panel`, `text-title`, `text-destructive`, etc.) — do not reintroduce raw hex for surfaces, titles, or danger. See `code-craft-standards` / `code-craft` spec (token consumption).
 
 ### D4: Interaction model
 - **Choice:** Pan, zoom, free node drag; client-only positions; Expand places new nodes without moving user-dragged nodes; explicit reset layout recomputes all.

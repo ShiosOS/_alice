@@ -6,7 +6,7 @@ export type VideoNodeData = {
   graphNode: GraphNode
   isSeed: boolean
   onPath: boolean
-  busy: boolean
+  isMutating: boolean
   onExpand: (nodeId: string) => void
   onWatch: (nodeId: string) => void
 }
@@ -15,7 +15,7 @@ export type PhraseEdgeData = {
   phrase: string
 }
 
-/** Must match VideoNode card box (w-[260px] + thumb + title block). */
+/** Must match CSS --graph-node-w / --graph-node-h in app/assets/css/tailwind.css */
 export const NODE_WIDTH = 260
 export const NODE_HEIGHT = 210
 /** Minimum gap between card edges after layout / drag. */
@@ -32,7 +32,7 @@ export function toFlowNodes(
   nodes: GraphNode[],
   seedVideoId: string,
   pathIds: Set<string>,
-  busy: boolean,
+  isMutating: boolean,
   handlers: Handlers,
   positions?: Map<string, { x: number, y: number }>,
 ): Node<VideoNodeData>[] {
@@ -46,7 +46,7 @@ export function toFlowNodes(
         graphNode: n,
         isSeed: n.videoId === seedVideoId,
         onPath: pathIds.has(n.id),
-        busy,
+        isMutating,
         onExpand: handlers.onExpand,
         onWatch: handlers.onWatch,
       },
@@ -57,7 +57,7 @@ export function toFlowNodes(
 }
 
 export function toFlowEdges(edges: GraphEdge[]): Edge<PhraseEdgeData>[] {
-  return edges.map((e) => ({
+  return edges.map(e => ({
     id: e.id,
     source: e.fromNodeId,
     target: e.toNodeId,
@@ -78,6 +78,56 @@ function overlaps(a: Rect, b: Rect, gap: number): boolean {
 
 type LaidPosition = { id: string, position: { x: number, y: number } }
 
+function pushPairApart(
+  a: LaidPosition,
+  b: LaidPosition,
+  gap: number,
+  fixed: Set<string>,
+): boolean {
+  const ra: Rect = { id: a.id, x: a.position.x, y: a.position.y, w: NODE_WIDTH, h: NODE_HEIGHT }
+  const rb: Rect = { id: b.id, x: b.position.x, y: b.position.y, w: NODE_WIDTH, h: NODE_HEIGHT }
+  if (!overlaps(ra, rb, gap)) return false
+
+  const aFixed = fixed.has(a.id)
+  const bFixed = fixed.has(b.id)
+  if (aFixed && bFixed) return false
+
+  const overlapX = Math.min(ra.x + ra.w + gap - rb.x, rb.x + rb.w + gap - ra.x)
+  const overlapY = Math.min(ra.y + ra.h + gap - rb.y, rb.y + rb.h + gap - ra.y)
+  const divisor = aFixed || bFixed ? 1 : 2
+  let moved = false
+
+  if (overlapX < overlapY) {
+    const aCenterX = ra.x + ra.w / 2
+    const bCenterX = rb.x + rb.w / 2
+    const dir = aCenterX <= bCenterX ? -1 : 1
+    const push = overlapX / divisor
+    if (!aFixed) {
+      a.position.x += dir * push
+      moved = true
+    }
+    if (!bFixed) {
+      b.position.x -= dir * push
+      moved = true
+    }
+    return moved
+  }
+
+  const aCenterY = ra.y + ra.h / 2
+  const bCenterY = rb.y + rb.h / 2
+  const dir = aCenterY <= bCenterY ? -1 : 1
+  const push = overlapY / divisor
+  if (!aFixed) {
+    a.position.y += dir * push
+    moved = true
+  }
+  if (!bFixed) {
+    b.position.y -= dir * push
+    moved = true
+  }
+  return moved
+}
+
 /**
  * Push overlapping cards apart until none intersect (with NODE_GAP).
  * Prefer moving along the shallower penetration axis.
@@ -89,7 +139,7 @@ export function resolveOverlaps<T extends LaidPosition>(
   const gap = options?.gap ?? NODE_GAP
   const maxPasses = options?.maxPasses ?? 40
   const fixed = options?.fixedIds ?? new Set<string>()
-  const next = nodes.map((n) => ({
+  const next = nodes.map(n => ({
     ...n,
     position: { x: n.position.x, y: n.position.y },
   }))
@@ -101,40 +151,7 @@ export function resolveOverlaps<T extends LaidPosition>(
         const a = next[i]
         const b = next[j]
         if (!a || !b) continue
-        const ra: Rect = { id: a.id, x: a.position.x, y: a.position.y, w: NODE_WIDTH, h: NODE_HEIGHT }
-        const rb: Rect = { id: b.id, x: b.position.x, y: b.position.y, w: NODE_WIDTH, h: NODE_HEIGHT }
-        if (!overlaps(ra, rb, gap)) continue
-
-        const overlapX = Math.min(ra.x + ra.w + gap - rb.x, rb.x + rb.w + gap - ra.x)
-        const overlapY = Math.min(ra.y + ra.h + gap - rb.y, rb.y + rb.h + gap - ra.y)
-        const aFixed = fixed.has(a.id)
-        const bFixed = fixed.has(b.id)
-        if (aFixed && bFixed) continue
-
-        if (overlapX < overlapY) {
-          const dir = (ra.x + ra.w / 2) <= (rb.x + rb.w / 2) ? -1 : 1
-          const push = overlapX / (aFixed || bFixed ? 1 : 2)
-          if (!aFixed) {
-            a.position.x += dir * push
-            moved = true
-          }
-          if (!bFixed) {
-            b.position.x -= dir * push
-            moved = true
-          }
-        }
-        else {
-          const dir = (ra.y + ra.h / 2) <= (rb.y + rb.h / 2) ? -1 : 1
-          const push = overlapY / (aFixed || bFixed ? 1 : 2)
-          if (!aFixed) {
-            a.position.y += dir * push
-            moved = true
-          }
-          if (!bFixed) {
-            b.position.y -= dir * push
-            moved = true
-          }
-        }
+        if (pushPairApart(a, b, gap, fixed)) moved = true
       }
     }
     if (!moved) break
@@ -195,11 +212,11 @@ export function applyExpandKeepingDragged(
   patch: ExpandPatch,
   seedVideoId: string,
   pathIds: Set<string>,
-  busy: boolean,
+  isMutating: boolean,
   handlers: Handlers,
   draggedIds: Set<string>,
 ): { nodes: Node<VideoNodeData>[], edges: Edge<PhraseEdgeData>[] } {
-  const byId = new Map(currentNodes.map((n) => [n.id, n]))
+  const byId = new Map(currentNodes.map(n => [n.id, n]))
   for (const n of patch.nodes) {
     if (!byId.has(n.id)) {
       byId.set(n.id, {
@@ -210,7 +227,7 @@ export function applyExpandKeepingDragged(
           graphNode: n,
           isSeed: n.videoId === seedVideoId,
           onPath: pathIds.has(n.id),
-          busy,
+          isMutating,
           onExpand: handlers.onExpand,
           onWatch: handlers.onWatch,
         },
@@ -227,7 +244,7 @@ export function applyExpandKeepingDragged(
           graphNode: n,
           isSeed: existing.data.isSeed,
           onPath: pathIds.has(n.id),
-          busy,
+          isMutating,
           onExpand: handlers.onExpand,
           onWatch: handlers.onWatch,
         },
@@ -235,7 +252,7 @@ export function applyExpandKeepingDragged(
     }
   }
 
-  const edgeById = new Map(currentEdges.map((e) => [e.id, e]))
+  const edgeById = new Map(currentEdges.map(e => [e.id, e]))
   for (const e of toFlowEdges(patch.edges)) {
     edgeById.set(e.id, e)
   }

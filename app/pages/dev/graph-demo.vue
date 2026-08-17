@@ -5,14 +5,14 @@
       :edges="edges"
       :path-ids="pathIds"
       :seed-video-id="seedVideoId"
-      :busy="false"
+      :is-mutating="false"
       @expand="onExpand"
       @watch="onWatch"
     >
       <template #toolbar>
         <button
           type="button"
-          class="rounded-md border border-primary/35 bg-[#121820]/85 px-3 py-1.5 font-display text-xs text-primary backdrop-blur hover:bg-primary/10"
+          class="ink-toolbar-btn"
           @click="simulateExpand"
         >
           Simulate Expand
@@ -21,7 +21,7 @@
     </RabbitHoleGraph>
     <p
       v-if="status"
-      class="pointer-events-none absolute top-4 left-4 z-20 rounded-md border border-primary/30 bg-[#121820]/85 px-3 py-1.5 font-display text-xs text-primary backdrop-blur"
+      class="pointer-events-none absolute top-4 left-4 z-20 ink-toolbar-btn"
     >
       {{ status }}
     </p>
