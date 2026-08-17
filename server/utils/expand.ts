@@ -2,8 +2,10 @@ import { and, count, eq, gte } from 'drizzle-orm'
 import type { InferSelectModel } from 'drizzle-orm'
 import { edges, expandLedger, nodes, rabbitHoles, useDb } from '../db'
 import {
+  fetchVideoMeta,
   getRelatedCandidates,
   type YoutubeCandidate,
+  type YoutubeVideoMeta,
 } from './youtube'
 
 export type ForkChoice = { videoId: string, phrase: string }
@@ -40,9 +42,20 @@ export async function assertExpandBudget(userId: string) {
   }
 }
 
+function topicBrief(meta: Pick<YoutubeVideoMeta, 'title' | 'channelTitle' | 'description' | 'tags'>, label: string) {
+  const tags = (meta.tags || []).slice(0, 8).join(', ')
+  const desc = (meta.description || '').replace(/\s+/g, ' ').trim().slice(0, 280)
+  return [
+    `${label} title: ${meta.title}`,
+    meta.channelTitle ? `${label} channel: ${meta.channelTitle}` : null,
+    tags ? `${label} tags: ${tags}` : null,
+    desc ? `${label} description: ${desc}` : null,
+  ].filter(Boolean).join('\n')
+}
+
 async function callAiForForks(input: {
-  seedTitle: string
-  focusTitle: string
+  seed: YoutubeVideoMeta
+  focus: YoutubeVideoMeta
   candidates: YoutubeCandidate[]
   take: number
 }): Promise<{ forks: ForkChoice[], model: string, promptTokens?: number, completionTokens?: number }> {
@@ -56,12 +69,15 @@ async function callAiForForks(input: {
 
   const candidateLines = input.candidates
     .slice(0, 15)
-    .map((c, i) => `${i + 1}. ${c.videoId} | ${c.title} | ${c.channelTitle || ''}`)
+    .map((c, i) => {
+      const blurb = (c.description || '').replace(/\s+/g, ' ').trim().slice(0, 120)
+      return `${i + 1}. ${c.videoId} | ${c.title} | ${c.channelTitle || ''}${blurb ? ` | ${blurb}` : ''}`
+    })
     .join('\n')
 
-  const system = `You help build intentional YouTube topic maps. Pick up to ${input.take} DISTINCT direction forks from candidates. Each fork needs a short phrase (max 8 words) contrasting directions (deeper / sideways / broader / contrast). Return ONLY JSON: {"forks":[{"videoId":"...","phrase":"..."}]} using only provided videoIds. Prefer diversity over similarity. No duplicates.`
+  const system = `You help build intentional YouTube topic maps. Infer the REAL topic from channel, tags, and description — titles alone are often vague or meme-like. Pick up to ${input.take} DISTINCT forks that stay in that domain (or a meaningful contrast within it). Each fork needs a short phrase (max 8 words) naming the direction (deeper / sideways / broader / contrast). Return ONLY JSON: {"forks":[{"videoId":"...","phrase":"..."}]} using only provided videoIds. Prefer topical coherence over title-word matches. No duplicates.`
 
-  const user = `Seed topic video: ${input.seedTitle}\nFocus video: ${input.focusTitle}\nCandidates:\n${candidateLines}`
+  const user = `${topicBrief(input.seed, 'Seed')}\n${topicBrief(input.focus, 'Focus')}\nCandidates:\n${candidateLines}`
 
   async function once() {
     const res = await $fetch<{
@@ -153,11 +169,27 @@ export async function expandNode(opts: {
     throw createError({ statusCode: 422, statusMessage: 'No new fork candidates found' })
   }
 
+  const [seedMeta, focusMeta] = await Promise.all([
+    fetchVideoMeta(seed?.videoId || hole.seedVideoId),
+    fetchVideoMeta(focus.videoId),
+  ])
+  // Prefer live YouTube topic signals; fall back to stored node fields.
+  const seedContext: YoutubeVideoMeta = {
+    ...seedMeta,
+    title: seedMeta.available ? seedMeta.title : (seed?.title || hole.title),
+    channelTitle: seedMeta.channelTitle || seed?.channelTitle || null,
+  }
+  const focusContext: YoutubeVideoMeta = {
+    ...focusMeta,
+    title: focusMeta.available ? focusMeta.title : focus.title,
+    channelTitle: focusMeta.channelTitle || focus.channelTitle || null,
+  }
+
   let aiResult
   try {
     aiResult = await callAiForForks({
-      seedTitle: seed?.title || hole.title,
-      focusTitle: focus.title,
+      seed: seedContext,
+      focus: focusContext,
       candidates,
       take: opts.take,
     })

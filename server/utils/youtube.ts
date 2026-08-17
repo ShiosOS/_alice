@@ -1,4 +1,8 @@
+import { buildTopicSearchQuery } from '../lib/youtube-topic'
+
 const YT_TTL_MS = 30 * 24 * 60 * 60 * 1000
+/** Bump when candidate search strategy changes so stale cache is ignored. */
+const CANDIDATE_STRATEGY = 'topic-v2'
 
 export type YoutubeVideoMeta = {
   videoId: string
@@ -6,11 +10,16 @@ export type YoutubeVideoMeta = {
   channelTitle: string | null
   thumbUrl: string | null
   available: boolean
+  description?: string
+  tags?: string[]
 }
 
 export type YoutubeCandidate = YoutubeVideoMeta & {
   description?: string
 }
+
+export { buildTopicSearchQuery, descriptionTopicHints } from '../lib/youtube-topic'
+
 
 export function parseYoutubeVideoId(input: string): string | null {
   const trimmed = input.trim()
@@ -58,6 +67,8 @@ export async function fetchVideoMeta(videoId: string): Promise<YoutubeVideoMeta>
       snippet?: {
         title?: string
         channelTitle?: string
+        description?: string
+        tags?: string[]
         thumbnails?: { medium?: { url?: string }, default?: { url?: string } }
       }
     }>
@@ -76,6 +87,8 @@ export async function fetchVideoMeta(videoId: string): Promise<YoutubeVideoMeta>
       channelTitle: null,
       thumbUrl: null,
       available: false,
+      description: '',
+      tags: [],
     }
   }
   return {
@@ -87,10 +100,13 @@ export async function fetchVideoMeta(videoId: string): Promise<YoutubeVideoMeta>
       || item.snippet.thumbnails?.default?.url
       || null,
     available: true,
+    description: item.snippet.description || '',
+    tags: item.snippet.tags || [],
   }
 }
 
 type RelatedCachePayload = {
+  strategy?: string
   candidates: YoutubeCandidate[]
 }
 
@@ -103,16 +119,18 @@ export async function getRelatedCandidates(videoId: string): Promise<YoutubeCand
   })
   const now = Date.now()
   if (cached && now - cached.fetchedAt.getTime() < YT_TTL_MS) {
-    return (cached.relatedPayload as RelatedCachePayload).candidates || []
+    const payload = cached.relatedPayload as RelatedCachePayload
+    if (payload.strategy === CANDIDATE_STRATEGY) {
+      return payload.candidates || []
+    }
   }
   if (cached) {
     await db.delete(youtubeCache).where(eq(youtubeCache.videoId, videoId))
   }
 
   const key = apiKey()
-  // search.list relatedToVideoId was deprecated; use search by topic from seed title as fallback
   const meta = await fetchVideoMeta(videoId)
-  const q = meta.available ? meta.title : videoId
+  const q = meta.available ? buildTopicSearchQuery(meta) : videoId
   const data = await $fetch<{
     items?: Array<{
       id?: { videoId?: string }
@@ -150,17 +168,18 @@ export async function getRelatedCandidates(videoId: string): Promise<YoutubeCand
     })
   }
 
+  const relatedPayload = { strategy: CANDIDATE_STRATEGY, candidates } satisfies RelatedCachePayload
   await db
     .insert(youtubeCache)
     .values({
       videoId,
-      relatedPayload: { candidates } satisfies RelatedCachePayload,
+      relatedPayload,
       fetchedAt: new Date(),
     })
     .onConflictDoUpdate({
       target: youtubeCache.videoId,
       set: {
-        relatedPayload: { candidates },
+        relatedPayload,
         fetchedAt: new Date(),
       },
     })
