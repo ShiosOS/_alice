@@ -1,40 +1,25 @@
 <template>
-  <section class="home">
-    <h1>_alice</h1>
-    <p>
+  <section class="max-w-xl space-y-5">
+    <h1 class="font-display text-4xl font-normal text-primary sm:text-5xl">
+      _alice
+    </h1>
+    <p class="text-lg leading-relaxed text-foreground/90">
       A personal Wonderland map for going deep on a YouTube topic. Paste a seed,
       see how it branches, keep Rabbit Holes for each curiosity.
     </p>
-    <p v-if="!loggedIn">
-      <a class="cta" href="/auth/google">Sign in with Google</a>
-      to start a Rabbit Hole.
-    </p>
-    <p v-else>
-      <NuxtLink class="cta" to="/rabbit-holes">Open Rabbit Holes</NuxtLink>
-    </p>
+    <div>
+      <Button v-if="!loggedIn" as-child size="lg">
+        <a href="/auth/google">Sign in with Google</a>
+      </Button>
+      <Button v-else as-child size="lg">
+        <NuxtLink to="/rabbit-holes">Open Rabbit Holes</NuxtLink>
+      </Button>
+    </div>
   </section>
 </template>
 
 <script setup lang="ts">
+import { Button } from '@/components/ui/button'
+
 const { loggedIn } = useUserSession()
 </script>
-
-<style scoped>
-.home h1 {
-  margin: 0 0 0.75rem;
-  font-size: clamp(2rem, 5vw, 3rem);
-  color: var(--accent);
-  font-weight: 600;
-}
-
-.home p {
-  max-width: 36rem;
-  line-height: 1.55;
-  color: var(--fg);
-}
-
-.cta {
-  color: var(--accent);
-  text-decoration: underline;
-}
-</style>

@@ -1,44 +1,77 @@
 <template>
-  <section v-if="pending">Loading…</section>
-  <section v-else-if="error" class="error">{{ error }}</section>
-  <section v-else-if="data" class="hole">
-    <header class="head">
-      <div class="title-row">
-        <input
-          v-if="editing"
-          v-model="draftTitle"
-          class="title-input"
-          @keyup.enter="saveTitle"
-        >
-        <h1 v-else>{{ data.rabbitHole.title }}</h1>
-        <div class="actions">
-          <button v-if="!editing" type="button" @click="startEdit">Rename</button>
-          <button v-else type="button" @click="saveTitle">Save</button>
-          <button type="button" class="danger" @click="remove">Delete</button>
+  <div class="relative h-full min-h-0 w-full">
+    <p v-if="pending" class="absolute inset-0 z-10 flex items-center justify-center text-muted-foreground">
+      Loading…
+    </p>
+    <p v-else-if="error" class="absolute inset-0 z-10 flex items-center justify-center text-destructive">
+      {{ error }}
+    </p>
+    <template v-else-if="data">
+      <div class="pointer-events-none absolute top-4 left-4 z-20 max-w-lg space-y-2">
+        <div class="pointer-events-auto rounded-md border border-primary/30 bg-[#121820]/90 px-3 py-2 backdrop-blur">
+          <div class="flex flex-wrap items-center gap-2">
+            <input
+              v-if="editing"
+              v-model="draftTitle"
+              class="min-w-48 flex-1 rounded border border-border bg-[#0c1117] px-2 py-1 font-display text-lg text-foreground"
+              @keyup.enter="saveTitle"
+            >
+            <h1 v-else class="font-display text-xl text-[#f0e6d4]">
+              {{ data.rabbitHole.title }}
+            </h1>
+            <button
+              v-if="!editing"
+              type="button"
+              class="rounded border border-border px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
+              @click="startEdit"
+            >
+              Rename
+            </button>
+            <button
+              v-else
+              type="button"
+              class="rounded border border-primary/50 px-2 py-1 text-xs text-primary"
+              @click="saveTitle"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              class="rounded border border-destructive/50 px-2 py-1 text-xs text-destructive"
+              @click="remove"
+            >
+              Delete
+            </button>
+          </div>
+          <p class="mt-1 text-xs text-muted-foreground">
+            Status: {{ data.rabbitHole.status }}
+          </p>
+          <button
+            v-if="data.rabbitHole.status === 'incomplete'"
+            type="button"
+            class="mt-2 rounded border border-primary/40 px-2 py-1 text-xs text-primary"
+            :disabled="busy"
+            @click="retryBootstrap"
+          >
+            Retry bootstrap
+          </button>
         </div>
       </div>
-      <p class="meta">Status: {{ data.rabbitHole.status }}</p>
-      <button
-        v-if="data.rabbitHole.status === 'incomplete'"
-        type="button"
-        :disabled="busy"
-        @click="retryBootstrap"
-      >
-        Retry bootstrap
-      </button>
-    </header>
 
-    <RabbitHoleGraph
-      :nodes="data.nodes"
-      :edges="data.edges"
-      :path-ids="pathIds"
-      :seed-video-id="data.rabbitHole.seedVideoId"
-      :busy="busy"
-      @expand="onExpand"
-      @watch="onWatch"
-    />
-    <YoutubeAttribution />
-  </section>
+      <RabbitHoleGraph
+        :nodes="data.nodes"
+        :edges="data.edges"
+        :path-ids="pathIds"
+        :seed-video-id="data.rabbitHole.seedVideoId"
+        :busy="busy"
+        @expand="onExpand"
+        @watch="onWatch"
+      />
+      <div class="absolute bottom-3 left-4 z-20">
+        <YoutubeAttribution />
+      </div>
+    </template>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -48,6 +81,10 @@ import type {
   RabbitHoleRenameResponse,
   WatchResponse,
 } from '#shared/types/rabbit-holes'
+
+definePageMeta({
+  fullBleed: true,
+})
 
 const route = useRoute()
 const id = computed(() => String(route.params.id))
@@ -192,48 +229,3 @@ async function onWatch(nodeId: string) {
   }
 }
 </script>
-
-<style scoped>
-.head {
-  margin-bottom: 1.25rem;
-}
-.title-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  align-items: center;
-  justify-content: space-between;
-}
-.title-input {
-  flex: 1;
-  min-width: 12rem;
-  font: inherit;
-  font-size: 1.5rem;
-  padding: 0.35rem 0.5rem;
-  background: #121820;
-  border: 1px solid var(--line);
-  color: var(--fg);
-}
-.actions {
-  display: flex;
-  gap: 0.5rem;
-}
-button {
-  padding: 0.45rem 0.7rem;
-  border: 1px solid var(--line);
-  background: transparent;
-  color: var(--fg);
-  font: inherit;
-  cursor: pointer;
-}
-.danger {
-  border-color: #e08888;
-  color: #e08888;
-}
-.meta {
-  color: var(--muted);
-}
-.error {
-  color: #e08888;
-}
-</style>

@@ -1,20 +1,22 @@
 <template>
-  <section class="auth">
-    <h1>Accept Terms</h1>
-    <p>
+  <section class="max-w-lg space-y-5">
+    <h1 class="font-display text-3xl text-foreground">Accept Terms</h1>
+    <p class="leading-relaxed text-muted-foreground">
       Before using Rabbit Holes, please accept the
-      <NuxtLink to="/terms">Terms of Use</NuxtLink>
+      <NuxtLink to="/terms" class="text-primary underline underline-offset-4">Terms of Use</NuxtLink>
       and review the
-      <NuxtLink to="/privacy">Privacy Policy</NuxtLink>.
+      <NuxtLink to="/privacy" class="text-primary underline underline-offset-4">Privacy Policy</NuxtLink>.
     </p>
-    <button type="button" :disabled="busy" @click="accept">
+    <Button :disabled="busy" @click="accept">
       {{ busy ? 'Saving…' : 'I accept the Terms' }}
-    </button>
-    <p v-if="error" class="error">{{ error }}</p>
+    </Button>
+    <p v-if="error" class="text-sm text-destructive">{{ error }}</p>
   </section>
 </template>
 
 <script setup lang="ts">
+import { Button } from '@/components/ui/button'
+
 const { loggedIn, user, fetch: fetchSession } = useUserSession()
 const busy = ref(false)
 const error = ref('')
@@ -46,25 +48,3 @@ async function accept() {
   }
 }
 </script>
-
-<style scoped>
-.auth {
-  max-width: 32rem;
-}
-.auth a {
-  color: var(--accent);
-  text-decoration: underline;
-}
-button {
-  margin-top: 1rem;
-  padding: 0.65rem 1rem;
-  border: 1px solid var(--accent);
-  background: transparent;
-  color: var(--accent);
-  font: inherit;
-  cursor: pointer;
-}
-.error {
-  color: #e08888;
-}
-</style>

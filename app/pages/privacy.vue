@@ -55,6 +55,6 @@
 }
 .prose h1,
 .prose h2 {
-  color: var(--accent);
+  color: var(--primary);
 }
 </style>

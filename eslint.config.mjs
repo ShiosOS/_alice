@@ -17,6 +17,13 @@ export default withNuxt(
     },
   },
   {
+    // Generated shadcn-vue components — don't fight their prop defaults
+    files: ['app/components/ui/**/*.{ts,vue}'],
+    rules: {
+      'vue/require-default-prop': 'off',
+    },
+  },
+  {
     files: [
       'server/api/**/*.ts',
       'server/middleware/**/*.ts',

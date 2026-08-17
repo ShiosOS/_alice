@@ -1,111 +1,83 @@
 <template>
-  <div class="shell">
-    <header class="header">
-      <NuxtLink to="/" class="brand">_alice</NuxtLink>
-      <nav class="nav">
+  <div
+    class="flex flex-col"
+    :class="fullBleed ? 'h-dvh overflow-hidden' : 'min-h-screen'"
+  >
+    <header
+      class="z-30 flex shrink-0 items-center justify-between gap-4 border-b border-border/80 bg-[#0f1419]/90 px-5 py-4 backdrop-blur"
+    >
+      <NuxtLink
+        to="/"
+        class="font-display text-2xl tracking-wide text-primary transition-opacity hover:opacity-90"
+      >
+        _alice
+      </NuxtLink>
+      <nav class="flex items-center gap-4 text-sm text-foreground">
         <template v-if="loggedIn">
-          <NuxtLink to="/rabbit-holes">Rabbit Holes</NuxtLink>
-          <NuxtLink to="/account">Account</NuxtLink>
-          <a href="/auth/logout">Sign out</a>
+          <NuxtLink
+            to="/rabbit-holes"
+            class="text-muted-foreground transition-colors hover:text-foreground"
+            active-class="!text-primary"
+          >
+            Rabbit Holes
+          </NuxtLink>
+          <NuxtLink
+            to="/account"
+            class="text-muted-foreground transition-colors hover:text-foreground"
+            active-class="!text-primary"
+          >
+            Account
+          </NuxtLink>
+          <Button variant="ghost" size="sm" as-child>
+            <a href="/auth/logout">Sign out</a>
+          </Button>
         </template>
-        <a v-else href="/auth/google">Sign in with Google</a>
+        <Button v-else as-child>
+          <a href="/auth/google">Sign in with Google</a>
+        </Button>
       </nav>
     </header>
-    <main class="main">
+
+    <main
+      :class="fullBleed
+        ? 'relative min-h-0 w-full flex-1 p-0'
+        : 'mx-auto w-full max-w-[1100px] flex-1 px-5 py-6 pb-8'"
+    >
       <NuxtPage />
     </main>
-    <footer class="footer">
+
+    <footer
+      v-if="!fullBleed"
+      class="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-border px-5 py-4 text-sm text-muted-foreground"
+    >
       <span>Wonderland map for YouTube</span>
-      <span class="footer-links">
-        <NuxtLink to="/privacy">Privacy</NuxtLink>
-        ·
-        <NuxtLink to="/terms">Terms</NuxtLink>
-        ·
-        <NuxtLink to="/about">About</NuxtLink>
+      <span class="flex gap-2">
+        <NuxtLink to="/privacy" class="hover:text-foreground">Privacy</NuxtLink>
+        <span aria-hidden="true">·</span>
+        <NuxtLink to="/terms" class="hover:text-foreground">Terms</NuxtLink>
+        <span aria-hidden="true">·</span>
+        <NuxtLink to="/about" class="hover:text-foreground">About</NuxtLink>
       </span>
     </footer>
+
+    <Toaster />
   </div>
 </template>
 
 <script setup lang="ts">
+import { Button } from '@/components/ui/button'
+import { Toaster } from '@/components/ui/sonner'
+
+useHead({
+  link: [
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;1,400&display=swap',
+    },
+  ],
+})
+
+const route = useRoute()
+const fullBleed = computed(() => route.meta.fullBleed === true)
 const { loggedIn } = useUserSession()
 </script>
-
-<style>
-:root {
-  --bg: #0f1419;
-  --fg: #e8eef4;
-  --muted: #8b9aab;
-  --accent: #c4a574;
-  --line: #243041;
-  font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  margin: 0;
-  min-height: 100%;
-  background:
-    radial-gradient(1200px 600px at 10% -10%, #1a2433 0%, transparent 60%),
-    radial-gradient(900px 500px at 100% 0%, #2a1f18 0%, transparent 55%),
-    var(--bg);
-  color: var(--fg);
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.shell {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.header,
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid var(--line);
-}
-
-.footer {
-  border-bottom: 0;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 0.9rem;
-  margin-top: auto;
-}
-
-.footer-links a {
-  color: var(--muted);
-}
-
-.brand {
-  font-size: 1.5rem;
-  letter-spacing: 0.02em;
-  color: var(--accent);
-}
-
-.nav {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  font-size: 0.95rem;
-}
-
-.main {
-  flex: 1;
-  padding: 1.5rem 1.25rem 2rem;
-  width: min(1100px, 100%);
-  margin: 0 auto;
-}
-</style>

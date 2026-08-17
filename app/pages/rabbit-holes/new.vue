@@ -114,17 +114,17 @@ label {
 }
 input {
   padding: 0.65rem 0.75rem;
-  border: 1px solid var(--line);
+  border: 1px solid var(--border);
   background: #121820;
-  color: var(--fg);
+  color: var(--foreground);
   font: inherit;
 }
 button {
   margin-top: 0.5rem;
   padding: 0.65rem 1rem;
-  border: 1px solid var(--accent);
+  border: 1px solid var(--primary);
   background: transparent;
-  color: var(--accent);
+  color: var(--primary);
   font: inherit;
   cursor: pointer;
 }
@@ -132,6 +132,6 @@ button {
   color: #e08888;
 }
 .status {
-  color: var(--muted);
+  color: var(--muted-foreground);
 }
 </style>

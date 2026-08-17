@@ -24,10 +24,10 @@
   line-height: 1.55;
 }
 .prose h1 {
-  color: var(--accent);
+  color: var(--primary);
 }
 a {
-  color: var(--accent);
+  color: var(--primary);
   text-decoration: underline;
 }
 </style>

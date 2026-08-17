@@ -1,21 +1,35 @@
 <template>
   <section>
-    <header class="row">
-      <h1>Rabbit Holes</h1>
-      <NuxtLink class="btn" to="/rabbit-holes/new">Start a new Rabbit Hole</NuxtLink>
+    <header class="mb-6 flex flex-wrap items-center justify-between gap-4">
+      <h1 class="font-display text-3xl text-foreground">Rabbit Holes</h1>
+      <Button as-child>
+        <NuxtLink to="/rabbit-holes/new">Start a new Rabbit Hole</NuxtLink>
+      </Button>
     </header>
 
-    <p v-if="pending">Loading…</p>
-    <p v-else-if="error" class="error">{{ error }}</p>
-    <div v-else-if="!holes.length" class="empty">
-      <p>No Rabbit Holes yet.</p>
-      <NuxtLink class="btn" to="/rabbit-holes/new">Start a new Rabbit Hole</NuxtLink>
-    </div>
-    <ul v-else class="list">
+    <p v-if="pending" class="text-muted-foreground">Loading…</p>
+    <p v-else-if="error" class="text-destructive">{{ error }}</p>
+    <EmptyState v-else-if="!holes.length">
+      <template #title>No Rabbit Holes yet</template>
+      <template #description>
+        Start from a YouTube seed and grow a map of intentional forks.
+      </template>
+      <template #action>
+        <Button as-child>
+          <NuxtLink to="/rabbit-holes/new">Start a new Rabbit Hole</NuxtLink>
+        </Button>
+      </template>
+    </EmptyState>
+    <ul v-else class="divide-y divide-border">
       <li v-for="hole in holes" :key="hole.id">
-        <NuxtLink :to="`/rabbit-holes/${hole.id}`">
-          <strong>{{ hole.title }}</strong>
-          <span class="meta">{{ hole.status }} · updated {{ formatDate(hole.updatedAt) }}</span>
+        <NuxtLink
+          :to="`/rabbit-holes/${hole.id}`"
+          class="flex flex-col gap-1 py-3.5 transition-colors hover:text-primary"
+        >
+          <strong class="font-medium text-foreground">{{ hole.title }}</strong>
+          <span class="text-sm text-muted-foreground">
+            {{ hole.status }} · updated {{ formatDate(hole.updatedAt) }}
+          </span>
         </NuxtLink>
       </li>
     </ul>
@@ -24,6 +38,7 @@
 
 <script setup lang="ts">
 import type { RabbitHoleList, RabbitHoleSummary } from '#shared/types/rabbit-holes'
+import { Button } from '@/components/ui/button'
 
 const { loggedIn, user } = useUserSession()
 
@@ -64,43 +79,3 @@ function formatDate(v: string) {
   }
 }
 </script>
-
-<style scoped>
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  align-items: center;
-  justify-content: space-between;
-}
-.btn {
-  display: inline-block;
-  padding: 0.55rem 0.9rem;
-  border: 1px solid var(--accent);
-  color: var(--accent);
-}
-.list {
-  list-style: none;
-  padding: 0;
-  margin: 1.5rem 0 0;
-}
-.list li {
-  border-top: 1px solid var(--line);
-}
-.list a {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.9rem 0;
-}
-.meta {
-  color: var(--muted);
-  font-size: 0.85rem;
-}
-.empty {
-  margin-top: 1.5rem;
-}
-.error {
-  color: #e08888;
-}
-</style>
