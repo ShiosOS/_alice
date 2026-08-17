@@ -12,6 +12,28 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: alice_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/alice_test
+      NUXT_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/alice_test
+      NUXT_SESSION_PASSWORD: 'ci-session-password-at-least-32-chars!!'
+      # Dummy keys so runtime config exists; PR tests must not call live APIs.
+      NUXT_YOUTUBE_API_KEY: test
+      NUXT_AI_API_KEY: test
+      NUXT_PUBLIC_APP_URL: http://localhost:3000
+      NUXT_EXPAND_DISABLED: 'true'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,3 +43,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
+      - run: npm run db:migrate
+      - run: npm run test:coverage
+      - run: npm run test:nuxt
+      - run: npm run test:e2e

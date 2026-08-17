@@ -1,6 +1,5 @@
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
-import { defineVitestProject } from '@nuxt/test-utils/config'
 
 const root = fileURLToPath(new URL('./', import.meta.url))
 const appDir = fileURLToPath(new URL('./app', import.meta.url))
@@ -44,19 +43,22 @@ export default defineConfig({
       },
       {
         test: {
+          name: 'nuxt',
+          include: ['tests/nuxt/**/*.spec.ts'],
+          environment: 'node',
+          testTimeout: 60_000,
+          hookTimeout: 180_000,
+        },
+      },
+      {
+        test: {
           name: 'e2e',
           include: ['tests/e2e/**/*.spec.ts'],
           environment: 'node',
+          testTimeout: 60_000,
+          hookTimeout: 180_000,
         },
       },
-      // Reserved for Nuxt-environment tests (task 6 / as needed).
-      await defineVitestProject({
-        test: {
-          name: 'nuxt',
-          include: ['tests/nuxt/**/*.spec.ts'],
-          environment: 'nuxt',
-        },
-      }),
     ],
   },
 })
