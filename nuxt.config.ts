@@ -19,7 +19,7 @@ export default defineNuxtConfig({
     aiApiKey: '',
     aiBaseUrl: '',
     aiModel: '',
-    expandDailyBudget: 50,
+    expandDailyBudget: 5,
     expandDisabled: false,
     sentryDsn: '',
     public: {

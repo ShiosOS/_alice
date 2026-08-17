@@ -17,8 +17,8 @@ function expandDisabled() {
 
 function dailyBudget() {
   const config = useRuntimeConfig()
-  const n = Number(config.expandDailyBudget || process.env.NUXT_EXPAND_DAILY_BUDGET || 50)
-  return Number.isFinite(n) ? n : 50
+  const n = Number(config.expandDailyBudget || process.env.NUXT_EXPAND_DAILY_BUDGET || 5)
+  return Number.isFinite(n) ? n : 5
 }
 
 export async function assertExpandBudget(userId: string) {

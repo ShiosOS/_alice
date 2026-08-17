@@ -137,7 +137,7 @@ set_env_vars() {
     --skip-deploys \
     "NUXT_PUBLIC_APP_URL=${app_url}" \
     "NUXT_EXPAND_DISABLED=$(expand_disabled_for "${env}")" \
-    "NUXT_EXPAND_DAILY_BUDGET=50" \
+    "NUXT_EXPAND_DAILY_BUDGET=5" \
     "NUXT_AI_BASE_URL=https://api.openai.com/v1" \
     "NUXT_AI_MODEL=gpt-4o-mini"
 
