@@ -5,14 +5,17 @@
 import { fileURLToPath } from 'node:url'
 import { $fetch, setup } from '@nuxt/test-utils/e2e'
 import { describe, expect, it } from 'vitest'
-import { loadTestEnv, requireDatabaseUrl } from '../helpers/load-test-env'
+import {
+  loadTestEnv,
+  requireDatabaseUrl,
+  requireSessionPassword,
+} from '../helpers/load-test-env'
 
 const rootDir = fileURLToPath(new URL('../..', import.meta.url))
 loadTestEnv(rootDir)
 
 const databaseUrl = requireDatabaseUrl()
-const sessionPassword = process.env.NUXT_SESSION_PASSWORD
-  || 'ci-session-password-at-least-32-chars!!'
+const sessionPassword = requireSessionPassword()
 
 await setup({
   rootDir,
