@@ -1,11 +1,12 @@
 import { fileURLToPath } from 'node:url'
-import { defineVitestConfig } from '@nuxt/test-utils/config'
+import { defineConfig } from 'vitest/config'
+import { defineVitestProject } from '@nuxt/test-utils/config'
 
 const root = fileURLToPath(new URL('./', import.meta.url))
 const appDir = fileURLToPath(new URL('./app', import.meta.url))
 const sharedDir = fileURLToPath(new URL('./shared', import.meta.url))
 
-export default defineVitestConfig({
+export default defineConfig({
   test: {
     coverage: {
       provider: 'v8',
@@ -48,6 +49,14 @@ export default defineVitestConfig({
           environment: 'node',
         },
       },
+      // Reserved for Nuxt-environment tests (task 6 / as needed).
+      await defineVitestProject({
+        test: {
+          name: 'nuxt',
+          include: ['tests/nuxt/**/*.spec.ts'],
+          environment: 'nuxt',
+        },
+      }),
     ],
   },
 })

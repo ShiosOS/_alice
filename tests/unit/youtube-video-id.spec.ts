@@ -51,6 +51,10 @@ describe('parseYoutubeVideoId', () => {
     expect(parseYoutubeVideoId('not-a-url')).toBeNull()
     expect(parseYoutubeVideoId('https://example.com/watch?v=dQw4w9WgXcQ')).toBeNull()
     expect(parseYoutubeVideoId('https://youtube.com/watch?v=too-short')).toBeNull()
+    expect(parseYoutubeVideoId('https://youtu.be/too-short')).toBeNull()
+    expect(parseYoutubeVideoId('https://www.youtube.com/shorts/bad')).toBeNull()
+    expect(parseYoutubeVideoId('https://www.youtube.com/live/dQw4w9WgXcQ')).toBe(SAMPLE_ID)
+    expect(parseYoutubeVideoId(`https://m.youtube.com/watch?v=${SAMPLE_ID}`)).toBe(SAMPLE_ID)
   })
 })
 

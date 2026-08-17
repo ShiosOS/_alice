@@ -32,4 +32,15 @@ describe('buildTopicSearchQuery', () => {
     expect(buildTopicSearchQuery({ title: '' })).toBe('video')
     expect(buildTopicSearchQuery({ title: 'Only Title Here' })).toContain('Only Title Here')
   })
+
+  it('skips channel when the title is long enough to stand alone', () => {
+    const query = buildTopicSearchQuery({
+      title: 'A longer specific title about cryptography tools',
+      channelTitle: 'Some Channel',
+      tags: ['cryptography'],
+      description: 'Deep dive into modern cryptography libraries and protocols',
+    })
+    expect(query).toContain('cryptography')
+    expect(query.toLowerCase()).not.toContain('some channel')
+  })
 })

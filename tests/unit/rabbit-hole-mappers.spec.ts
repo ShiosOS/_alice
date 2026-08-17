@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  toExpandPatch,
   toGraphEdge,
   toGraphNode,
   toPathEvent,
@@ -69,5 +70,33 @@ describe('rabbit-hole mappers', () => {
     expect(graphEdge.phrase).toBe('related')
     expect(path.kind).toBe('visited')
     expect(path.createdAt).toBe(createdAt.toISOString())
+  })
+
+  it('maps created nodes/edges into an expand patch', () => {
+    const patch = toExpandPatch({
+      nodes: [{
+        id: 'node-1',
+        rabbitHoleId: 'hole-1',
+        videoId: 'dQw4w9WgXcQ',
+        title: 'Seed',
+        channelTitle: null,
+        thumbUrl: null,
+        available: true,
+        createdAt,
+      }],
+      edges: [{
+        id: 'edge-1',
+        rabbitHoleId: 'hole-1',
+        fromNodeId: 'n1',
+        toNodeId: 'n2',
+        phrase: 'related',
+        createdAt,
+      }],
+    })
+
+    expect(patch.nodes).toHaveLength(1)
+    expect(patch.edges).toHaveLength(1)
+    expect(patch.nodes[0]?.id).toBe('node-1')
+    expect(patch.edges[0]?.id).toBe('edge-1')
   })
 })
