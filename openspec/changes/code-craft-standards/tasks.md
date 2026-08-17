@@ -31,11 +31,11 @@
 
 ## 5. Test harness and unit tests
 
-- [ ] 5.1 Add Vitest, `@nuxt/test-utils`, happy-dom, coverage reporter; configure multi-project layout (unit / nuxt-as-needed / e2e)
-- [ ] 5.2 Add `test` / `test:coverage` scripts; document how to run locally
-- [ ] 5.3 Unit tests: YouTube video-id parsing (hosts/paths/invalid); migrate `check-topic-query.mjs` behaviors into Vitest and remove or wrap the one-off script
-- [ ] 5.4 Unit tests: rabbit-hole mappers, expand budget/disabled policy, expand-patch merge helper, shared literal/error helpers as extracted
-- [ ] 5.5 Confirm unit suite is deterministic and mocks no live YouTube/AI
+- [x] 5.1 Add Vitest, `@nuxt/test-utils`, happy-dom, coverage reporter; configure multi-project layout (unit / nuxt-as-needed / e2e)
+- [x] 5.2 Add `test` / `test:coverage` scripts; document how to run locally
+- [x] 5.3 Unit tests: YouTube video-id parsing (hosts/paths/invalid); migrate `check-topic-query.mjs` behaviors into Vitest and remove or wrap the one-off script
+- [x] 5.4 Unit tests: rabbit-hole mappers, expand budget/disabled policy, expand-patch merge helper, shared literal/error helpers as extracted
+- [x] 5.5 Confirm unit suite is deterministic and mocks no live YouTube/AI
 
 ## 6. Integration, e2e, coverage, CI
 

@@ -2,7 +2,7 @@
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
-  modules: ['@nuxt/eslint', 'nuxt-auth-utils', 'shadcn-nuxt'],
+  modules: ['@nuxt/eslint', '@nuxt/test-utils/module', 'nuxt-auth-utils', 'shadcn-nuxt'],
   devtools: { enabled: true },
   css: ['~/assets/css/tailwind.css'],
   runtimeConfig: {

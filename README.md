@@ -21,6 +21,9 @@ npm run dev
 npm run lint        # check
 npm run lint:fix   # autofix style (also: npm run format)
 npm run typecheck
+npm run test:unit   # pure domain unit tests (no live YouTube/AI)
+npm run test        # all Vitest projects
+npm run test:coverage
 ```
 
 See `docs/deploy.md` for Railway + Cloudflare and `docs/smoke.md` before promoting.
