@@ -14,9 +14,9 @@
       <AlertDialogTrigger as-child>
         <Button
           variant="destructive"
-          :disabled="busy"
+          :disabled="isMutating"
         >
-          {{ busy ? 'Deleting…' : 'Delete account' }}
+          {{ isMutating ? 'Deleting…' : 'Delete account' }}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
@@ -30,8 +30,8 @@
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             class="bg-destructive text-white hover:bg-destructive/90"
-            :disabled="busy"
-            @click="remove"
+            :disabled="isMutating"
+            @click="deleteAccount"
           >
             Delete
           </AlertDialogAction>
@@ -62,18 +62,16 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 
-const { loggedIn, user, clear } = useUserSession()
-const busy = ref(false)
+definePageMeta({
+  middleware: ['auth'],
+})
+
+const { user, clear } = useUserSession()
+const isMutating = ref(false)
 const error = ref('')
 
-if (import.meta.client) {
-  watchEffect(() => {
-    if (!loggedIn.value) navigateTo('/')
-  })
-}
-
-async function remove() {
-  busy.value = true
+async function deleteAccount() {
+  isMutating.value = true
   error.value = ''
   try {
     await $fetch('/api/auth/account', { method: 'DELETE' })
@@ -84,7 +82,7 @@ async function remove() {
     error.value = e instanceof Error ? e.message : 'Delete failed'
   }
   finally {
-    busy.value = false
+    isMutating.value = false
   }
 }
 </script>

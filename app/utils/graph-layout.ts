@@ -6,7 +6,7 @@ export type VideoNodeData = {
   graphNode: GraphNode
   isSeed: boolean
   onPath: boolean
-  busy: boolean
+  isMutating: boolean
   onExpand: (nodeId: string) => void
   onWatch: (nodeId: string) => void
 }
@@ -32,7 +32,7 @@ export function toFlowNodes(
   nodes: GraphNode[],
   seedVideoId: string,
   pathIds: Set<string>,
-  busy: boolean,
+  isMutating: boolean,
   handlers: Handlers,
   positions?: Map<string, { x: number, y: number }>,
 ): Node<VideoNodeData>[] {
@@ -46,7 +46,7 @@ export function toFlowNodes(
         graphNode: n,
         isSeed: n.videoId === seedVideoId,
         onPath: pathIds.has(n.id),
-        busy,
+        isMutating,
         onExpand: handlers.onExpand,
         onWatch: handlers.onWatch,
       },
@@ -212,7 +212,7 @@ export function applyExpandKeepingDragged(
   patch: ExpandPatch,
   seedVideoId: string,
   pathIds: Set<string>,
-  busy: boolean,
+  isMutating: boolean,
   handlers: Handlers,
   draggedIds: Set<string>,
 ): { nodes: Node<VideoNodeData>[], edges: Edge<PhraseEdgeData>[] } {
@@ -227,7 +227,7 @@ export function applyExpandKeepingDragged(
           graphNode: n,
           isSeed: n.videoId === seedVideoId,
           onPath: pathIds.has(n.id),
-          busy,
+          isMutating,
           onExpand: handlers.onExpand,
           onWatch: handlers.onWatch,
         },
@@ -244,7 +244,7 @@ export function applyExpandKeepingDragged(
           graphNode: n,
           isSeed: existing.data.isSeed,
           onPath: pathIds.has(n.id),
-          busy,
+          isMutating,
           onExpand: handlers.onExpand,
           onWatch: handlers.onWatch,
         },

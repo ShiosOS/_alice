@@ -22,9 +22,9 @@
       </label>
       <button
         type="submit"
-        :disabled="busy"
+        :disabled="isMutating"
       >
-        {{ busy ? 'Growing the first graph…' : 'Start Rabbit Hole' }}
+        {{ isMutating ? 'Growing the first graph…' : 'Start Rabbit Hole' }}
       </button>
     </form>
     <p
@@ -43,7 +43,7 @@
       Bootstrap incomplete.
       <button
         type="button"
-        :disabled="busy"
+        :disabled="isMutating"
         @click="retry(incompleteId)"
       >
         Retry bootstrap
@@ -55,17 +55,13 @@
 <script setup lang="ts">
 import type { RabbitHoleGraph } from '#shared/types/rabbit-holes'
 
-const { loggedIn, user } = useUserSession()
-if (import.meta.client) {
-  watchEffect(() => {
-    if (!loggedIn.value) navigateTo('/')
-    else if (user.value && !user.value.termsAccepted) navigateTo('/terms-accept')
-  })
-}
+definePageMeta({
+  middleware: ['auth', 'terms'],
+})
 
 const url = ref('')
 const title = ref('')
-const busy = ref(false)
+const isMutating = ref(false)
 const status = ref('')
 const error = ref('')
 const incompleteId = ref('')
@@ -91,7 +87,7 @@ function fetchErrorMessage(err: unknown, fallback: string) {
 }
 
 async function create() {
-  busy.value = true
+  isMutating.value = true
   error.value = ''
   status.value = 'Resolving seed and expanding forks…'
   incompleteId.value = ''
@@ -109,12 +105,12 @@ async function create() {
     status.value = ''
   }
   finally {
-    busy.value = false
+    isMutating.value = false
   }
 }
 
 async function retry(id: string) {
-  busy.value = true
+  isMutating.value = true
   error.value = ''
   status.value = 'Retrying bootstrap…'
   try {
@@ -125,7 +121,7 @@ async function retry(id: string) {
     error.value = e instanceof Error ? e.message : 'Retry failed'
   }
   finally {
-    busy.value = false
+    isMutating.value = false
   }
 }
 </script>

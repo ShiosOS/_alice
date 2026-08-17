@@ -17,11 +17,11 @@
 
 ## 3. App middleware, composables, graph, naming
 
-- [ ] 3.1 Add `auth` and `terms` (or one clear combined) route middleware; switch protected pages to `definePageMeta`; remove copied session `watchEffect` gates
-- [ ] 3.2 Extract composables for hole list/detail API orchestration (`useHoleGraph` / list helpers); thin page scripts
-- [ ] 3.3 Split `RabbitHoleGraph.vue`: layout/pan logic vs canvas view vs detail panel; extract `mergeExpandPatch` (or equivalent) helper
-- [ ] 3.4 Naming pass: replace opaque `data` / `busy` / `remove` (and similar) with domain-intent names on hole pages and related composables
-- [ ] 3.5 App readability pass: expand stacked fallbacks and dense client merges into obvious multi-line steps
+- [x] 3.1 Add `auth` and `terms` (or one clear combined) route middleware; switch protected pages to `definePageMeta`; remove copied session `watchEffect` gates
+- [x] 3.2 Extract composables for hole list/detail API orchestration (`useHoleGraph` / list helpers); thin page scripts
+- [x] 3.3 Split `RabbitHoleGraph.vue`: layout/pan logic vs canvas view vs detail panel; extract `mergeExpandPatch` (or equivalent) helper
+- [x] 3.4 Naming pass: replace opaque `data` / `busy` / `remove` (and similar) with domain-intent names on hole pages and related composables
+- [x] 3.5 App readability pass: expand stacked fallbacks and dense client merges into obvious multi-line steps
 
 ## 4. Design token consumption
 

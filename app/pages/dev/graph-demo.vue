@@ -5,7 +5,7 @@
       :edges="edges"
       :path-ids="pathIds"
       :seed-video-id="seedVideoId"
-      :busy="false"
+      :is-mutating="false"
       @expand="onExpand"
       @watch="onWatch"
     >
