@@ -8,7 +8,7 @@ import { readZodBody } from '../../utils/validate'
 import { fetchVideoMeta, parseYoutubeVideoId } from '../../utils/youtube'
 
 export default defineEventHandler(async (event): Promise<RabbitHoleList | RabbitHoleGraph> => {
-  const session = await requireUserSession(event)
+  const session = await requireSession(event)
   const db = useDb()
 
   if (event.method === 'GET') {

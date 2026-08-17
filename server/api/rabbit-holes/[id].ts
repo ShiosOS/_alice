@@ -6,7 +6,7 @@ import { loadHoleGraph, toRabbitHoleSummary } from '../../utils/rabbit-holes'
 import { readZodBody } from '../../utils/validate'
 
 export default defineEventHandler(async (event): Promise<RabbitHoleGraph | RabbitHoleRenameResponse | { ok: true }> => {
-  const session = await requireUserSession(event)
+  const session = await requireSession(event)
   const id = getRouterParam(event, 'id')
   if (!id) throw createError({ statusCode: 400, statusMessage: 'Missing id' })
 

@@ -5,7 +5,7 @@ import { expandNode } from '~~/server/utils/expand'
 import { toExpandPatch } from '~~/server/utils/rabbit-holes'
 
 export default defineEventHandler(async (event): Promise<ExpandPatch> => {
-  const session = await requireUserSession(event)
+  const session = await requireSession(event)
   if (!session.user.termsAccepted) {
     throw createError({ statusCode: 403, statusMessage: 'Accept Terms first' })
   }

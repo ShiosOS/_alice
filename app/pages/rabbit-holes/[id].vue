@@ -174,7 +174,13 @@ async function onWatch(nodeId: string) {
       { method: 'POST' },
     )
     if (data.value && !data.value.path.some((p) => p.nodeId === nodeId && p.kind === 'visited')) {
-      data.value.path = [...data.value.path, { nodeId, kind: 'visited' }]
+      data.value.path = [...data.value.path, {
+        id: `local-${nodeId}`,
+        rabbitHoleId: data.value.rabbitHole.id,
+        nodeId,
+        kind: 'visited',
+        createdAt: new Date().toISOString(),
+      }]
     }
     window.open(res.watchUrl, '_blank', 'noopener,noreferrer')
   }

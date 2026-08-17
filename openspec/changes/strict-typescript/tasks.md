@@ -30,4 +30,4 @@
 
 - [x] 6.1 Enable type-aware ESLint (`no-explicit-any`, unsafe assignment/member access, unnecessary assertions) and fail `as never` at handler/middleware/route call sites
 - [x] 6.2 Confirm `.github/workflows/ci.yml` still runs `npm run lint` and `npm run typecheck`
-- [ ] 6.3 Run `npm run lint` and `npm run typecheck` until both pass
+- [x] 6.3 Run `npm run lint` and `npm run typecheck` until both pass

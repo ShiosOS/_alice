@@ -3,7 +3,7 @@ import { nodes, rabbitHoles, useDb } from '~~/server/db'
 import { bootstrapRabbitHole } from '~~/server/utils/expand'
 
 export default defineEventHandler(async (event) => {
-  const session = await requireUserSession(event)
+  const session = await requireSession(event)
   const id = getRouterParam(event, 'id')
   if (!id) throw createError({ statusCode: 400, statusMessage: 'Missing id' })
   const db = useDb()

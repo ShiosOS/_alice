@@ -4,7 +4,7 @@ import { nodes, pathEvents, rabbitHoles, useDb } from '~~/server/db'
 import { youtubeWatchUrl } from '~~/server/utils/youtube'
 
 export default defineEventHandler(async (event): Promise<WatchResponse> => {
-  const session = await requireUserSession(event)
+  const session = await requireSession(event)
   const id = getRouterParam(event, 'id')
   const nodeId = getRouterParam(event, 'nodeId')
   if (!id || !nodeId) throw createError({ statusCode: 400, statusMessage: 'Missing params' })
