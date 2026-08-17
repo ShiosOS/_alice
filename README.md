@@ -19,4 +19,4 @@ npm run dev
 
 See `docs/deploy.md` for Railway + Cloudflare and `docs/smoke.md` before promoting.
 
-OpenSpec: `openspec/` (active: `openspec/changes/two-env-promotion/`).
+OpenSpec: `openspec/`.
