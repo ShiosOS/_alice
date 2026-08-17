@@ -7,9 +7,7 @@
 | **PR CI** | `lint` + `typecheck` + unit (`test:coverage`) + Nuxt integration (`test:nuxt`) + thin e2e (`test:e2e`) | No — dummy keys / mocked or unused providers |
 | **Promote gate** | Staging checklist below + `scripts/e2e-smoke.mjs` against staging | Yes — real providers on staging |
 
-PR CI covers auth rejection, terms gate on create, public privacy/terms/about HTML, and `/health`. Full create → expand → watch with real provider spend stays **promote-only** via `e2e-smoke.mjs` (do not wire it into PR CI).
-
-Create/expand/watch **integration** with fixture providers needs service-level YouTube/AI mocks inside the Nuxt server process; until those land, rely on unit tests + promote smoke for that path.
+PR CI covers auth rejection, terms gate on create, **create → expand → watch with `NUXT_TEST_FIXTURES`** (no live provider spend), public privacy/terms/about HTML, and `/health`. Full create → expand → watch with **real** provider spend stays **promote-only** via `e2e-smoke.mjs` (do not wire it into PR CI).
 
 ---
 

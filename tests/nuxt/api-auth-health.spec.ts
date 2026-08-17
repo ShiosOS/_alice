@@ -1,7 +1,6 @@
 /**
  * API integration against a real Nuxt server + Postgres.
- * YouTube/AI stay stubbed via dummy keys — full create/expand/watch with provider
- * fixtures needs service-level mocks (not viable across the e2e server process yet).
+ * Live YouTube/AI are avoided; create/expand/watch fixtures live in rabbit-hole-flow.spec.ts.
  */
 import { fileURLToPath } from 'node:url'
 import { randomUUID } from 'node:crypto'

@@ -46,8 +46,9 @@ export default defineConfig({
           name: 'nuxt',
           include: ['tests/nuxt/**/*.spec.ts'],
           environment: 'node',
-          testTimeout: 60_000,
+          testTimeout: 120_000,
           hookTimeout: 180_000,
+          fileParallelism: false,
         },
       },
       {
@@ -57,6 +58,7 @@ export default defineConfig({
           environment: 'node',
           testTimeout: 60_000,
           hookTimeout: 180_000,
+          fileParallelism: false,
         },
       },
     ],

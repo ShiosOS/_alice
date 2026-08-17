@@ -33,7 +33,9 @@ jobs:
       NUXT_YOUTUBE_API_KEY: test
       NUXT_AI_API_KEY: test
       NUXT_PUBLIC_APP_URL: http://localhost:3000
-      NUXT_EXPAND_DISABLED: 'true'
+      # Per-suite setup overrides expand/fixtures; default off for safety.
+      NUXT_EXPAND_DISABLED: 'false'
+      NUXT_TEST_FIXTURES: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

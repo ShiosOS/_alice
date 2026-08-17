@@ -24,7 +24,7 @@ npm run lint:fix   # autofix style (also: npm run format)
 npm run typecheck
 npm run test:unit   # pure domain unit tests (no live YouTube/AI)
 npm run test:coverage  # unit + coverage thresholds on domain modules
-npm run test:nuxt   # API integration (Postgres required; auth/terms/health)
+npm run test:nuxt   # API integration (Postgres; auth/terms/health + fixture create/expand/watch)
 npm run test:e2e    # thin public-page e2e via $fetch (no Playwright browser)
 npm run test        # all Vitest projects
 ```

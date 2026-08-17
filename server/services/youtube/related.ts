@@ -1,4 +1,5 @@
 import { buildTopicSearchQuery } from '../../lib/youtube-topic'
+import { useTestFixtures } from '../test-fixtures'
 import {
   enrichCandidates,
   fetchVideoMeta,
@@ -46,11 +47,16 @@ export function mergeQueries(focus: TopicContext, seed?: TopicContext | null): s
 export async function getVideoTopic(
   videoId: string,
 ): Promise<{ meta: YoutubeVideoMeta, topic: TopicContext }> {
-  const cached = await readCache(videoId)
   const meta = await fetchVideoMeta(videoId)
   if (!meta.available) {
     return { meta, topic: fallbackTopicFromMeta(meta) }
   }
+
+  if (useTestFixtures()) {
+    return { meta, topic: fallbackTopicFromMeta(meta) }
+  }
+
+  const cached = await readCache(videoId)
   if (cached?.topic) {
     return { meta, topic: cached.topic }
   }
@@ -80,6 +86,24 @@ export async function getRelatedCandidates(
   const { meta, topic: focusTopic } = await getVideoTopic(videoId)
   if (!meta.available) {
     return { topic: focusTopic, meta, candidates: [] }
+  }
+
+  if (useTestFixtures()) {
+    const candidates: YoutubeCandidate[] = []
+    for (let i = 1; i <= 8; i++) {
+      const raw = `f${i}${videoId}xxxxxxxxxxx`
+      const id = raw.replace(/[^\w-]/g, 'x').slice(0, 11)
+      candidates.push({
+        videoId: id,
+        title: `Fixture fork ${i} from ${videoId}`,
+        channelTitle: 'Fixture Channel',
+        thumbUrl: null,
+        available: true,
+        description: `Fixture candidate ${i}`,
+        tags: ['fixture'],
+      })
+    }
+    return { topic: focusTopic, meta, candidates }
   }
 
   const cached = await readCache(videoId)

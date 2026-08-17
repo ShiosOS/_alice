@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { ErrorMessage, serverError } from '../../utils/errors'
+import { useTestFixtures } from '../test-fixtures'
 import type { YoutubeCandidate, YoutubeVideoMeta } from './types'
 
 export type { YoutubeCandidate, YoutubeVideoMeta } from './types'
@@ -65,6 +66,20 @@ function youtubeApiKey() {
 }
 
 export async function fetchVideoMeta(videoId: string): Promise<YoutubeVideoMeta> {
+  if (useTestFixtures()) {
+    return {
+      videoId,
+      title: `Fixture video ${videoId}`,
+      channelTitle: 'Fixture Channel',
+      thumbUrl: null,
+      available: true,
+      description: 'Deterministic fixture description for integration tests.',
+      tags: ['fixture', 'security', 'testing'],
+      categoryId: '28',
+      categoryLabel: YT_CATEGORIES['28'] || null,
+    }
+  }
+
   const key = youtubeApiKey()
   const data = await $fetch<{
     items?: Array<{

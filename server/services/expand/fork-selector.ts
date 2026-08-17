@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { ErrorMessage, serverError } from '../../utils/errors'
+import { useTestFixtures } from '../test-fixtures'
 import { formatTopicContext, type TopicContext } from '../youtube/topic'
 import type { YoutubeCandidate, YoutubeVideoMeta } from '../youtube/types'
 
@@ -49,6 +50,19 @@ export async function callAiForForks(input: {
   candidates: YoutubeCandidate[]
   take: number
 }): Promise<{ forks: ForkChoice[], model: string, promptTokens?: number, completionTokens?: number }> {
+  if (useTestFixtures()) {
+    const forks = input.candidates.slice(0, input.take).map((c, i) => ({
+      videoId: c.videoId,
+      phrase: `Fixture direction ${i + 1}`,
+    }))
+    return {
+      forks,
+      model: 'fixture',
+      promptTokens: 0,
+      completionTokens: 0,
+    }
+  }
+
   const config = useRuntimeConfig()
   const apiKey = config.aiApiKey || process.env.NUXT_AI_API_KEY
   const baseUrl = (config.aiBaseUrl || process.env.NUXT_AI_BASE_URL || 'https://api.openai.com/v1').replace(/\/$/, '')
