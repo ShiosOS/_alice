@@ -1,43 +1,81 @@
 # Deploy _alice to Railway + alice.shiosos.dev
 
-## Railway (app + Postgres)
+## Environments
 
-1. Create a Railway project named `_alice` (or similar).
-2. Add a **Postgres** plugin/service; copy `DATABASE_URL` into the web service.
-3. Add a **Web** service from this GitHub repo (Nixpacks / Node).
-4. Set start command if needed: `node .output/server/index.mjs` (see `railway.toml`).
-5. Configure env vars from `.env.example` (map `NUXT_*` as listed).
-6. Set `NUXT_PUBLIC_APP_URL=https://alice.shiosos.dev`.
-7. Enable Postgres backups in the Railway dashboard (Point-in-Time / automatic backups).
-8. Run migrations against `DATABASE_URL`: `npm run db:push` (dev) or apply `server/db/migrations/0000_init.sql`.
+One Railway project (`_alice`) with three Railway environments:
 
-### Backups restore check
+| Environment | App URL | Purpose |
+| --- | --- | --- |
+| `production` | `https://alice.shiosos.dev` | Live |
+| `staging` | `https://staging.alice.shiosos.dev` | Pre-prod / QA |
+| `feature` | `https://feature.alice.shiosos.dev` | Shared feature sandbox |
 
-After enabling Railway Postgres backups, once verify you can see restore points in the Railway UI (or run a restore into a throwaway DB). Note the steps you used in your personal ops notes — do not skip this once the project exists.
+Each environment gets its own service instances (web + Postgres when duplicated). Expand AI is disabled by default on staging/feature (`NUXT_EXPAND_DISABLED=true`) until you turn it on intentionally.
 
+Optional later: ephemeral PR envs (`pr-123`) via `railway environment new pr-N --copy feature` in CI.
 
-## Custom domain (Cloudflare → Railway)
+## Bootstrap (CLI)
 
-Zone: `shiosos.dev` (already on Cloudflare).
+Needs an **account** token (not a project token):
 
-1. In Railway → Web service → Settings → Networking → Custom Domain → add `alice.shiosos.dev`.
-2. Railway shows the required DNS target (usually a CNAME).
-3. In Cloudflare DNS for `shiosos.dev`, create:
-   - Type: `CNAME`
-   - Name: `alice`
-   - Target: the Railway hostname
-   - Proxy: DNS only (grey cloud) until Railway TLS is happy; then optional orange-cloud.
-4. Wait for Railway to issue HTTPS for `alice.shiosos.dev`.
-5. Confirm `NUXT_PUBLIC_APP_URL=https://alice.shiosos.dev`.
-6. Add OAuth callback URLs for Google (when auth lands):
-   - `https://alice.shiosos.dev/...` (provider-specific)
-   - `http://localhost:3000/...` for local dev
+1. Create token: [railway.com/account/tokens](https://railway.com/account/tokens) (select your workspace).
+2. Export it (and only it):
+
+```bash
+export RAILWAY_API_TOKEN=...   # unset RAILWAY_TOKEN if set
+# optional: export NUXT_OAUTH_GOOGLE_CLIENT_ID=... NUXT_OAUTH_GOOGLE_CLIENT_SECRET=...
+# optional: export NUXT_YOUTUBE_API_KEY=... NUXT_AI_API_KEY=...
+npm i -g @railway/cli
+./scripts/railway-bootstrap.sh
+```
+
+The script:
+
+1. Creates/links project `_alice`
+2. Adds Postgres + `web` (GitHub `ShiosOS/_alice` @ `main`)
+3. Creates `staging` and `feature` by duplicating `production`
+4. Sets per-env `NUXT_PUBLIC_APP_URL` / session / expand defaults
+5. Requests custom domains for the three hostnames
+6. Deploys each env (`SKIP_DEPLOY=1` to skip)
+
+`railway.toml` start command: `node .output/server/index.mjs`.
+
+## Manual follow-ups
+
+1. **Variable references:** On `web` in each env, point `DATABASE_URL` and `NUXT_DATABASE_URL` at the Postgres service’s `DATABASE_URL` (Railway reference variable).
+2. **Secrets:** Set OAuth / YouTube / AI keys on `web` per env (or once in production then copy). Staging/feature can share Google OAuth client if all redirect URIs are registered.
+3. **Migrations:** `railway run -e production -s web -- npm run db:migrate` (repeat for staging/feature), or `db:push` for early envs.
+4. **Postgres backups:** Enable automatic / PITR backups on production (and preferably staging) in the Railway dashboard; confirm restore points once.
+5. **Cloudflare DNS** (`shiosos.dev`):
+
+| Type | Name | Target |
+| --- | --- | --- |
+| CNAME | `alice` | Railway hostname for production |
+| CNAME | `staging.alice` | Railway hostname for staging |
+| CNAME | `feature.alice` | Railway hostname for feature |
+
+Use DNS-only (grey cloud) until Railway TLS is happy.
+
+6. **Google OAuth redirect URIs:**
+
+- `https://alice.shiosos.dev/auth/google`
+- `https://staging.alice.shiosos.dev/auth/google`
+- `https://feature.alice.shiosos.dev/auth/google`
+- `http://localhost:3000/auth/google`
+
+## Day-2 commands
+
+```bash
+railway environment production   # or staging / feature
+railway up --service web --environment staging
+railway logs --service web --environment production
+railway variable list --service web --environment feature
+```
 
 ## Quotas and billing caps
 
 Before inviting others:
 
-1. **YouTube Data API:** set a budget/quota alert in Google Cloud; keep daily expand budgets low (`NUXT_EXPAND_DAILY_BUDGET`).
-2. **AI provider:** set a hard monthly spend cap in the vendor dashboard; keep `NUXT_EXPAND_DISABLED=true` as an emergency switch.
-3. Confirm Railway spend alerts if available.
-
+1. **YouTube Data API:** budget/quota alert in Google Cloud; keep `NUXT_EXPAND_DAILY_BUDGET` low.
+2. **AI provider:** hard monthly spend cap; keep `NUXT_EXPAND_DISABLED=true` as an emergency switch on non-prod.
+3. Railway spend alerts if available.
