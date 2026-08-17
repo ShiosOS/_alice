@@ -6,7 +6,7 @@ import type {
   PathEvent,
   RabbitHoleSummary,
 } from '../../../shared/types/rabbit-holes'
-import { edges, nodes, pathEvents, rabbitHoles } from '../../db'
+import type { edges, nodes, pathEvents, rabbitHoles } from '../../db'
 
 type HoleRow = InferSelectModel<typeof rabbitHoles>
 type NodeRow = InferSelectModel<typeof nodes>
