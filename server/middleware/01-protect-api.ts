@@ -1,9 +1,10 @@
 /**
  * Require auth for Rabbit Hole / Expand / account mutation APIs.
- * Public: privacy/terms pages, auth routes, session endpoint.
+ * Public: privacy/terms pages, auth routes, session endpoint, GET /health.
  */
 export default defineEventHandler(async (event) => {
   const path = getRequestURL(event).pathname
+  if (path === '/health') return
   const protectedPrefixes = [
     '/api/rabbit-holes',
     '/api/auth/account',

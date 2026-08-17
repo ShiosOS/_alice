@@ -23,6 +23,9 @@ npm-debug.log*
 
 # OpenSpec / local
 *.local
+.railway/
+
+# local DB dumps
 
 # local DB dumps
 backups/

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Bootstrap Railway project `_alice` with production, staging, and feature environments.
+# Bootstrap Railway project `_alice` with production and staging only.
+# Promote is git: smoke staging, then `git push origin origin/main:production`.
 #
 # Requires: Railway CLI + account-scoped token
 #   export RAILWAY_API_TOKEN=...   # https://railway.com/account/tokens
@@ -8,7 +9,7 @@
 # Optional:
 #   RAILWAY_WORKSPACE   workspace id or name
 #   ALICE_GITHUB_REPO   default ShiosOS/_alice
-#   ALICE_DEPLOY_BRANCH default main
+#   ALICE_DEPLOY_BRANCH default main (initial GitHub link; retarget production → `production` branch)
 #   SKIP_DEPLOY=1       create infra only (no railway up)
 #
 set -euo pipefail
@@ -17,7 +18,7 @@ PROJECT_NAME="${RAILWAY_PROJECT_NAME:-_alice}"
 WEB_SERVICE="${RAILWAY_WEB_SERVICE:-web}"
 GITHUB_REPO="${ALICE_GITHUB_REPO:-ShiosOS/_alice}"
 DEPLOY_BRANCH="${ALICE_DEPLOY_BRANCH:-main}"
-ENVS=(production staging feature)
+ENVS=(production staging)
 
 need_token() {
   if [[ -z "${RAILWAY_API_TOKEN:-}" ]]; then
@@ -35,7 +36,6 @@ app_url_for() {
   case "$1" in
     production) echo "https://alice.shiosos.dev" ;;
     staging) echo "https://alice-staging.shiosos.dev" ;;
-    feature) echo "https://alice-feature.shiosos.dev" ;;
     *) echo "https://alice-${1}.shiosos.dev" ;;
   esac
 }
@@ -44,15 +44,7 @@ custom_domain_for() {
   case "$1" in
     production) echo "alice.shiosos.dev" ;;
     staging) echo "alice-staging.shiosos.dev" ;;
-    feature) echo "alice-feature.shiosos.dev" ;;
     *) echo "" ;;
-  esac
-}
-
-expand_disabled_for() {
-  case "$1" in
-    production) echo "false" ;;
-    *) echo "true" ;;
   esac
 }
 
@@ -117,9 +109,7 @@ create_env_if_missing() {
     || railway environment new "${name}" --copy production
 }
 
-for env in staging feature; do
-  create_env_if_missing "${env}"
-done
+create_env_if_missing staging
 
 set_env_vars() {
   local env="$1"
@@ -130,13 +120,13 @@ set_env_vars() {
   echo "==> Variables for ${env} (${WEB_SERVICE})"
   railway environment "${env}"
 
-  # Public URL + session (new random session per env unless already set)
+  # Public URL + Expand on in both envs (staging is the dress rehearsal).
   railway variable set \
     --service "${WEB_SERVICE}" \
     --environment "${env}" \
     --skip-deploys \
     "NUXT_PUBLIC_APP_URL=${app_url}" \
-    "NUXT_EXPAND_DISABLED=$(expand_disabled_for "${env}")" \
+    "NUXT_EXPAND_DISABLED=false" \
     "NUXT_EXPAND_DAILY_BUDGET=50" \
     "NUXT_AI_BASE_URL=https://api.openai.com/v1" \
     "NUXT_AI_MODEL=gpt-4o-mini"
@@ -209,15 +199,24 @@ fi
 
 echo
 echo "Done. Next manual steps:"
-echo "  1. Cloudflare DNS for shiosos.dev (DNS-only / grey cloud):"
+echo "  1. Create origin/production at the live SHA if missing:"
+echo "       git push origin origin/main:production"
+echo "  2. Railway GitHub triggers (do not leave both watching main):"
+echo "       staging web    ← branch main"
+echo "       production web ← branch production"
+echo "       Enable Wait for CI on both. Do not Sync staging → production."
+echo "  3. Cloudflare DNS for shiosos.dev (DNS-only / grey cloud):"
 echo "       alice            → Railway CNAME for production"
 echo "       alice-staging    → Railway CNAME for staging"
-echo "       alice-feature    → Railway CNAME for feature"
-echo "  2. Google OAuth redirects:"
+echo "       (remove alice-feature if it exists)"
+echo "  4. Google OAuth redirects:"
 echo "       https://alice.shiosos.dev/auth/google"
 echo "       https://alice-staging.shiosos.dev/auth/google"
-echo "       https://alice-feature.shiosos.dev/auth/google"
-echo "  3. Enable Postgres backups on production (and ideally staging) in the Railway volume UI."
-echo "  4. Migrations run automatically via railway.toml preDeployCommand (scripts/db-migrate.mjs)."
-echo "  5. Confirm DATABASE_URL is referenced from Postgres on ${WEB_SERVICE} in each env."
-echo "  6. Builder is Railpack (railway.toml); do not use deprecated Nixpacks."
+echo "       http://localhost:3000/auth/google"
+echo "       (remove https://alice-feature.shiosos.dev/auth/google)"
+echo "  5. Staging Expand stays on with non-prod / quota-capped YouTube+AI keys."
+echo "  6. Confirm DATABASE_URL is referenced from Postgres on ${WEB_SERVICE} in each env."
+echo "  7. Builder is Railpack (railway.toml); healthcheck is GET /health."
+echo "  8. Promote after staging smoke:"
+echo "       git push origin origin/main:production"
+echo "       git log origin/production..origin/main"
