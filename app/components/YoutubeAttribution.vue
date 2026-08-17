@@ -9,10 +9,10 @@
 .yt-attr {
   margin: 0.75rem 0 0;
   font-size: 0.8rem;
-  color: var(--muted);
+  color: var(--muted-foreground);
 }
 .yt-attr a {
-  color: var(--accent);
+  color: var(--primary);
   text-decoration: underline;
 }
 </style>

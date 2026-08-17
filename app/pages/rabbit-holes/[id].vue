@@ -211,8 +211,8 @@ async function onWatch(nodeId: string) {
   font-size: 1.5rem;
   padding: 0.35rem 0.5rem;
   background: #121820;
-  border: 1px solid var(--line);
-  color: var(--fg);
+  border: 1px solid var(--border);
+  color: var(--foreground);
 }
 .actions {
   display: flex;
@@ -220,9 +220,9 @@ async function onWatch(nodeId: string) {
 }
 button {
   padding: 0.45rem 0.7rem;
-  border: 1px solid var(--line);
+  border: 1px solid var(--border);
   background: transparent;
-  color: var(--fg);
+  color: var(--foreground);
   font: inherit;
   cursor: pointer;
 }
@@ -231,7 +231,7 @@ button {
   color: #e08888;
 }
 .meta {
-  color: var(--muted);
+  color: var(--muted-foreground);
 }
 .error {
   color: #e08888;

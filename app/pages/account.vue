@@ -1,15 +1,54 @@
 <template>
-  <section>
-    <h1>Account</h1>
-    <p v-if="user">Signed in as {{ user.email }}</p>
-    <button type="button" class="danger" :disabled="busy" @click="remove">
-      {{ busy ? 'Deleting…' : 'Delete account' }}
-    </button>
-    <p v-if="error" class="error">{{ error }}</p>
+  <section class="max-w-lg space-y-6">
+    <h1 class="font-display text-3xl text-foreground">Account</h1>
+    <p v-if="user" class="text-muted-foreground">
+      Signed in as <span class="text-foreground">{{ user.email }}</span>
+    </p>
+
+    <AlertDialog>
+      <AlertDialogTrigger as-child>
+        <Button variant="destructive" :disabled="busy">
+          {{ busy ? 'Deleting…' : 'Delete account' }}
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete your account?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This removes your account and all Rabbit Holes. This cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            class="bg-destructive text-white hover:bg-destructive/90"
+            :disabled="busy"
+            @click="remove"
+          >
+            Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    <p v-if="error" class="text-sm text-destructive">{{ error }}</p>
   </section>
 </template>
 
 <script setup lang="ts">
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
+
 const { loggedIn, user, clear } = useUserSession()
 const busy = ref(false)
 const error = ref('')
@@ -21,9 +60,6 @@ if (import.meta.client) {
 }
 
 async function remove() {
-  if (!confirm('Delete your account and all Rabbit Holes? This cannot be undone.')) {
-    return
-  }
   busy.value = true
   error.value = ''
   try {
@@ -39,18 +75,3 @@ async function remove() {
   }
 }
 </script>
-
-<style scoped>
-.danger {
-  margin-top: 1rem;
-  padding: 0.65rem 1rem;
-  border: 1px solid #e08888;
-  background: transparent;
-  color: #e08888;
-  font: inherit;
-  cursor: pointer;
-}
-.error {
-  color: #e08888;
-}
-</style>
