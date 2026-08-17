@@ -217,8 +217,14 @@ function onNodeDragStop(ev: NodeDragEvent) {
   next.add(ev.node.id)
   draggedIds.value = next
   // Nudge other cards away so the dragged card never sits on top of another
-  flowNodes.value = resolveOverlaps([...flowNodes.value], {
-    fixedIds: new Set([ev.node.id]),
+  const positions = resolveOverlaps(
+    flowNodes.value.map((n) => ({ id: n.id, position: { x: n.position.x, y: n.position.y } })),
+    { fixedIds: new Set([ev.node.id]) },
+  )
+  const byId = new Map(positions.map((p) => [p.id, p.position]))
+  flowNodes.value = flowNodes.value.map((n) => {
+    const pos = byId.get(n.id)
+    return pos ? { ...n, position: pos } : n
   })
 }
 

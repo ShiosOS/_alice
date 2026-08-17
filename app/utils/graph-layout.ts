@@ -76,20 +76,22 @@ function overlaps(a: Rect, b: Rect, gap: number): boolean {
   )
 }
 
+type LaidPosition = { id: string, position: { x: number, y: number } }
+
 /**
  * Push overlapping cards apart until none intersect (with NODE_GAP).
  * Prefer moving along the shallower penetration axis.
  */
-export function resolveOverlaps(
-  nodes: Node[],
+export function resolveOverlaps<T extends LaidPosition>(
+  nodes: T[],
   options?: { fixedIds?: Set<string>, gap?: number, maxPasses?: number },
-): Node[] {
+): T[] {
   const gap = options?.gap ?? NODE_GAP
   const maxPasses = options?.maxPasses ?? 40
   const fixed = options?.fixedIds ?? new Set<string>()
-  const next: Node[] = nodes.map((n) => ({
+  const next = nodes.map((n) => ({
     ...n,
-    position: { ...n.position },
+    position: { x: n.position.x, y: n.position.y },
   }))
 
   for (let pass = 0; pass < maxPasses; pass++) {
@@ -254,7 +256,7 @@ export function applyExpandKeepingDragged(
   })
 
   return {
-    nodes: resolveOverlaps(withDragged, { fixedIds: draggedIds }) as Node<VideoNodeData>[],
+    nodes: resolveOverlaps(withDragged, { fixedIds: draggedIds }),
     edges: nextEdges,
   }
 }
