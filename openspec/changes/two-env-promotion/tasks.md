@@ -17,7 +17,7 @@
 ## 3. GitHub and Railway (dashboard / CLI)
 
 - [ ] 3.1 Disable production autodeploy from `main` (or point it at a not-yet-pushed `production` branch) **before** merging this change if production still tracks `main`
-- [ ] 3.2 Create `origin/production` at the SHA production is currently running (fast-forward only from then on; never commit on it)
+- [x] 3.2 Create `origin/production` at the SHA production is currently running (fast-forward only from then on; never commit on it)
 - [ ] 3.3 Set Railway `web` GitHub trigger: staging ← `main`, production ← `production`; enable Wait for CI on both
 - [ ] 3.4 Set staging `NUXT_EXPAND_DISABLED=false` and staging-only (or quota-capped) YouTube/AI keys; leave production spend keys on production; confirm session passwords differ
 - [ ] 3.5 Delete Railway `feature` environment; remove Cloudflare `alice-feature` CNAME; remove Google OAuth redirect `https://alice-feature.shiosos.dev/auth/google`
@@ -25,6 +25,6 @@
 
 ## 4. Verify
 
-- [ ] 4.1 Run `npm run lint` and `npm run typecheck`
+- [x] 4.1 Run `npm run lint` and `npm run typecheck`
 - [ ] 4.2 After merge to `main`: confirm staging deploys that SHA, production SHA does not change, `GET https://alice-staging.shiosos.dev/health` is 200
 - [ ] 4.3 Smoke staging (checklist + optional `e2e-smoke.mjs`), then FF `production`, confirm production SHA matches and `GET https://alice.shiosos.dev/health` is 200
