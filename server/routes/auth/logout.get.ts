@@ -1,4 +1,4 @@
 export default defineEventHandler(async (event) => {
-  await clearUserSession(event as never)
+  await clearUserSession(event)
   return sendRedirect(event, '/')
 })

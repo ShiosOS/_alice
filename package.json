@@ -25,7 +25,8 @@
     "nuxt-auth-utils": "^0.5.30",
     "postgres": "^3.4.9",
     "vue": "^3.5.41",
-    "vue-router": "^5.2.0"
+    "vue-router": "^5.2.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.9.0",

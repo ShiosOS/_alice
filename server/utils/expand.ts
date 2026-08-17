@@ -1,5 +1,6 @@
 import { and, count, eq, gte } from 'drizzle-orm'
 import type { InferSelectModel } from 'drizzle-orm'
+import { z } from 'zod'
 import { edges, expandLedger, nodes, rabbitHoles, useDb } from '../db'
 import {
   getRelatedCandidates,
@@ -13,6 +14,14 @@ import { formatTopicContext, type TopicContext } from './topic-context'
 export type ForkChoice = { videoId: string, phrase: string }
 type NodeRow = InferSelectModel<typeof nodes>
 type EdgeRow = InferSelectModel<typeof edges>
+
+const forkChoiceSchema = z.object({
+  videoId: z.string().min(1),
+  phrase: z.string().min(1),
+})
+const aiForksSchema = z.object({
+  forks: z.array(forkChoiceSchema),
+})
 
 function expandDisabled() {
   const config = useRuntimeConfig()
@@ -127,10 +136,18 @@ Return ONLY JSON: {"forks":[{"videoId":"...","phrase":"..."}]} using only provid
       },
     })
     const raw = res.choices?.[0]?.message?.content || '{}'
-    const parsed = JSON.parse(raw) as { forks?: ForkChoice[] }
+    let json: unknown
+    try {
+      json = JSON.parse(raw)
+    }
+    catch {
+      throw new Error('AI returned no valid forks')
+    }
+    const parsed = aiForksSchema.safeParse(json)
+    if (!parsed.success) throw new Error('AI returned no valid forks')
     const allowed = new Set(input.candidates.map((c) => c.videoId))
-    const forks = (parsed.forks || [])
-      .filter((f) => f?.videoId && f?.phrase && allowed.has(f.videoId))
+    const forks = parsed.data.forks
+      .filter((f) => allowed.has(f.videoId))
       .slice(0, input.take)
     if (!forks.length) throw new Error('AI returned no valid forks')
     return {

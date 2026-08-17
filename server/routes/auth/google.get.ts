@@ -17,7 +17,7 @@ export default defineOAuthGoogleEventHandler({
         throw createError({ statusCode: 500, statusMessage: 'Could not create user' })
       }
 
-      await setUserSession(event as never, {
+      await setUserSession(event, {
         user: {
           id: record.id,
           email: record.email,
@@ -29,18 +29,18 @@ export default defineOAuthGoogleEventHandler({
       })
 
       if (!record.termsAcceptedAt) {
-        return sendRedirect(event as never, '/terms-accept')
+        return sendRedirect(event, '/terms-accept')
       }
-      return sendRedirect(event as never, '/rabbit-holes')
+      return sendRedirect(event, '/rabbit-holes')
     }
     catch (error) {
       captureServerException(error, { route: '/auth/google' })
-      return sendRedirect(event as never, '/?authError=1')
+      return sendRedirect(event, '/?authError=1')
     }
   },
   onError(event, error) {
     console.error('Google OAuth error', error)
     captureServerException(error, { route: '/auth/google', phase: 'oauth' })
-    return sendRedirect(event as never, '/?authError=1')
+    return sendRedirect(event, '/?authError=1')
   },
 })

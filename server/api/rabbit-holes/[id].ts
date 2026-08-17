@@ -1,9 +1,12 @@
 import { and, eq } from 'drizzle-orm'
+import type { RabbitHoleGraph, RabbitHoleRenameResponse } from '../../../shared/types/rabbit-holes'
+import { renameRabbitHoleBodySchema } from '../../../shared/types/rabbit-holes'
 import { rabbitHoles, useDb } from '../../db'
-import { loadHoleGraph } from '../../utils/rabbit-holes'
+import { loadHoleGraph, toRabbitHoleSummary } from '../../utils/rabbit-holes'
+import { readZodBody } from '../../utils/validate'
 
-export default defineEventHandler(async (event) => {
-  const session = await requireUserSession(event as never)
+export default defineEventHandler(async (event): Promise<RabbitHoleGraph | RabbitHoleRenameResponse | { ok: true }> => {
+  const session = await requireUserSession(event)
   const id = getRouterParam(event, 'id')
   if (!id) throw createError({ statusCode: 400, statusMessage: 'Missing id' })
 
@@ -12,18 +15,15 @@ export default defineEventHandler(async (event) => {
   }
 
   if (event.method === 'PATCH') {
-    const body = await readBody<{ title?: string }>(event)
-    if (!body.title?.trim()) {
-      throw createError({ statusCode: 400, statusMessage: 'Title required' })
-    }
+    const body = await readZodBody(event, renameRabbitHoleBodySchema)
     const db = useDb()
     const [updated] = await db
       .update(rabbitHoles)
-      .set({ title: body.title.trim().slice(0, 200), updatedAt: new Date() })
+      .set({ title: body.title.slice(0, 200), updatedAt: new Date() })
       .where(and(eq(rabbitHoles.id, id), eq(rabbitHoles.userId, session.user.id)))
       .returning()
     if (!updated) throw createError({ statusCode: 404, statusMessage: 'Rabbit Hole not found' })
-    return { rabbitHole: updated }
+    return { rabbitHole: toRabbitHoleSummary(updated) }
   }
 
   if (event.method === 'DELETE') {

@@ -1,9 +1,11 @@
 import { and, eq } from 'drizzle-orm'
+import type { ExpandPatch } from '../../../../../../shared/types/rabbit-holes'
 import { nodes, rabbitHoles, useDb } from '~~/server/db'
 import { expandNode } from '~~/server/utils/expand'
+import { toExpandPatch } from '~~/server/utils/rabbit-holes'
 
-export default defineEventHandler(async (event) => {
-  const session = await requireUserSession(event as never)
+export default defineEventHandler(async (event): Promise<ExpandPatch> => {
+  const session = await requireUserSession(event)
   if (!session.user.termsAccepted) {
     throw createError({ statusCode: 403, statusMessage: 'Accept Terms first' })
   }
@@ -22,10 +24,11 @@ export default defineEventHandler(async (event) => {
   })
   if (!node) throw createError({ statusCode: 404, statusMessage: 'Node not found' })
 
-  return expandNode({
+  const created = await expandNode({
     userId: session.user.id,
     rabbitHoleId: id,
     nodeId,
     take: 3,
   })
+  return toExpandPatch(created)
 })

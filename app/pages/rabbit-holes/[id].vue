@@ -42,6 +42,13 @@
 </template>
 
 <script setup lang="ts">
+import type {
+  ExpandPatch,
+  RabbitHoleGraph,
+  RabbitHoleRenameResponse,
+  WatchResponse,
+} from '#shared/types/rabbit-holes'
+
 const route = useRoute()
 const id = computed(() => String(route.params.id))
 
@@ -53,31 +60,9 @@ if (import.meta.client) {
   })
 }
 
-type Node = {
-  id: string
-  videoId: string
-  title: string
-  channelTitle?: string | null
-  thumbUrl: string | null
-  available: boolean
-}
-type Edge = {
-  id: string
-  fromNodeId: string
-  toNodeId: string
-  phrase: string
-}
-type PathEvent = { nodeId: string, kind: string }
-type HolePayload = {
-  rabbitHole: { id: string, title: string, status: string, seedVideoId: string }
-  nodes: Node[]
-  edges: Edge[]
-  path: PathEvent[]
-}
-
 const pending = ref(true)
 const error = ref('')
-const data = ref<HolePayload | null>(null)
+const data = ref<RabbitHoleGraph | null>(null)
 const busy = ref(false)
 const editing = ref(false)
 const draftTitle = ref('')
@@ -88,7 +73,7 @@ async function load() {
   pending.value = true
   error.value = ''
   try {
-    data.value = await $fetch<HolePayload>(`/api/rabbit-holes/${id.value}`)
+    data.value = await $fetch<RabbitHoleGraph>(`/api/rabbit-holes/${id.value}`)
     draftTitle.value = data.value.rabbitHole.title
   }
   catch (e) {
@@ -111,7 +96,7 @@ async function saveTitle() {
   if (!data.value) return
   busy.value = true
   try {
-    const res = await $fetch<{ rabbitHole: { title: string } }>(`/api/rabbit-holes/${id.value}`, {
+    const res = await $fetch<RabbitHoleRenameResponse>(`/api/rabbit-holes/${id.value}`, {
       method: 'PATCH',
       body: { title: draftTitle.value },
     })
@@ -160,7 +145,7 @@ async function onExpand(nodeId: string) {
   busy.value = true
   error.value = ''
   try {
-    const patch = await $fetch<{ nodes: Node[], edges: Edge[] }>(
+    const patch = await $fetch<ExpandPatch>(
       `/api/rabbit-holes/${id.value}/nodes/${nodeId}/expand`,
       { method: 'POST' },
     )
@@ -184,7 +169,7 @@ async function onWatch(nodeId: string) {
   busy.value = true
   error.value = ''
   try {
-    const res = await $fetch<{ watchUrl: string }>(
+    const res = await $fetch<WatchResponse>(
       `/api/rabbit-holes/${id.value}/nodes/${nodeId}/watch`,
       { method: 'POST' },
     )

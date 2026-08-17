@@ -68,24 +68,14 @@
 </template>
 
 <script setup lang="ts">
-type GNode = {
-  id: string
-  videoId: string
-  title: string
-  channelTitle?: string | null
-  thumbUrl: string | null
-  available: boolean
-}
-type GEdge = {
-  id: string
-  fromNodeId: string
-  toNodeId: string
-  phrase: string
-}
+import type { GraphEdge, GraphNode } from '#shared/types/rabbit-holes'
+
+type LaidNode = GraphNode & { x: number, y: number }
+type LaidEdge = GraphEdge & { x1: number, y1: number, x2: number, y2: number, mx: number, my: number }
 
 const props = defineProps<{
-  nodes: GNode[]
-  edges: GEdge[]
+  nodes: GraphNode[]
+  edges: GraphEdge[]
   pathIds: Set<string>
   seedVideoId: string
   busy?: boolean
@@ -106,6 +96,8 @@ const panning = ref(false)
 const panMoved = ref(false)
 const last = reactive({ x: 0, y: 0 })
 
+const emptyLayout = { nodes: [] as LaidNode[], edges: [] as LaidEdge[] }
+
 const layout = computed(() => {
   const children = new Map<string, string[]>()
   for (const e of props.edges) {
@@ -113,17 +105,18 @@ const layout = computed(() => {
     list.push(e.toNodeId)
     children.set(e.fromNodeId, list)
   }
-  const seed = props.nodes.find((n) => n.videoId === props.seedVideoId) || props.nodes[0]
+  const seed = props.nodes.find((n) => n.videoId === props.seedVideoId) ?? props.nodes[0]
   const pos = new Map<string, { x: number, y: number }>()
   if (!seed) {
-    return { nodes: [] as Array<GNode & { x: number, y: number }>, edges: [] as Array<GEdge & { x1: number, y1: number, x2: number, y2: number, mx: number, my: number }> }
+    return emptyLayout
   }
 
   const depth = new Map<string, number>()
   const queue = [seed.id]
   depth.set(seed.id, 0)
   while (queue.length) {
-    const id = queue.shift()!
+    const id = queue.shift()
+    if (id === undefined) break
     for (const child of children.get(id) || []) {
       if (!depth.has(child)) {
         depth.set(child, (depth.get(id) || 0) + 1)
@@ -150,7 +143,10 @@ const layout = computed(() => {
     if (!pos.has(n.id)) pos.set(n.id, { x: 80, y: 80 + pos.size * 40 })
   }
 
-  const laidNodes = props.nodes.map((n) => ({ ...n, ...pos.get(n.id)! }))
+  const laidNodes = props.nodes.flatMap((n) => {
+    const p = pos.get(n.id)
+    return p ? [{ ...n, ...p }] : []
+  })
   const laidEdges = props.edges.map((e) => {
     const a = pos.get(e.fromNodeId) || { x: 0, y: 0 }
     const b = pos.get(e.toNodeId) || { x: 0, y: 0 }
@@ -204,7 +200,10 @@ function onPanDown(ev: PointerEvent) {
   panMoved.value = false
   last.x = ev.clientX
   last.y = ev.clientY
-  ;(ev.currentTarget as HTMLElement).setPointerCapture(ev.pointerId)
+  const target = ev.currentTarget
+  if (target instanceof HTMLElement) {
+    target.setPointerCapture(ev.pointerId)
+  }
 }
 function onPanMove(ev: PointerEvent) {
   if (!panning.value) return

@@ -13,5 +13,5 @@ export default defineEventHandler(async (event) => {
     (p) => path === p || path.startsWith(`${p}/`),
   )
   if (!needsAuth) return
-  await requireUserSession(event as never)
+  await requireUserSession(event)
 })
