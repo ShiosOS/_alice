@@ -7,10 +7,14 @@ One Railway project (`_alice`) with three Railway environments:
 | Environment | App URL | Purpose |
 | --- | --- | --- |
 | `production` | `https://alice.shiosos.dev` | Live |
-| `staging` | `https://staging.alice.shiosos.dev` | Pre-prod / QA |
-| `feature` | `https://feature.alice.shiosos.dev` | Shared feature sandbox |
+| `staging` | `https://alice-staging.shiosos.dev` | Pre-prod / QA |
+| `feature` | `https://alice-feature.shiosos.dev` | Shared feature sandbox |
+
+Use **sibling** hostnames (`alice-staging`, `alice-feature`), not nested under the `alice` CNAME (`staging.alice…` will NXDOMAIN).
 
 Each environment gets its own service instances (web + Postgres when duplicated). Expand AI is disabled by default on staging/feature (`NUXT_EXPAND_DISABLED=true`) until you turn it on intentionally.
+
+Builder: **Railpack** (not Nixpacks). See `railway.toml`.
 
 Optional later: ephemeral PR envs (`pr-123`) via `railway environment new pr-N --copy feature` in CI.
 
@@ -38,30 +42,32 @@ The script:
 5. Requests custom domains for the three hostnames
 6. Deploys each env (`SKIP_DEPLOY=1` to skip)
 
-`railway.toml` start command: `node .output/server/index.mjs`.
+`railway.toml`: Railpack build, `preDeployCommand` runs `node scripts/db-migrate.mjs`, start is `node .output/server/index.mjs`.
 
 ## Manual follow-ups
 
 1. **Variable references:** On `web` in each env, point `DATABASE_URL` and `NUXT_DATABASE_URL` at the Postgres service’s `DATABASE_URL` (Railway reference variable).
 2. **Secrets:** Set OAuth / YouTube / AI keys on `web` per env (or once in production then copy). Staging/feature can share Google OAuth client if all redirect URIs are registered.
-3. **Migrations:** `railway run -e production -s web -- npm run db:migrate` (repeat for staging/feature), or `db:push` for early envs.
-4. **Postgres backups:** Enable automatic / PITR backups on production (and preferably staging) in the Railway dashboard; confirm restore points once.
-5. **Cloudflare DNS** (`shiosos.dev`):
+3. **Migrations:** Applied automatically on each deploy via `preDeployCommand`. One-off from a machine with TCP proxy: `DATABASE_URL=… npm run db:migrate`.
+4. **Postgres backups:** In Railway → Postgres volume → Backups, enable **Daily** (and Weekly on production). API tokens without backup scope cannot toggle this. Restore: Backups → Restore to new volume / PITR if available; then repoint `DATABASE_URL` and redeploy web.
+5. **Cloudflare DNS** (`shiosos.dev`) — **DNS-only (grey cloud)**:
 
 | Type | Name | Target |
 | --- | --- | --- |
-| CNAME | `alice` | Railway hostname for production |
-| CNAME | `staging.alice` | Railway hostname for staging |
-| CNAME | `feature.alice` | Railway hostname for feature |
+| CNAME | `alice` | Railway custom-domain target for production |
+| CNAME | `alice-staging` | Railway custom-domain target for staging |
+| CNAME | `alice-feature` | Railway custom-domain target for feature |
 
-Use DNS-only (grey cloud) until Railway TLS is happy.
+Orange-cloud proxy causes TLS/403 mismatches with Railway certs.
 
 6. **Google OAuth redirect URIs:**
 
 - `https://alice.shiosos.dev/auth/google`
-- `https://staging.alice.shiosos.dev/auth/google`
-- `https://feature.alice.shiosos.dev/auth/google`
+- `https://alice-staging.shiosos.dev/auth/google`
+- `https://alice-feature.shiosos.dev/auth/google`
 - `http://localhost:3000/auth/google`
+
+7. **Sentry (optional):** set `NUXT_SENTRY_DSN` on web; Expand/bootstrap failures and OAuth DB errors are reported.
 
 ## Day-2 commands
 
@@ -76,6 +82,12 @@ railway variable list --service web --environment feature
 
 Before inviting others:
 
-1. **YouTube Data API:** budget/quota alert in Google Cloud; keep `NUXT_EXPAND_DAILY_BUDGET` low.
-2. **AI provider:** hard monthly spend cap; keep `NUXT_EXPAND_DISABLED=true` as an emergency switch on non-prod.
-3. Railway spend alerts if available.
+1. **YouTube Data API (Google Cloud):**
+   - Enable billing alerts on the GCP project.
+   - Set a daily quota alert below the default 10,000 units.
+   - Keep `NUXT_EXPAND_DAILY_BUDGET` low (default 50 expands/user/day).
+2. **AI provider (OpenAI or compatible):**
+   - Hard monthly spend cap / budget alert in the vendor console.
+   - Keep `NUXT_EXPAND_DISABLED=true` as an emergency switch on non-prod.
+3. **Railway:** workspace spend alerts if available.
+4. Re-check after first week of real Expand traffic; tighten caps before public invite.
