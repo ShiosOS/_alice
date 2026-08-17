@@ -19,7 +19,7 @@ export type PhraseEdgeData = {
 export const NODE_WIDTH = 260
 export const NODE_HEIGHT = 210
 /** Minimum gap between card edges after layout / drag. */
-export const NODE_GAP = 28
+export const NODE_GAP = 96
 
 type Handlers = {
   onExpand: (nodeId: string) => void
@@ -153,10 +153,10 @@ export function layoutWithDagre(
   // nodesep/ranksep are edge-to-edge gaps once width/height are correct
   g.setGraph({
     rankdir: 'TB',
-    nodesep: NODE_GAP + 16,
-    ranksep: NODE_GAP + 36,
-    marginx: 32,
-    marginy: 32,
+    nodesep: NODE_GAP + 48,
+    ranksep: NODE_GAP + 72,
+    marginx: 48,
+    marginy: 48,
   })
 
   for (const node of nodes) {

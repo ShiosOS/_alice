@@ -1,20 +1,5 @@
 <template>
-  <section class="space-y-4">
-    <header class="flex flex-wrap items-center justify-between gap-3">
-      <div>
-        <h1 class="font-display text-3xl text-foreground">Graph canvas demo</h1>
-        <p class="text-sm text-muted-foreground">
-          Fixture map for pan / zoom / drag / reset. Not wired to the API.
-        </p>
-        <p v-if="status" class="mt-1 text-sm text-primary">
-          {{ status }}
-        </p>
-      </div>
-      <Button variant="secondary" type="button" @click="simulateExpand">
-        Simulate Expand on seed
-      </Button>
-    </header>
-
+  <div class="relative h-full min-h-0 w-full">
     <RabbitHoleGraph
       :nodes="nodes"
       :edges="edges"
@@ -23,16 +8,31 @@
       :busy="false"
       @expand="onExpand"
       @watch="onWatch"
-    />
-  </section>
+    >
+      <template #toolbar>
+        <button
+          type="button"
+          class="rounded-md border border-primary/35 bg-[#121820]/85 px-3 py-1.5 font-display text-xs text-primary backdrop-blur hover:bg-primary/10"
+          @click="simulateExpand"
+        >
+          Simulate Expand
+        </button>
+      </template>
+    </RabbitHoleGraph>
+    <p
+      v-if="status"
+      class="pointer-events-none absolute top-4 left-4 z-20 rounded-md border border-primary/30 bg-[#121820]/85 px-3 py-1.5 font-display text-xs text-primary backdrop-blur"
+    >
+      {{ status }}
+    </p>
+  </div>
 </template>
 
 <script setup lang="ts">
 import type { GraphEdge, GraphNode } from '#shared/types/rabbit-holes'
-import { Button } from '@/components/ui/button'
 
 definePageMeta({
-  // Dev harness — no auth gate so theme/canvas can be checked quickly
+  fullBleed: true,
 })
 
 const seedVideoId = 'dQw4w9WgXcQ'
@@ -76,7 +76,6 @@ const edges = ref<GraphEdge[]>([
 ])
 
 const pathIds = ref(new Set<string>(['n0', 'n1']))
-
 const status = ref('')
 
 function onExpand(nodeId: string) {

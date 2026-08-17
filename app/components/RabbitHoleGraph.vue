@@ -1,8 +1,8 @@
 <template>
   <ClientOnly>
-    <div class="relative h-[min(72vh,760px)] min-h-[520px] w-full overflow-hidden rounded-lg border border-primary/20 bg-[#0c1117]">
+    <div class="relative h-full min-h-0 w-full overflow-hidden bg-[#0c1117]">
       <div
-        class="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(900px_500px_at_50%_15%,rgba(42,31,24,0.4),transparent_65%)]"
+        class="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(1200px_700px_at_50%_10%,rgba(42,31,24,0.45),transparent_70%)]"
       />
       <VueFlow
         id="alice-graph"
@@ -10,18 +10,19 @@
         v-model:edges="flowEdges"
         :node-types="nodeTypes"
         :edge-types="edgeTypes"
-        :default-viewport="{ zoom: 0.75 }"
-        :min-zoom="0.3"
+        :default-viewport="{ zoom: 0.7 }"
+        :min-zoom="0.25"
         :max-zoom="1.6"
         :default-edge-options="{ type: 'phrase' }"
         fit-view-on-init
+        :fit-view-options="{ padding: 0.2 }"
         class="absolute inset-0 h-full w-full bg-transparent"
         :elevate-edges-on-select="false"
         @node-click="onNodeClick"
         @pane-click="focusedId = null"
         @node-drag-stop="onNodeDragStop"
       >
-        <Panel position="bottom-right" class="mb-4 mr-4 flex items-center gap-1 rounded-md border border-primary/40 bg-[#121820]/90 px-1 py-1 text-primary shadow-lg backdrop-blur">
+        <Panel position="bottom-right" class="mb-5 mr-5 flex items-center gap-1 rounded-md border border-primary/40 bg-[#121820]/90 px-1 py-1 text-primary shadow-lg backdrop-blur">
           <button
             type="button"
             class="flex h-8 w-8 items-center justify-center rounded text-lg leading-none hover:bg-primary/10"
@@ -42,7 +43,8 @@
             +
           </button>
         </Panel>
-        <Panel position="top-right" class="mt-3 mr-3 flex gap-2">
+        <Panel position="top-right" class="mt-4 mr-4 flex gap-2">
+          <slot name="toolbar" />
           <button
             type="button"
             class="rounded-md border border-primary/35 bg-[#121820]/85 px-3 py-1.5 font-display text-xs text-primary backdrop-blur hover:bg-primary/10"
@@ -98,7 +100,9 @@
       </aside>
     </div>
     <template #fallback>
-      <p class="text-muted-foreground">Loading map…</p>
+      <div class="flex h-full items-center justify-center text-muted-foreground">
+        Loading map…
+      </div>
     </template>
   </ClientOnly>
 </template>

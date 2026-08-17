@@ -1,6 +1,11 @@
 <template>
-  <div class="flex min-h-screen flex-col">
-    <header class="flex items-center justify-between gap-4 border-b border-border px-5 py-4">
+  <div
+    class="flex flex-col"
+    :class="fullBleed ? 'h-dvh overflow-hidden' : 'min-h-screen'"
+  >
+    <header
+      class="z-30 flex shrink-0 items-center justify-between gap-4 border-b border-border/80 bg-[#0f1419]/90 px-5 py-4 backdrop-blur"
+    >
       <NuxtLink
         to="/"
         class="font-display text-2xl tracking-wide text-primary transition-opacity hover:opacity-90"
@@ -33,11 +38,18 @@
       </nav>
     </header>
 
-    <main class="mx-auto w-full max-w-[1100px] flex-1 px-5 py-6 pb-8">
+    <main
+      :class="fullBleed
+        ? 'relative min-h-0 w-full flex-1 p-0'
+        : 'mx-auto w-full max-w-[1100px] flex-1 px-5 py-6 pb-8'"
+    >
       <NuxtPage />
     </main>
 
-    <footer class="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-border px-5 py-4 text-sm text-muted-foreground">
+    <footer
+      v-if="!fullBleed"
+      class="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-border px-5 py-4 text-sm text-muted-foreground"
+    >
       <span>Wonderland map for YouTube</span>
       <span class="flex gap-2">
         <NuxtLink to="/privacy" class="hover:text-foreground">Privacy</NuxtLink>
@@ -65,5 +77,7 @@ useHead({
   ],
 })
 
+const route = useRoute()
+const fullBleed = computed(() => route.meta.fullBleed === true)
 const { loggedIn } = useUserSession()
 </script>
