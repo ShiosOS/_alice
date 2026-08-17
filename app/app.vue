@@ -28,11 +28,18 @@
           >
             Account
           </NuxtLink>
-          <Button variant="ghost" size="sm" as-child>
+          <Button
+            variant="ghost"
+            size="sm"
+            as-child
+          >
             <a href="/auth/logout">Sign out</a>
           </Button>
         </template>
-        <Button v-else as-child>
+        <Button
+          v-else
+          as-child
+        >
           <a href="/auth/google">Sign in with Google</a>
         </Button>
       </nav>
@@ -52,11 +59,20 @@
     >
       <span>Wonderland map for YouTube</span>
       <span class="flex gap-2">
-        <NuxtLink to="/privacy" class="hover:text-foreground">Privacy</NuxtLink>
+        <NuxtLink
+          to="/privacy"
+          class="hover:text-foreground"
+        >Privacy</NuxtLink>
         <span aria-hidden="true">·</span>
-        <NuxtLink to="/terms" class="hover:text-foreground">Terms</NuxtLink>
+        <NuxtLink
+          to="/terms"
+          class="hover:text-foreground"
+        >Terms</NuxtLink>
         <span aria-hidden="true">·</span>
-        <NuxtLink to="/about" class="hover:text-foreground">About</NuxtLink>
+        <NuxtLink
+          to="/about"
+          class="hover:text-foreground"
+        >About</NuxtLink>
       </span>
     </footer>
 

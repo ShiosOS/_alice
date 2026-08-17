@@ -38,7 +38,7 @@ export function fallbackTopicFromMeta(meta: {
     [meta.title, channel, ...tags.slice(0, 3)].filter(Boolean).join(' '),
     [...tags.slice(0, 4), channel].filter(Boolean).join(' '),
     [domain, ...tags.slice(0, 2)].filter(Boolean).join(' '),
-  ].map((q) => q.replace(/\s+/g, ' ').trim()).filter(Boolean).slice(0, 3)
+  ].map(q => q.replace(/\s+/g, ' ').trim()).filter(Boolean).slice(0, 3)
 
   return {
     domain,
@@ -99,7 +99,7 @@ domain must describe the intellectual topic, never a hostname or brand site alon
     }>(`${baseUrl}/chat/completions`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
         'HTTP-Referer': process.env.NUXT_PUBLIC_APP_URL || 'https://alice.shiosos.dev',
         'X-Title': 'alice-topic',
@@ -118,7 +118,7 @@ domain must describe the intellectual topic, never a hostname or brand site alon
     const raw = res.choices?.[0]?.message?.content || '{}'
     const parsed = JSON.parse(raw) as Partial<TopicContext>
     const searchQueries = (parsed.searchQueries || [])
-      .map((q) => String(q || '').trim())
+      .map(q => String(q || '').trim())
       .filter(Boolean)
       .slice(0, 4)
     const topic: TopicContext = {

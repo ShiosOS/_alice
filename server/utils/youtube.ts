@@ -11,21 +11,21 @@ const YT_TTL_MS = 30 * 24 * 60 * 60 * 1000
 const CANDIDATE_STRATEGY = 'topic-v3'
 
 const YT_CATEGORIES: Record<string, string> = {
-  '1': 'Film & Animation',
-  '2': 'Autos & Vehicles',
-  '10': 'Music',
-  '15': 'Pets & Animals',
-  '17': 'Sports',
-  '19': 'Travel & Events',
-  '20': 'Gaming',
-  '22': 'People & Blogs',
-  '23': 'Comedy',
-  '24': 'Entertainment',
-  '25': 'News & Politics',
-  '26': 'Howto & Style',
-  '27': 'Education',
-  '28': 'Science & Technology',
-  '29': 'Nonprofits & Activism',
+  1: 'Film & Animation',
+  2: 'Autos & Vehicles',
+  10: 'Music',
+  15: 'Pets & Animals',
+  17: 'Sports',
+  19: 'Travel & Events',
+  20: 'Gaming',
+  22: 'People & Blogs',
+  23: 'Comedy',
+  24: 'Entertainment',
+  25: 'News & Politics',
+  26: 'Howto & Style',
+  27: 'Education',
+  28: 'Science & Technology',
+  29: 'Nonprofits & Activism',
 }
 
 export type YoutubeVideoMeta = {
@@ -75,22 +75,22 @@ export { buildTopicSearchQuery, descriptionTopicHints } from '../lib/youtube-top
 
 export function parseYoutubeVideoId(input: string): string | null {
   const trimmed = input.trim()
-  if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) return trimmed
+  if (/^[\w-]{11}$/.test(trimmed)) return trimmed
   try {
     const url = new URL(trimmed)
     const host = url.hostname.replace(/^www\./, '')
     if (host === 'youtu.be') {
       const id = url.pathname.split('/').filter(Boolean)[0]
-      return id && /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : null
+      return id && /^[\w-]{11}$/.test(id) ? id : null
     }
     if (host === 'youtube.com' || host === 'm.youtube.com' || host === 'music.youtube.com') {
       if (url.pathname === '/watch') {
         const v = url.searchParams.get('v')
-        return v && /^[a-zA-Z0-9_-]{11}$/.test(v) ? v : null
+        return v && /^[\w-]{11}$/.test(v) ? v : null
       }
       const parts = url.pathname.split('/').filter(Boolean)
       if ((parts[0] === 'embed' || parts[0] === 'shorts' || parts[0] === 'live') && parts[1]) {
-        return /^[a-zA-Z0-9_-]{11}$/.test(parts[1]) ? parts[1] : null
+        return /^[\w-]{11}$/.test(parts[1]) ? parts[1] : null
       }
     }
   }
@@ -248,7 +248,7 @@ async function searchVideos(q: string, excludeId: string, maxResults = 10): Prom
 async function enrichCandidates(candidates: YoutubeCandidate[]): Promise<YoutubeCandidate[]> {
   if (!candidates.length) return candidates
   const key = apiKey()
-  const ids = candidates.map((c) => c.videoId).slice(0, 20)
+  const ids = candidates.map(c => c.videoId).slice(0, 20)
   const data = await $fetch<{
     items?: Array<{
       id: string
@@ -268,7 +268,7 @@ async function enrichCandidates(candidates: YoutubeCandidate[]): Promise<Youtube
       key,
     },
   })
-  const byId = new Map((data.items || []).map((item) => [item.id, item]))
+  const byId = new Map((data.items || []).map(item => [item.id, item]))
   return candidates.map((c) => {
     const item = byId.get(c.videoId)
     if (!item?.snippet) return c

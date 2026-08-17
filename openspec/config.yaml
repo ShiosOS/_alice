@@ -1,32 +1,51 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+# Project context — shown to AI when creating artifacts.
+context: |
+  Tech stack: Nuxt 4, Vue 3, TypeScript (strict + noUncheckedIndexedAccess), Nitro, Drizzle/Postgres, Zod, nuxt-auth-utils, Tailwind v4 + shadcn-vue, Vue Flow.
+  Domain: _alice — Wonderland map for YouTube Rabbit Holes (intentional forks, Path, Expand).
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+  ## Layers
+  - `server/api` + `server/routes`: thin handlers (validate → call service → map).
+  - `server/services/<domain>/`: Expand, YouTube, Rabbit Holes, auth account logic.
+  - `server/utils/`: cross-cutting only (log, validate, session, sentry).
+  - `server/lib/`: pure helpers with no Nuxt runtime (unit-testable).
+  - `app/pages`: orchestration; `app/middleware` for auth/terms; `app/composables` for shared client logic.
+  - `app/components/ui`: shadcn; product components consume tokens/components.
 
-# Per-operation guidance (optional)
-# Add advisory guidance for how apply and archive work should be conducted.
-# This is separate from artifact rules above.
-# Example:
-#   operations:
-#     apply:
-#       guidance:
-#         - Keep test summaries concise
-#     archive:
-#       guidance:
-#         - Summarize the archive outcome before finishing
+  ## Naming
+  Prefer domain intent (`holeGraph`, `isMutating`, `deleteRabbitHole`) over opaque names (`data`, `busy`, `remove`).
+
+  ## Readability
+  Prefer more obvious lines over clever density. Name intermediates when a chain has more than one meaningful step. Early returns; no nested ternaries. Clever one-liners only when locally obvious.
+
+  ## Literals & regex
+  Domain regex/numbers/strings (YouTube id shape, expand fan-out, title caps, repeated errors) → named constants + one-line why. Design colors → CSS tokens only (no raw hex for danger/surfaces/accents in pages). Trivial single-use trim patterns may stay inline. Use shared domain enums from `shared/types`.
+
+  ## UI consumption
+  Pages use layout utilities + shared Button/Input/tokens. Do not redefine button/error/prose visuals per page or invent long utility soup for brand chrome. Wonderland ink tokens live in `app/assets/css/tailwind.css`.
+
+  ## Lint / format
+  ESLint via `@nuxt/eslint` with stylistic + tooling + formatters. Frozen style: 2-space indent, single quotes, no semicolons. CI runs `lint`, `typecheck`, and tests.
+
+  ## Tests
+  Vitest unit (pure domain, no live YT/AI), integration (DB + mocked providers), thin e2e in PR CI. Staging `e2e-smoke.mjs` is promote-only. High coverage on `server/services`, `shared`, `server/lib`; no vanity page coverage.
+
+# Per-artifact rules
+rules:
+  proposal:
+    - Keep proposals under ~500 words when practical
+    - Include Non-goals in What Changes or Impact when scope could sprawl
+  tasks:
+    - Prefer small, verifiable checkboxes ordered by dependency
+    - Separate mechanical lint autofix from structural refactors
+
+operations:
+  apply:
+    guidance:
+      - Prefer readability over cleverness when refactoring
+      - Do not rename public API routes or change DB schema in craft work
+      - Keep staging smoke as promote gate, not PR CI
+  archive:
+    guidance:
+      - Summarize craft + testing outcomes briefly before finishing

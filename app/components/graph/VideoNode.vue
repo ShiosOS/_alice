@@ -54,7 +54,10 @@ const n = computed(() => props.data.graphNode)
       <p class="line-clamp-2 font-display text-[13px] leading-snug text-[#f0e6d4]">
         {{ n.title }}
       </p>
-      <p v-if="n.channelTitle" class="truncate text-[11px] text-muted-foreground">
+      <p
+        v-if="n.channelTitle"
+        class="truncate text-[11px] text-muted-foreground"
+      >
         {{ n.channelTitle }}
       </p>
     </div>

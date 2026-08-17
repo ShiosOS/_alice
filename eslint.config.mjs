@@ -14,6 +14,9 @@ export default withNuxt(
       '@typescript-eslint/no-unsafe-assignment': 'error',
       '@typescript-eslint/no-unsafe-member-access': 'error',
       '@typescript-eslint/no-unnecessary-type-assertion': 'error',
+      'no-nested-ternary': 'error',
+      'complexity': ['error', { max: 25 }],
+      'max-depth': ['error', { max: 5 }],
     },
   },
   {

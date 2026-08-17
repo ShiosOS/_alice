@@ -17,6 +17,12 @@ npm install
 npm run dev
 ```
 
+```bash
+npm run lint        # check
+npm run lint:fix   # autofix style (also: npm run format)
+npm run typecheck
+```
+
 See `docs/deploy.md` for Railway + Cloudflare and `docs/smoke.md` before promoting.
 
-OpenSpec: `openspec/`.
+OpenSpec: `openspec/` (active craft plan: `openspec/changes/code-craft-standards/`).

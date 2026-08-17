@@ -22,7 +22,10 @@
         @pane-click="focusedId = null"
         @node-drag-stop="onNodeDragStop"
       >
-        <Panel position="bottom-right" class="mb-5 mr-5 flex items-center gap-1 rounded-md border border-primary/40 bg-[#121820]/90 px-1 py-1 text-primary shadow-lg backdrop-blur">
+        <Panel
+          position="bottom-right"
+          class="mb-5 mr-5 flex items-center gap-1 rounded-md border border-primary/40 bg-[#121820]/90 px-1 py-1 text-primary shadow-lg backdrop-blur"
+        >
           <button
             type="button"
             class="flex h-8 w-8 items-center justify-center rounded text-lg leading-none hover:bg-primary/10"
@@ -43,7 +46,10 @@
             +
           </button>
         </Panel>
-        <Panel position="top-right" class="mt-4 mr-4 flex gap-2">
+        <Panel
+          position="top-right"
+          class="mt-4 mr-4 flex gap-2"
+        >
           <slot name="toolbar" />
           <button
             type="button"
@@ -72,10 +78,16 @@
             <h2 class="font-display text-base leading-snug text-[#f0e6d4]">
               {{ focused.title }}
             </h2>
-            <p v-if="focused.channelTitle" class="mt-0.5 truncate text-xs text-muted-foreground">
+            <p
+              v-if="focused.channelTitle"
+              class="mt-0.5 truncate text-xs text-muted-foreground"
+            >
               {{ focused.channelTitle }}
             </p>
-            <p v-if="!focused.available" class="mt-1 text-xs text-destructive">
+            <p
+              v-if="!focused.available"
+              class="mt-1 text-xs text-destructive"
+            >
               Unavailable on YouTube
             </p>
           </div>
@@ -159,7 +171,7 @@ const focusedId = ref<string | null>(null)
 const skipNextSync = ref(false)
 
 const focused = computed(
-  () => props.nodes.find((n) => n.id === focusedId.value) || null,
+  () => props.nodes.find(n => n.id === focusedId.value) || null,
 )
 
 function rebuildFromProps(preserveDragged: boolean) {
@@ -198,8 +210,8 @@ function rebuildFromProps(preserveDragged: boolean) {
 
 watch(
   () => ({
-    nodeKey: props.nodes.map((n) => n.id).join('|'),
-    edgeKey: props.edges.map((e) => e.id).join('|'),
+    nodeKey: props.nodes.map(n => n.id).join('|'),
+    edgeKey: props.edges.map(e => e.id).join('|'),
     pathKey: [...props.pathIds].sort().join('|'),
     busy: !!props.busy,
     seedVideoId: props.seedVideoId,
@@ -210,8 +222,8 @@ watch(
       return
     }
     rebuildFromProps(true)
-    if (!focusedId.value || !props.nodes.some((n) => n.id === focusedId.value)) {
-      focusedId.value = props.nodes.find((n) => n.videoId === props.seedVideoId)?.id
+    if (!focusedId.value || !props.nodes.some(n => n.id === focusedId.value)) {
+      focusedId.value = props.nodes.find(n => n.videoId === props.seedVideoId)?.id
         || props.nodes[0]?.id
         || null
     }
@@ -233,7 +245,7 @@ function onNodeDragStop(ev: NodeDragEvent) {
     input.push({ id: n.id, position: { x: n.position.x, y: n.position.y } })
   }
   const positions = resolveOverlaps(input, { fixedIds: new Set([ev.node.id]) })
-  const byId = new Map(positions.map((p) => [p.id, p.position]))
+  const byId = new Map(positions.map(p => [p.id, p.position]))
   for (const n of flowNodes.value) {
     const pos = byId.get(n.id)
     if (pos) {

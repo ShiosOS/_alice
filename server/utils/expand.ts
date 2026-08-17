@@ -10,7 +10,6 @@ import {
 } from './youtube'
 import { formatTopicContext, type TopicContext } from './topic-context'
 
-
 export type ForkChoice = { videoId: string, phrase: string }
 type NodeRow = InferSelectModel<typeof nodes>
 type EdgeRow = InferSelectModel<typeof edges>
@@ -122,7 +121,7 @@ Return ONLY JSON: {"forks":[{"videoId":"...","phrase":"..."}]} using only provid
     }>(`${baseUrl}/chat/completions`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: {
@@ -145,9 +144,9 @@ Return ONLY JSON: {"forks":[{"videoId":"...","phrase":"..."}]} using only provid
     }
     const parsed = aiForksSchema.safeParse(json)
     if (!parsed.success) throw new Error('AI returned no valid forks')
-    const allowed = new Set(input.candidates.map((c) => c.videoId))
+    const allowed = new Set(input.candidates.map(c => c.videoId))
     const forks = parsed.data.forks
-      .filter((f) => allowed.has(f.videoId))
+      .filter(f => allowed.has(f.videoId))
       .slice(0, input.take)
     if (!forks.length) throw new Error('AI returned no valid forks')
     return {
@@ -196,7 +195,7 @@ export async function expandNode(opts: {
   const existing = await db.query.nodes.findMany({
     where: eq(nodes.rabbitHoleId, opts.rabbitHoleId),
   })
-  const existingIds = new Set(existing.map((n) => n.videoId))
+  const existingIds = new Set(existing.map(n => n.videoId))
 
   const seedVideoId = seed?.videoId || hole.seedVideoId
   const isSeedFocus = focus.videoId === seedVideoId
@@ -219,7 +218,7 @@ export async function expandNode(opts: {
     channelTitle: seedMeta.channelTitle || seed?.channelTitle || null,
   }
 
-  const candidates = pack.candidates.filter((c) => !existingIds.has(c.videoId) && c.available)
+  const candidates = pack.candidates.filter(c => !existingIds.has(c.videoId) && c.available)
 
   if (!candidates.length) {
     await db.insert(expandLedger).values({
@@ -260,7 +259,7 @@ export async function expandNode(opts: {
     throw createError({ statusCode: 502, statusMessage: 'Could not generate forks. Try again.' })
   }
 
-  const byId = new Map(candidates.map((c) => [c.videoId, c]))
+  const byId = new Map(candidates.map(c => [c.videoId, c]))
   const createdNodes: NodeRow[] = []
   const createdEdges: EdgeRow[] = []
 

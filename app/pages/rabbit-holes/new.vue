@@ -5,21 +5,49 @@
     <form @submit.prevent="create">
       <label>
         YouTube URL
-        <input v-model="url" type="url" required placeholder="https://www.youtube.com/watch?v=…">
+        <input
+          v-model="url"
+          type="url"
+          required
+          placeholder="https://www.youtube.com/watch?v=…"
+        >
       </label>
       <label>
         Title (optional)
-        <input v-model="title" type="text" placeholder="Defaults to the video title">
+        <input
+          v-model="title"
+          type="text"
+          placeholder="Defaults to the video title"
+        >
       </label>
-      <button type="submit" :disabled="busy">
+      <button
+        type="submit"
+        :disabled="busy"
+      >
         {{ busy ? 'Growing the first graph…' : 'Start Rabbit Hole' }}
       </button>
     </form>
-    <p v-if="status" class="status">{{ status }}</p>
-    <p v-if="error" class="error">{{ error }}</p>
+    <p
+      v-if="status"
+      class="status"
+    >
+      {{ status }}
+    </p>
+    <p
+      v-if="error"
+      class="error"
+    >
+      {{ error }}
+    </p>
     <p v-if="incompleteId">
       Bootstrap incomplete.
-      <button type="button" :disabled="busy" @click="retry(incompleteId)">Retry bootstrap</button>
+      <button
+        type="button"
+        :disabled="busy"
+        @click="retry(incompleteId)"
+      >
+        Retry bootstrap
+      </button>
     </p>
   </section>
 </template>

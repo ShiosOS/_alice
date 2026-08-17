@@ -1,11 +1,11 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Source Sans 3", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Libre Baskerville", "Iowan Old Style", Palatino, Georgia, serif;
+  --font-sans: 'Source Sans 3', 'Segoe UI', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Libre Baskerville', 'Iowan Old Style', Palatino, Georgia, serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

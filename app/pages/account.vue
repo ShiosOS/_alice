@@ -1,13 +1,21 @@
 <template>
   <section class="max-w-lg space-y-6">
-    <h1 class="font-display text-3xl text-foreground">Account</h1>
-    <p v-if="user" class="text-muted-foreground">
+    <h1 class="font-display text-3xl text-foreground">
+      Account
+    </h1>
+    <p
+      v-if="user"
+      class="text-muted-foreground"
+    >
       Signed in as <span class="text-foreground">{{ user.email }}</span>
     </p>
 
     <AlertDialog>
       <AlertDialogTrigger as-child>
-        <Button variant="destructive" :disabled="busy">
+        <Button
+          variant="destructive"
+          :disabled="busy"
+        >
           {{ busy ? 'Deleting…' : 'Delete account' }}
         </Button>
       </AlertDialogTrigger>
@@ -31,7 +39,12 @@
       </AlertDialogContent>
     </AlertDialog>
 
-    <p v-if="error" class="text-sm text-destructive">{{ error }}</p>
+    <p
+      v-if="error"
+      class="text-sm text-destructive"
+    >
+      {{ error }}
+    </p>
   </section>
 </template>
 

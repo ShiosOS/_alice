@@ -39,11 +39,11 @@ export function buildTopicSearchQuery(meta: {
   if (title) parts.push(title)
   if (titleGeneric && channel) parts.push(channel)
   for (const t of tags) {
-    if (t && !parts.some((p) => p.toLowerCase().includes(t.toLowerCase()))) parts.push(t)
+    if (t && !parts.some(p => p.toLowerCase().includes(t.toLowerCase()))) parts.push(t)
   }
   if (titleGeneric || tags.length === 0) {
     for (const h of hints) {
-      if (!parts.some((p) => p.toLowerCase().includes(h.toLowerCase()))) parts.push(h)
+      if (!parts.some(p => p.toLowerCase().includes(h.toLowerCase()))) parts.push(h)
     }
   }
   return parts.join(' ').replace(/\s+/g, ' ').trim().slice(0, 100) || title || 'video'

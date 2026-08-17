@@ -1,16 +1,32 @@
 <template>
   <section class="max-w-lg space-y-5">
-    <h1 class="font-display text-3xl text-foreground">Accept Terms</h1>
+    <h1 class="font-display text-3xl text-foreground">
+      Accept Terms
+    </h1>
     <p class="leading-relaxed text-muted-foreground">
       Before using Rabbit Holes, please accept the
-      <NuxtLink to="/terms" class="text-primary underline underline-offset-4">Terms of Use</NuxtLink>
+      <NuxtLink
+        to="/terms"
+        class="text-primary underline underline-offset-4"
+      >Terms of Use</NuxtLink>
       and review the
-      <NuxtLink to="/privacy" class="text-primary underline underline-offset-4">Privacy Policy</NuxtLink>.
+      <NuxtLink
+        to="/privacy"
+        class="text-primary underline underline-offset-4"
+      >Privacy Policy</NuxtLink>.
     </p>
-    <Button :disabled="busy" @click="accept">
+    <Button
+      :disabled="busy"
+      @click="accept"
+    >
       {{ busy ? 'Saving…' : 'I accept the Terms' }}
     </Button>
-    <p v-if="error" class="text-sm text-destructive">{{ error }}</p>
+    <p
+      v-if="error"
+      class="text-sm text-destructive"
+    >
+      {{ error }}
+    </p>
   </section>
 </template>
 

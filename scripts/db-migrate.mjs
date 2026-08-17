@@ -16,7 +16,7 @@ if (!url) {
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', 'server', 'db', 'migrations')
 const files = readdirSync(root)
-  .filter((f) => f.endsWith('.sql'))
+  .filter(f => f.endsWith('.sql'))
   .sort()
 
 const sql = postgres(url, { max: 1, ssl: url.includes('localhost') ? false : 'prefer' })
@@ -31,7 +31,7 @@ try {
   `)
 
   const applied = new Set(
-    (await sql`select filename from "__alice_migrations"`).map((r) => r.filename),
+    (await sql`select filename from "__alice_migrations"`).map(r => r.filename),
   )
 
   for (const file of files) {

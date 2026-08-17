@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     '/api/auth/accept-terms',
   ]
   const needsAuth = protectedPrefixes.some(
-    (p) => path === p || path.startsWith(`${p}/`),
+    p => path === p || path.startsWith(`${p}/`),
   )
   if (!needsAuth) return
   await requireSession(event)

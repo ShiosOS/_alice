@@ -78,8 +78,12 @@ try {
     })
     const text = await res.text()
     let body
-    try { body = JSON.parse(text) }
-    catch { body = text }
+    try {
+      body = JSON.parse(text)
+    }
+    catch {
+      body = text
+    }
     return { status: res.status, body }
   }
 
@@ -107,7 +111,7 @@ try {
 
   // Prefer a non-seed frontier node for expand
   const seedVideoId = created.body.rabbitHole.seedVideoId
-  let expandTarget = nodes.find((n) => n.videoId !== seedVideoId) || nodes[0]
+  let expandTarget = nodes.find(n => n.videoId !== seedVideoId) || nodes[0]
   assert(expandTarget, 'no expand target')
 
   console.log('4) POST expand on', expandTarget.id)
@@ -121,8 +125,8 @@ try {
   assert(newEdges.length >= 1, 'expand returned no new edges')
 
   // Grow toward ~10 if bootstrap undershot
-  let totalNodes = nodes.length + newNodes.filter((n) => !nodes.some((o) => o.id === n.id)).length
-  const frontier = [...nodes, ...newNodes].filter((n) => n.videoId !== seedVideoId)
+  let totalNodes = nodes.length + newNodes.filter(n => !nodes.some(o => o.id === n.id)).length
+  const frontier = [...nodes, ...newNodes].filter(n => n.videoId !== seedVideoId)
   for (const n of frontier) {
     if (totalNodes >= 10) break
     if (n.id === expandTarget.id) continue
@@ -149,7 +153,7 @@ try {
   assert(reopen.status === 200, `reopen failed: ${reopen.status}`)
   assert((reopen.body?.nodes || []).length >= nodes.length, 'reopen lost nodes')
   const path = reopen.body?.path || []
-  assert(path.some((p) => p.nodeId === expandTarget.id), 'path missing visited node')
+  assert(path.some(p => p.nodeId === expandTarget.id), 'path missing visited node')
 
   console.log('7) public policy pages')
   for (const path of ['/privacy', '/terms', '/about']) {

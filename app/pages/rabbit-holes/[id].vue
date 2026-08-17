@@ -1,9 +1,15 @@
 <template>
   <div class="relative h-full min-h-0 w-full">
-    <p v-if="pending" class="absolute inset-0 z-10 flex items-center justify-center text-muted-foreground">
+    <p
+      v-if="pending"
+      class="absolute inset-0 z-10 flex items-center justify-center text-muted-foreground"
+    >
       Loading…
     </p>
-    <p v-else-if="error" class="absolute inset-0 z-10 flex items-center justify-center text-destructive">
+    <p
+      v-else-if="error"
+      class="absolute inset-0 z-10 flex items-center justify-center text-destructive"
+    >
       {{ error }}
     </p>
     <template v-else-if="data">
@@ -16,7 +22,10 @@
               class="min-w-48 flex-1 rounded border border-border bg-[#0c1117] px-2 py-1 font-display text-lg text-foreground"
               @keyup.enter="saveTitle"
             >
-            <h1 v-else class="font-display text-xl text-[#f0e6d4]">
+            <h1
+              v-else
+              class="font-display text-xl text-[#f0e6d4]"
+            >
               {{ data.rabbitHole.title }}
             </h1>
             <button
@@ -104,7 +113,7 @@ const busy = ref(false)
 const editing = ref(false)
 const draftTitle = ref('')
 
-const pathIds = computed(() => new Set((data.value?.path || []).map((p) => p.nodeId)))
+const pathIds = computed(() => new Set((data.value?.path || []).map(p => p.nodeId)))
 
 async function load() {
   pending.value = true
@@ -187,10 +196,10 @@ async function onExpand(nodeId: string) {
       { method: 'POST' },
     )
     if (!data.value) return
-    const nodeMap = new Map(data.value.nodes.map((n) => [n.id, n]))
+    const nodeMap = new Map(data.value.nodes.map(n => [n.id, n]))
     for (const n of patch.nodes) nodeMap.set(n.id, n)
     data.value.nodes = [...nodeMap.values()]
-    const edgeMap = new Map(data.value.edges.map((e) => [e.id, e]))
+    const edgeMap = new Map(data.value.edges.map(e => [e.id, e]))
     for (const e of patch.edges) edgeMap.set(e.id, e)
     data.value.edges = [...edgeMap.values()]
   }
@@ -210,7 +219,7 @@ async function onWatch(nodeId: string) {
       `/api/rabbit-holes/${id.value}/nodes/${nodeId}/watch`,
       { method: 'POST' },
     )
-    if (data.value && !data.value.path.some((p) => p.nodeId === nodeId && p.kind === 'visited')) {
+    if (data.value && !data.value.path.some(p => p.nodeId === nodeId && p.kind === 'visited')) {
       data.value.path = [...data.value.path, {
         id: `local-${nodeId}`,
         rabbitHoleId: data.value.rabbitHole.id,
