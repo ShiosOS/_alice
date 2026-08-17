@@ -1,0 +1,28 @@
+- generic [ref=f4e3]:
+  - banner [ref=f4e4]:
+    - link "_alice" [ref=f4e5] [cursor=pointer]:
+      - /url: /
+    - navigation [ref=f4e6]:
+      - link "Sign in with Google" [ref=f4e7] [cursor=pointer]:
+        - /url: /auth/google
+  - main [ref=f4e8]:
+    - generic [ref=f4e9]:
+      - generic [ref=f4e10]:
+        - generic [ref=f4e11]:
+          - heading "Graph canvas demo" [level=1] [ref=f4e12]
+          - paragraph [ref=f4e13]: Fixture map for pan / zoom / drag / reset. Not wired to the API.
+        - button "Simulate Expand on seed" [ref=f4e14]
+      - paragraph [ref=f4e15]: Loading map…
+  - contentinfo [ref=f4e16]:
+    - generic [ref=f4e17]: Wonderland map for YouTube
+    - generic [ref=f4e18]:
+      - link "Privacy" [ref=f4e19] [cursor=pointer]:
+        - /url: /privacy
+      - generic [ref=f4e20]: ·
+      - link "Terms" [ref=f4e21] [cursor=pointer]:
+        - /url: /terms
+      - generic [ref=f4e22]: ·
+      - link "About" [ref=f4e23] [cursor=pointer]:
+        - /url: /about
+  - region "Notifications alt+T":
+    - list

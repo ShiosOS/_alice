@@ -33,7 +33,7 @@ definePageMeta({
   // Dev harness — no auth gate so theme/canvas can be checked quickly
 })
 
-const seedVideoId = 'seedvid'
+const seedVideoId = 'dQw4w9WgXcQ'
 const now = new Date().toISOString()
 
 function node(
@@ -56,12 +56,12 @@ function node(
 
 const nodes = ref<GraphNode[]>([
   node('n0', seedVideoId, 'Down the rabbit hole: empires', 'Historia'),
-  node('n1', 'dQw4w9WgXcQ', 'The Golden Age of Athens', 'Historia'),
-  node('n2', 'jNQXAC9IVRw', 'Caesar: Politics and Power', 'Historia'),
-  node('n3', '9bZkp7q19f0', 'Why Empires Fall', 'Historia'),
-  node('n4', 'fJ9rUzIMcZQ', 'Roman Culture That Shaped the West', 'Historia'),
-  node('n5', 'kJQP7kiw5Fk', 'The Fall of the Mayan Empire', 'Historia'),
-  node('n6', 'OPf0YbXqDm0', 'Modern Parallels', 'Historia'),
+  node('n1', 'jNQXAC9IVRw', 'The Golden Age of Athens', 'Historia'),
+  node('n2', '9bZkp7q19f0', 'Caesar: Politics and Power', 'Historia'),
+  node('n3', 'fJ9rUzIMcZQ', 'Why Empires Fall', 'Historia'),
+  node('n4', 'kJQP7kiw5Fk', 'Roman Culture That Shaped the West', 'Historia'),
+  node('n5', 'OPf0YbXqDm0', 'The Fall of the Mayan Empire', 'Historia'),
+  node('n6', 'ZZ5LpwO-An4', 'Modern Parallels', 'Historia'),
 ])
 
 const edges = ref<GraphEdge[]>([
@@ -86,9 +86,10 @@ function onWatch(nodeId: string) {
 
 function simulateExpand() {
   const id = `n${nodes.value.length}`
+  // Reuse a known public thumb so the demo doesn't 404
   nodes.value = [
     ...nodes.value,
-    node(id, `extra${id}`, `New fork ${id}`, 'Historia'),
+    node(id, 'ZZ5LpwO-An4', `New fork ${id}`, 'Historia'),
   ]
   edges.value = [
     ...edges.value,

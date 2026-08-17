@@ -1,0 +1,134 @@
+- generic [active] [ref=f3e1]:
+  - generic [ref=f3e3]:
+    - banner [ref=f3e4]:
+      - link "_alice" [ref=f3e5] [cursor=pointer]:
+        - /url: /
+      - navigation [ref=f3e6]:
+        - link "Sign in with Google" [ref=f3e7] [cursor=pointer]:
+          - /url: /auth/google
+    - main [ref=f3e8]:
+      - generic [ref=f3e9]:
+        - generic [ref=f3e10]:
+          - generic [ref=f3e11]:
+            - heading "Graph canvas demo" [level=1] [ref=f3e12]
+            - paragraph [ref=f3e13]: Fixture map for pan / zoom / drag / reset. Not wired to the API.
+          - button "Simulate Expand on seed" [ref=f3e14]
+        - generic [ref=f3e15]:
+          - generic [ref=f3e17]:
+            - generic [ref=f3e19]:
+              - generic:
+                - img:
+                  - group "Edge from n0 to n1" [ref=f3e20] [cursor=pointer]
+                - img:
+                  - group "Edge from n0 to n2"
+                - img:
+                  - group "Edge from n0 to n3" [ref=f3e23] [cursor=pointer]
+                - img:
+                  - group "Edge from n1 to n4" [ref=f3e26] [cursor=pointer]
+                - img:
+                  - group "Edge from n1 to n5" [ref=f3e29] [cursor=pointer]
+                - img:
+                  - group "Edge from n2 to n6"
+                - generic:
+                  - generic: deeper into antiquity
+                  - generic: follow the leaders
+                  - generic: sideways theory
+                  - generic: curiouser culture
+                  - generic: compare collapses
+                  - generic: modern parallels
+                - generic:
+                  - group [ref=f3e32]:
+                    - generic [ref=f3e33]:
+                      - 'img "Down the rabbit hole: empires" [ref=f3e35]'
+                      - generic [ref=f3e36]:
+                        - paragraph [ref=f3e37]: "Down the rabbit hole: empires"
+                        - paragraph [ref=f3e38]: Historia
+                        - generic [ref=f3e39]:
+                          - button "Watch" [ref=f3e40]
+                          - button "Expand" [ref=f3e41]
+                  - group [ref=f3e43]:
+                    - generic [ref=f3e44]:
+                      - img "The Golden Age of Athens" [ref=f3e46]
+                      - generic [ref=f3e47]:
+                        - paragraph [ref=f3e48]: The Golden Age of Athens
+                        - paragraph [ref=f3e49]: Historia
+                        - generic [ref=f3e50]:
+                          - button "Watch" [ref=f3e51]
+                          - button "Expand" [ref=f3e52]
+                  - group [ref=f3e54]:
+                    - generic [ref=f3e55]:
+                      - 'img "Caesar: Politics and Power" [ref=f3e57]'
+                      - generic [ref=f3e58]:
+                        - paragraph [ref=f3e59]: "Caesar: Politics and Power"
+                        - paragraph [ref=f3e60]: Historia
+                        - generic [ref=f3e61]:
+                          - button "Watch" [ref=f3e62]
+                          - button "Expand" [ref=f3e63]
+                  - group [ref=f3e65]:
+                    - generic [ref=f3e66]:
+                      - img "Why Empires Fall" [ref=f3e68]
+                      - generic [ref=f3e69]:
+                        - paragraph [ref=f3e70]: Why Empires Fall
+                        - paragraph [ref=f3e71]: Historia
+                        - generic [ref=f3e72]:
+                          - button "Watch" [ref=f3e73]
+                          - button "Expand" [ref=f3e74]
+                  - group [ref=f3e76]:
+                    - generic [ref=f3e77]:
+                      - img "Roman Culture That Shaped the West" [ref=f3e79]
+                      - generic [ref=f3e80]:
+                        - paragraph [ref=f3e81]: Roman Culture That Shaped the West
+                        - paragraph [ref=f3e82]: Historia
+                        - generic [ref=f3e83]:
+                          - button "Watch" [ref=f3e84]
+                          - button "Expand" [ref=f3e85]
+                  - group [ref=f3e87]:
+                    - generic [ref=f3e88]:
+                      - img "The Fall of the Mayan Empire" [ref=f3e90]
+                      - generic [ref=f3e91]:
+                        - paragraph [ref=f3e92]: The Fall of the Mayan Empire
+                        - paragraph [ref=f3e93]: Historia
+                        - generic [ref=f3e94]:
+                          - button "Watch" [ref=f3e95]
+                          - button "Expand" [ref=f3e96]
+                  - group [ref=f3e98]:
+                    - generic [ref=f3e99]:
+                      - img "Modern Parallels" [ref=f3e101]
+                      - generic [ref=f3e102]:
+                        - paragraph [ref=f3e103]: Modern Parallels
+                        - paragraph [ref=f3e104]: Historia
+                        - generic [ref=f3e105]:
+                          - button "Watch" [ref=f3e106]
+                          - button "Expand" [ref=f3e107]
+            - generic [ref=f3e111]:
+              - button [ref=f3e112] [cursor=pointer]
+              - button [ref=f3e115] [cursor=pointer]
+              - button [ref=f3e118] [cursor=pointer]
+              - button [ref=f3e121] [cursor=pointer]
+            - button "Reset layout" [ref=f3e125]
+          - complementary [ref=f3e127]:
+            - 'img "Down the rabbit hole: empires" [ref=f3e128]'
+            - 'heading "Down the rabbit hole: empires" [level=2] [ref=f3e129]'
+            - paragraph [ref=f3e130]: Historia
+            - generic [ref=f3e131]:
+              - button "Watch on YouTube" [ref=f3e132]
+              - button "Expand" [ref=f3e133]
+    - contentinfo [ref=f3e134]:
+      - generic [ref=f3e135]: Wonderland map for YouTube
+      - generic [ref=f3e136]:
+        - link "Privacy" [ref=f3e137] [cursor=pointer]:
+          - /url: /privacy
+        - generic [ref=f3e138]: ·
+        - link "Terms" [ref=f3e139] [cursor=pointer]:
+          - /url: /terms
+        - generic [ref=f3e140]: ·
+        - link "About" [ref=f3e141] [cursor=pointer]:
+          - /url: /about
+    - region "Notifications alt+T":
+      - list
+  - generic [ref=f3e142]:
+    - button "Toggle Nuxt DevTools" [ref=f3e143] [cursor=pointer]
+    - generic "Page load time" [ref=f3e147]:
+      - generic [ref=f3e148]: "66"
+      - generic [ref=f3e149]: ms
+    - button "Toggle Component Inspector" [ref=f3e151] [cursor=pointer]

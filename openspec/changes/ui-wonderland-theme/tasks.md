@@ -26,5 +26,5 @@
 
 ## 5. Verification
 
-- [ ] 5.1 Run lint and typecheck clean for the UI foundation changes
-- [ ] 5.2 Manual check: shell pages match ink/brass theme with no costume art; canvas supports pan/zoom/drag/reset
+- [x] 5.1 Run lint and typecheck clean for the UI foundation changes
+- [x] 5.2 Manual check: shell pages match ink/brass theme with no costume art; canvas supports pan/zoom/drag/reset
