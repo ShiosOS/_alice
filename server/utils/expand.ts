@@ -170,11 +170,10 @@ export async function expandNode(opts: {
       status: 'failed',
       meta: { reason: 'ai_failed', message: e instanceof Error ? e.message : 'unknown' },
     })
-    logError('expand_failed', {
+    captureServerException(e, {
       reason: 'ai_failed',
       rabbitHoleId: opts.rabbitHoleId,
       nodeId: opts.nodeId,
-      message: e instanceof Error ? e.message : 'unknown',
     })
     throw createError({ statusCode: 502, statusMessage: 'Could not generate forks. Try again.' })
   }
@@ -258,31 +257,41 @@ export async function bootstrapRabbitHole(opts: {
   rabbitHoleId: string
   seedNodeId: string
 }) {
-  // seed → 3, then each child → 2  (counts toward budget)
-  await expandNode({
-    userId: opts.userId,
-    rabbitHoleId: opts.rabbitHoleId,
-    nodeId: opts.seedNodeId,
-    take: 3,
-  })
-  const db = useDb()
-  const children = await db
-    .select({ id: nodes.id })
-    .from(nodes)
-    .innerJoin(edges, eq(edges.toNodeId, nodes.id))
-    .where(and(eq(edges.fromNodeId, opts.seedNodeId), eq(edges.rabbitHoleId, opts.rabbitHoleId)))
-
-  for (const child of children) {
+  try {
+    // seed → 3, then each child → 2  (counts toward budget)
     await expandNode({
       userId: opts.userId,
       rabbitHoleId: opts.rabbitHoleId,
-      nodeId: child.id,
-      take: 2,
+      nodeId: opts.seedNodeId,
+      take: 3,
     })
-  }
+    const db = useDb()
+    const children = await db
+      .select({ id: nodes.id })
+      .from(nodes)
+      .innerJoin(edges, eq(edges.toNodeId, nodes.id))
+      .where(and(eq(edges.fromNodeId, opts.seedNodeId), eq(edges.rabbitHoleId, opts.rabbitHoleId)))
 
-  await db
-    .update(rabbitHoles)
-    .set({ status: 'ready', updatedAt: new Date() })
-    .where(eq(rabbitHoles.id, opts.rabbitHoleId))
+    for (const child of children) {
+      await expandNode({
+        userId: opts.userId,
+        rabbitHoleId: opts.rabbitHoleId,
+        nodeId: child.id,
+        take: 2,
+      })
+    }
+
+    await db
+      .update(rabbitHoles)
+      .set({ status: 'ready', updatedAt: new Date() })
+      .where(eq(rabbitHoles.id, opts.rabbitHoleId))
+  }
+  catch (e) {
+    captureServerException(e, {
+      reason: 'bootstrap_failed',
+      rabbitHoleId: opts.rabbitHoleId,
+      seedNodeId: opts.seedNodeId,
+    })
+    throw e
+  }
 }

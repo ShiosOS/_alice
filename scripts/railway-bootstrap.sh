@@ -34,17 +34,17 @@ need_token() {
 app_url_for() {
   case "$1" in
     production) echo "https://alice.shiosos.dev" ;;
-    staging) echo "https://staging.alice.shiosos.dev" ;;
-    feature) echo "https://feature.alice.shiosos.dev" ;;
-    *) echo "https://${1}.alice.shiosos.dev" ;;
+    staging) echo "https://alice-staging.shiosos.dev" ;;
+    feature) echo "https://alice-feature.shiosos.dev" ;;
+    *) echo "https://alice-${1}.shiosos.dev" ;;
   esac
 }
 
 custom_domain_for() {
   case "$1" in
     production) echo "alice.shiosos.dev" ;;
-    staging) echo "staging.alice.shiosos.dev" ;;
-    feature) echo "feature.alice.shiosos.dev" ;;
+    staging) echo "alice-staging.shiosos.dev" ;;
+    feature) echo "alice-feature.shiosos.dev" ;;
     *) echo "" ;;
   esac
 }
@@ -209,15 +209,15 @@ fi
 
 echo
 echo "Done. Next manual steps:"
-echo "  1. Cloudflare DNS for shiosos.dev:"
+echo "  1. Cloudflare DNS for shiosos.dev (DNS-only / grey cloud):"
 echo "       alice            → Railway CNAME for production"
-echo "       staging.alice    → Railway CNAME for staging"
-echo "       feature.alice    → Railway CNAME for feature"
-echo "     (use DNS-only until TLS issues)"
+echo "       alice-staging    → Railway CNAME for staging"
+echo "       alice-feature    → Railway CNAME for feature"
 echo "  2. Google OAuth redirects:"
 echo "       https://alice.shiosos.dev/auth/google"
-echo "       https://staging.alice.shiosos.dev/auth/google"
-echo "       https://feature.alice.shiosos.dev/auth/google"
-echo "  3. Enable Postgres backups on production (and ideally staging)."
-echo "  4. Run migrations per env: railway run -e <env> -s ${WEB_SERVICE} -- npm run db:migrate"
+echo "       https://alice-staging.shiosos.dev/auth/google"
+echo "       https://alice-feature.shiosos.dev/auth/google"
+echo "  3. Enable Postgres backups on production (and ideally staging) in the Railway volume UI."
+echo "  4. Migrations run automatically via railway.toml preDeployCommand (scripts/db-migrate.mjs)."
 echo "  5. Confirm DATABASE_URL is referenced from Postgres on ${WEB_SERVICE} in each env."
+echo "  6. Builder is Railpack (railway.toml); do not use deprecated Nixpacks."
