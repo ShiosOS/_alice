@@ -28,6 +28,9 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-surface-deep: var(--surface-deep);
+  --color-surface-panel: var(--surface-panel);
+  --color-title: var(--title);
 }
 
 :root {
@@ -52,10 +55,18 @@
   --input: #243041;
   --ring: #c4a574;
 
+  /* Surfaces used by map chrome / panels (consume these — do not hardcode hex in SFCs) */
+  --surface-deep: #0c1117;
+  --surface-panel: #121820;
+  --title: #f0e6d4;
+  --atmosphere-cool: #1a2433;
+  --atmosphere-warm: #2a1f18;
+
   /* Legacy layout aliases (do not override --muted/--accent — those are shadcn tokens) */
   --bg: var(--background);
   --fg: var(--foreground);
   --line: var(--border);
+  --danger: var(--destructive);
 }
 
 @layer base {
@@ -70,8 +81,8 @@
   body {
     @apply min-h-full bg-background text-foreground font-sans antialiased;
     background-image:
-      radial-gradient(1200px 600px at 10% -10%, #1a2433 0%, transparent 60%),
-      radial-gradient(900px 500px at 100% 0%, #2a1f18 0%, transparent 55%);
+      radial-gradient(1200px 600px at 10% -10%, var(--atmosphere-cool) 0%, transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, var(--atmosphere-warm) 0%, transparent 55%);
     background-attachment: fixed;
   }
 

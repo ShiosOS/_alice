@@ -12,7 +12,7 @@ const n = computed(() => props.data.graphNode)
 <template>
   <div
     :class="cn(
-      'box-border flex h-[210px] w-[260px] flex-col overflow-hidden rounded-lg border bg-[#121820]/95 text-card-foreground shadow-[0_0_0_1px_rgba(196,165,116,0.08)]',
+      'box-border flex h-[210px] w-[260px] flex-col overflow-hidden rounded-lg border bg-surface-panel/95 text-card-foreground shadow-[0_0_0_1px_rgba(196,165,116,0.08)]',
       'border-primary/55',
       data.isSeed && 'border-primary shadow-[0_0_24px_rgba(196,165,116,0.18)]',
       data.onPath && 'border-primary',
@@ -38,7 +38,7 @@ const n = computed(() => props.data.graphNode)
       >
       <div
         v-else
-        class="flex h-[146px] w-full items-center justify-center bg-[#1a2433] text-xs text-muted-foreground"
+        class="flex h-[146px] w-full items-center justify-center bg-secondary text-xs text-muted-foreground"
       >
         No thumbnail
       </div>
@@ -51,7 +51,7 @@ const n = computed(() => props.data.graphNode)
       </span>
     </div>
     <div class="space-y-1 px-3 py-2.5">
-      <p class="line-clamp-2 font-display text-[13px] leading-snug text-[#f0e6d4]">
+      <p class="line-clamp-2 font-display text-[13px] leading-snug text-title">
         {{ n.title }}
       </p>
       <p

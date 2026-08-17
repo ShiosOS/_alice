@@ -25,9 +25,9 @@
 
 ## 4. Design token consumption
 
-- [ ] 4.1 Ensure danger/surface/accent CSS variables exist (minimal tokens here if `ui-wonderland-theme` not merged yet, or consume theme tokens when available)
-- [ ] 4.2 Remove duplicated scoped button/error/prose CSS from pages in favor of shared classes/components/tokens; ban raw hex for those roles in migrated surfaces
-- [ ] 4.3 Note in `ui-wonderland-theme` apply notes (or a short comment in that change’s tasks/design if editing is appropriate) that page restyles must follow craft consumption rules
+- [x] 4.1 Ensure danger/surface/accent CSS variables exist (minimal tokens here if `ui-wonderland-theme` not merged yet, or consume theme tokens when available)
+- [x] 4.2 Remove duplicated scoped button/error/prose CSS from pages in favor of shared classes/components/tokens; ban raw hex for those roles in migrated surfaces
+- [x] 4.3 Note in `ui-wonderland-theme` apply notes (or a short comment in that change’s tasks/design if editing is appropriate) that page restyles must follow craft consumption rules
 
 ## 5. Test harness and unit tests
 

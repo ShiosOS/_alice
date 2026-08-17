@@ -1,59 +1,78 @@
 <template>
-  <section class="create">
-    <h1>Start a new Rabbit Hole</h1>
-    <p>Paste a YouTube URL as your seed. We’ll grow a first map of named forks.</p>
-    <form @submit.prevent="create">
-      <label>
-        YouTube URL
-        <input
+  <section class="max-w-lg space-y-6">
+    <div class="space-y-2">
+      <h1 class="font-display text-3xl text-foreground">
+        Start a new Rabbit Hole
+      </h1>
+      <p class="text-muted-foreground">
+        Paste a YouTube URL as your seed. We’ll grow a first map of named forks.
+      </p>
+    </div>
+    <form
+      class="space-y-4"
+      @submit.prevent="create"
+    >
+      <div class="space-y-2">
+        <Label for="seed-url">YouTube URL</Label>
+        <Input
+          id="seed-url"
           v-model="url"
           type="url"
           required
           placeholder="https://www.youtube.com/watch?v=…"
-        >
-      </label>
-      <label>
-        Title (optional)
-        <input
+        />
+      </div>
+      <div class="space-y-2">
+        <Label for="hole-title">Title (optional)</Label>
+        <Input
+          id="hole-title"
           v-model="title"
           type="text"
           placeholder="Defaults to the video title"
-        >
-      </label>
-      <button
+        />
+      </div>
+      <Button
         type="submit"
         :disabled="isMutating"
       >
         {{ isMutating ? 'Growing the first graph…' : 'Start Rabbit Hole' }}
-      </button>
+      </Button>
     </form>
     <p
       v-if="status"
-      class="status"
+      class="text-sm text-muted-foreground"
     >
       {{ status }}
     </p>
     <p
       v-if="error"
-      class="error"
+      class="text-sm text-destructive"
     >
       {{ error }}
     </p>
-    <p v-if="incompleteId">
-      Bootstrap incomplete.
-      <button
+    <p
+      v-if="incompleteId"
+      class="space-x-2 text-sm text-muted-foreground"
+    >
+      <span>Bootstrap incomplete.</span>
+      <Button
         type="button"
+        variant="outline"
+        size="sm"
         :disabled="isMutating"
         @click="retry(incompleteId)"
       >
         Retry bootstrap
-      </button>
+      </Button>
     </p>
   </section>
 </template>
 
 <script setup lang="ts">
 import type { RabbitHoleGraph } from '#shared/types/rabbit-holes'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 definePageMeta({
   middleware: ['auth', 'terms'],
@@ -125,37 +144,3 @@ async function retry(id: string) {
   }
 }
 </script>
-
-<style scoped>
-.create {
-  max-width: 34rem;
-}
-label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  margin: 1rem 0;
-}
-input {
-  padding: 0.65rem 0.75rem;
-  border: 1px solid var(--border);
-  background: #121820;
-  color: var(--foreground);
-  font: inherit;
-}
-button {
-  margin-top: 0.5rem;
-  padding: 0.65rem 1rem;
-  border: 1px solid var(--primary);
-  background: transparent;
-  color: var(--primary);
-  font: inherit;
-  cursor: pointer;
-}
-.error {
-  color: #e08888;
-}
-.status {
-  color: var(--muted-foreground);
-}
-</style>

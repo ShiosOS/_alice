@@ -4,7 +4,7 @@
     :class="fullBleed ? 'h-dvh overflow-hidden' : 'min-h-screen'"
   >
     <header
-      class="z-30 flex shrink-0 items-center justify-between gap-4 border-b border-border/80 bg-[#0f1419]/90 px-5 py-4 backdrop-blur"
+      class="z-30 flex shrink-0 items-center justify-between gap-4 border-b border-border/80 bg-background/90 px-5 py-4 backdrop-blur"
     >
       <NuxtLink
         to="/"

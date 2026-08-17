@@ -16,7 +16,7 @@ const emit = defineEmits<{
 <template>
   <aside
     v-if="focused"
-    class="absolute bottom-6 left-1/2 z-10 w-[min(24rem,calc(100%-2rem))] -translate-x-1/2 rounded-lg border border-primary/45 bg-[#121820]/95 p-4 shadow-[0_12px_40px_rgba(0,0,0,0.45)] backdrop-blur"
+    class="absolute bottom-6 left-1/2 z-10 w-[min(24rem,calc(100%-2rem))] -translate-x-1/2 rounded-lg border border-primary/45 bg-surface-panel/95 p-4 shadow-[0_12px_40px_rgba(0,0,0,0.45)] backdrop-blur"
   >
     <div class="flex gap-3">
       <img
@@ -28,7 +28,7 @@ const emit = defineEmits<{
         height="64"
       >
       <div class="min-w-0 flex-1">
-        <h2 class="font-display text-base leading-snug text-[#f0e6d4]">
+        <h2 class="font-display text-base leading-snug text-title">
           {{ focused.title }}
         </h2>
         <p

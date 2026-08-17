@@ -1,6 +1,6 @@
 <template>
   <ClientOnly>
-    <div class="relative h-full min-h-0 w-full overflow-hidden bg-[#0c1117]">
+    <div class="relative h-full min-h-0 w-full overflow-hidden bg-surface-deep">
       <div
         class="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(1200px_700px_at_50%_10%,rgba(42,31,24,0.45),transparent_70%)]"
       />
@@ -24,7 +24,7 @@
       >
         <Panel
           position="bottom-right"
-          class="mb-5 mr-5 flex items-center gap-1 rounded-md border border-primary/40 bg-[#121820]/90 px-1 py-1 text-primary shadow-lg backdrop-blur"
+          class="mb-5 mr-5 flex items-center gap-1 rounded-md border border-primary/40 bg-surface-panel/90 px-1 py-1 text-primary shadow-lg backdrop-blur"
         >
           <button
             type="button"
@@ -53,7 +53,7 @@
           <slot name="toolbar" />
           <button
             type="button"
-            class="rounded-md border border-primary/35 bg-[#121820]/85 px-3 py-1.5 font-display text-xs text-primary backdrop-blur hover:bg-primary/10"
+            class="rounded-md border border-primary/35 bg-surface-panel/85 px-3 py-1.5 font-display text-xs text-primary backdrop-blur hover:bg-primary/10"
             @click="resetLayout"
           >
             Reset layout
