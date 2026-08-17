@@ -82,7 +82,7 @@ Railway **volume backup schedules / PITR need a paid plan** (not available on Ho
 ```bash
 chmod +x scripts/pg-backup.sh
 DATABASE_URL='postgresql://…' ./scripts/pg-backup.sh
-# writes ./backups/alice-<utc>.dump
+# uses postgres:18 via Docker by default (matches Railway); writes ./backups/alice-<utc>.dump
 ```
 
 4. Store the `.dump` file somewhere durable (encrypted drive, object storage, etc.).
@@ -94,7 +94,9 @@ DATABASE_URL='postgresql://…' ./scripts/pg-backup.sh
 2. Restore:
 
 ```bash
-pg_restore --clean --if-exists --no-owner --no-acl -d "$DATABASE_URL" ./backups/alice-YYYYMMDD.dump
+docker run --rm -e DATABASE_URL -v "$PWD/backups:/backups" postgres:18 \
+  pg_restore --clean --if-exists --no-owner --no-acl -d "$DATABASE_URL" \
+  /backups/alice-YYYYMMDD.dump
 ```
 
 3. Point web `DATABASE_URL` / `NUXT_DATABASE_URL` at the restored DB; redeploy so `preDeployCommand` can no-op or apply newer migrations.
