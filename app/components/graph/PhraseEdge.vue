@@ -26,7 +26,7 @@ const path = computed(() => getSmoothStepPath({
   />
   <EdgeLabelRenderer>
     <div
-      class="graph-edge-label"
+      class="graph-edge-label nodrag nopan"
       :style="{
         transform: `translate(-50%, -50%) translate(${path[1]}px, ${path[2]}px)`,
       }"

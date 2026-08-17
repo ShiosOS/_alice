@@ -112,7 +112,7 @@
   }
 
   .ink-brand {
-    @apply font-display text-2xl tracking-wide text-primary transition-opacity hover:opacity-90;
+    @apply font-serif text-2xl tracking-wide text-primary transition-opacity hover:opacity-90;
   }
 
   .ink-nav-link {
@@ -137,11 +137,11 @@
   }
 
   .ink-title-input {
-    @apply min-w-48 flex-1 rounded border border-border bg-surface-deep px-2 py-1 font-display text-lg text-foreground;
+    @apply min-w-48 flex-1 rounded border border-border bg-surface-deep px-2 py-1 font-serif text-lg text-foreground;
   }
 
   .ink-toolbar-btn {
-    @apply rounded-md border border-primary/35 bg-surface-panel/85 px-3 py-1.5 font-display text-xs text-primary backdrop-blur hover:bg-primary/10;
+    @apply rounded-md border border-primary/35 bg-surface-panel/85 px-3 py-1.5 font-serif text-xs text-primary backdrop-blur hover:bg-primary/10;
   }
 
   .ink-icon-btn {
@@ -224,7 +224,7 @@
   }
 
   .graph-node-title {
-    @apply line-clamp-2 font-display leading-snug text-title;
+    @apply line-clamp-2 font-serif leading-snug text-title;
     font-size: 13px;
   }
 
@@ -234,7 +234,7 @@
   }
 
   .graph-edge-label {
-    @apply nodrag nopan pointer-events-none absolute origin-center rounded bg-background/85 px-1.5 py-0.5 font-display italic tracking-wide text-primary;
+    @apply pointer-events-none absolute origin-center rounded bg-background/85 px-1.5 py-0.5 font-serif italic tracking-wide text-primary;
     font-size: 11px;
   }
 
