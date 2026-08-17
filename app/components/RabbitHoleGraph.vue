@@ -145,7 +145,7 @@ const edgeTypes = {
   phrase: markRaw(PhraseEdge) as EdgeComponent,
 }
 
-const { zoomIn, zoomOut, viewport } = useVueFlow({ id: 'alice-graph' })
+const { zoomIn, zoomOut, viewport } = useVueFlow('alice-graph')
 const zoomPct = computed(() => Math.round((viewport.value.zoom || 1) * 100))
 
 const flowNodes = ref<Node[]>([])
