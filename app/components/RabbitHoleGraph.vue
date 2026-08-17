@@ -1,20 +1,20 @@
 <template>
   <ClientOnly>
-    <div class="relative -mx-5 -mb-8 min-h-[calc(100vh-8.5rem)] overflow-hidden">
+    <div class="relative h-[min(72vh,760px)] min-h-[520px] w-full overflow-hidden rounded-lg border border-primary/20 bg-[#0c1117]">
       <div
-        class="pointer-events-none absolute inset-0 bg-[radial-gradient(900px_500px_at_50%_20%,rgba(42,31,24,0.35),transparent_65%)]"
+        class="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(900px_500px_at_50%_15%,rgba(42,31,24,0.4),transparent_65%)]"
       />
       <VueFlow
         v-model:nodes="flowNodes"
         v-model:edges="flowEdges"
         :node-types="nodeTypes"
         :edge-types="edgeTypes"
-        :default-viewport="{ zoom: 0.8 }"
+        :default-viewport="{ zoom: 0.75 }"
         :min-zoom="0.3"
         :max-zoom="1.6"
         :default-edge-options="{ type: 'phrase' }"
         fit-view-on-init
-        class="h-[calc(100vh-8.5rem)] w-full bg-transparent"
+        class="absolute inset-0 h-full w-full bg-transparent"
         :elevate-edges-on-select="false"
         @node-click="onNodeClick"
         @pane-click="focusedId = null"
