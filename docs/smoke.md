@@ -20,3 +20,13 @@ Hosts:
 Optional failures to poke: invalid URL, expand with `NUXT_EXPAND_DISABLED=true`, budget exhaustion.
 
 Ops note: schema is created by `scripts/db-migrate.mjs` on each Railway deploy (`railway.toml` preDeployCommand). If OAuth returns 500 with `relation "users" does not exist`, migrations did not run.
+
+### Automated API smoke
+
+With prod `DATABASE_URL` (TCP proxy) and `NUXT_SESSION_PASSWORD`:
+
+```bash
+DATABASE_URL=... NUXT_SESSION_PASSWORD=... node scripts/e2e-smoke.mjs
+```
+
+This seals a session cookie, creates a Rabbit Hole from a YouTube URL, expands, watches, and reopens the hole — covering checklist steps 3–7 without a browser.
