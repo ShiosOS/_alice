@@ -6,7 +6,8 @@ Wonderland map for YouTube: Rabbit Holes, intentional forks, watch on YouTube.
 
 - Nuxt 4 + Vue + TypeScript
 - Postgres (Railway)
-- Production URL: `https://alice.shiosos.dev`
+- Staging: `https://alice-staging.shiosos.dev` (auto from `main`)
+- Production: `https://alice.shiosos.dev` (promote: `git push origin origin/main:production`)
 
 ## Local
 
@@ -16,6 +17,6 @@ npm install
 npm run dev
 ```
 
-See `docs/deploy.md` for Railway + Cloudflare.
+See `docs/deploy.md` for Railway + Cloudflare and `docs/smoke.md` before promoting.
 
-OpenSpec change: `openspec/changes/alice-v1-rabbit-holes/`
+OpenSpec: `openspec/` (active: `openspec/changes/two-env-promotion/`).

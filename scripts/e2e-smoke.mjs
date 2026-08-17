@@ -1,20 +1,20 @@
 #!/usr/bin/env node
 /**
- * Production API smoke for alice (task 9.4 automation).
+ * Staging API smoke for alice (promote gate).
  * Creates a sealed nuxt-session for a DB user and walks:
  * list → create hole → graph size → expand → watch → list/get again.
  *
  * Requires env:
- *   DATABASE_URL (prod TCP proxy)
- *   NUXT_SESSION_PASSWORD
- *   SMOKE_BASE_URL (default https://alice.shiosos.dev)
+ *   DATABASE_URL (staging TCP proxy — not production)
+ *   NUXT_SESSION_PASSWORD (staging)
+ *   SMOKE_BASE_URL (default https://alice-staging.shiosos.dev)
  *   SMOKE_YOUTUBE_URL (default security video)
  */
 import { randomUUID, webcrypto } from 'node:crypto'
 import postgres from 'postgres'
 import { seal, defaults as ironDefaults } from 'iron-webcrypto'
 
-const base = (process.env.SMOKE_BASE_URL || 'https://alice.shiosos.dev').replace(/\/$/, '')
+const base = (process.env.SMOKE_BASE_URL || 'https://alice-staging.shiosos.dev').replace(/\/$/, '')
 const password = process.env.NUXT_SESSION_PASSWORD
 const dbUrl = process.env.DATABASE_URL || process.env.NUXT_DATABASE_URL
 const youtubeUrl = process.env.SMOKE_YOUTUBE_URL || 'https://www.youtube.com/watch?v=rHwNz_HEVNw'
