@@ -39,14 +39,14 @@
 
 ## 6. Integration, e2e, coverage, CI
 
-- [ ] 6.1 Integration test setup with Postgres (CI service or documented test DB URL) and YouTube/AI stubs
-- [ ] 6.2 Integration tests: unauthenticated protected API → auth error; terms gate on create/expand; create/expand/watch with fixtures assert contracts + persistence
-- [ ] 6.3 Thin Playwright (or `@nuxt/test-utils` e2e) suite: public privacy/terms/health; minimal signed-in critical path without live YT/AI spend in PR CI
-- [ ] 6.4 Keep `scripts/e2e-smoke.mjs` as staging promote-only smoke; document PR CI vs promote gate in `docs/smoke.md`
-- [ ] 6.5 Enforce coverage thresholds on `server/services/**`, `shared/**`, `server/lib/**` (high bar) plus overall floor; wire `lint`, `typecheck`, and tests into `.github/workflows/ci.yml`
-- [ ] 6.6 Final verification: lint, typecheck, unit, integration, e2e all green on a clean tree
+- [x] 6.1 Integration test setup with Postgres (CI service or documented test DB URL) and YouTube/AI stubs
+- [x] 6.2 Integration tests: unauthenticated protected API → auth error; terms gate on create/expand; create/expand/watch with fixtures assert contracts + persistence
+- [x] 6.3 Thin Playwright (or `@nuxt/test-utils` e2e) suite: public privacy/terms/health; minimal signed-in critical path without live YT/AI spend in PR CI
+- [x] 6.4 Keep `scripts/e2e-smoke.mjs` as staging promote-only smoke; document PR CI vs promote gate in `docs/smoke.md`
+- [x] 6.5 Enforce coverage thresholds on `server/services/**`, `shared/**`, `server/lib/**` (high bar) plus overall floor; wire `lint`, `typecheck`, and tests into `.github/workflows/ci.yml`
+- [x] 6.6 Final verification: lint, typecheck, unit, integration, e2e all green on a clean tree
 
 ## 7. Close-out
 
-- [ ] 7.1 Update README with craft/test scripts and pointers to OpenSpec capabilities `code-craft` + `automated-testing`
-- [ ] 7.2 Run `openspec validate --change code-craft-standards` (and strict if used) and fix any artifact issues before apply/archive
+- [x] 7.1 Update README with craft/test scripts and pointers to OpenSpec capabilities `code-craft` + `automated-testing`
+- [x] 7.2 Run `openspec validate --change code-craft-standards` (and strict if used) and fix any artifact issues before apply/archive

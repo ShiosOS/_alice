@@ -28,9 +28,15 @@ export async function sealNuxtSessionCookie(
       loggedInAt: new Date().toISOString(),
     },
   }
-  const sealed = await seal(webcrypto, sessionObj, password, {
-    ...ironDefaults,
-    ttl: 60 * 60 * 24 * 1000,
-  })
+  // Node's Crypto vs iron-webcrypto's narrower _Crypto — same runtime API as e2e-smoke.mjs.
+  const sealed = await seal(
+    webcrypto as unknown as Parameters<typeof seal>[0],
+    sessionObj,
+    password,
+    {
+      ...ironDefaults,
+      ttl: 60 * 60 * 24 * 1000,
+    },
+  )
   return `nuxt-session=${encodeURIComponent(sealed)}`
 }
