@@ -2,10 +2,22 @@ import { eq } from 'drizzle-orm'
 import type { RabbitHoleGraph, RabbitHoleList } from '../../../shared/types/rabbit-holes'
 import { createRabbitHoleBodySchema } from '../../../shared/types/rabbit-holes'
 import { nodes, rabbitHoles, useDb } from '../../db'
-import { bootstrapRabbitHole } from '../../utils/expand'
-import { loadHoleGraph, toRabbitHoleSummary } from '../../utils/rabbit-holes'
+import { bootstrapRabbitHole } from '../../services/expand/bootstrap'
+import { RABBIT_HOLE_TITLE_MAX } from '../../services/expand/constants'
+import { loadHoleGraph } from '../../services/rabbit-holes/load-graph'
+import { toRabbitHoleSummary } from '../../services/rabbit-holes/mappers'
+import { fetchVideoMeta } from '../../services/youtube/api'
+import { parseYoutubeVideoId } from '../../services/youtube/video-id'
+import {
+  ErrorMessage,
+  badRequest,
+  forbidden,
+  methodNotAllowed,
+  serverError,
+} from '../../utils/errors'
 import { readZodBody } from '../../utils/validate'
-import { fetchVideoMeta, parseYoutubeVideoId } from '../../utils/youtube'
+
+const HOLE_STATUS_INCOMPLETE = 'incomplete' as const
 
 export default defineEventHandler(async (event): Promise<RabbitHoleList | RabbitHoleGraph> => {
   const session = await requireSession(event)
@@ -23,30 +35,30 @@ export default defineEventHandler(async (event): Promise<RabbitHoleList | Rabbit
 
   if (event.method === 'POST') {
     if (!session.user.termsAccepted) {
-      throw createError({ statusCode: 403, statusMessage: 'Accept Terms before creating Rabbit Holes' })
+      throw forbidden(ErrorMessage.acceptTermsCreate)
     }
     const body = await readZodBody(event, createRabbitHoleBodySchema)
     const videoId = parseYoutubeVideoId(body.url)
     if (!videoId) {
-      throw createError({ statusCode: 400, statusMessage: 'Invalid YouTube URL' })
+      throw badRequest(ErrorMessage.invalidYoutubeUrl)
     }
     const meta = await fetchVideoMeta(videoId)
     if (!meta.available) {
-      throw createError({ statusCode: 400, statusMessage: 'That YouTube video is unavailable' })
+      throw badRequest(ErrorMessage.youtubeUnavailable)
     }
 
-    const title = (body.title || meta.title || 'Untitled Rabbit Hole').slice(0, 200)
+    const title = (body.title || meta.title || 'Untitled Rabbit Hole').slice(0, RABBIT_HOLE_TITLE_MAX)
     const [hole] = await db
       .insert(rabbitHoles)
       .values({
         userId: session.user.id,
         title,
         seedVideoId: videoId,
-        status: 'incomplete',
+        status: HOLE_STATUS_INCOMPLETE,
       })
       .returning()
     if (!hole) {
-      throw createError({ statusCode: 500, statusMessage: 'Could not create Rabbit Hole' })
+      throw serverError('Could not create Rabbit Hole')
     }
 
     const [seedNode] = await db
@@ -61,7 +73,7 @@ export default defineEventHandler(async (event): Promise<RabbitHoleList | Rabbit
       })
       .returning()
     if (!seedNode) {
-      throw createError({ statusCode: 500, statusMessage: 'Could not create seed node' })
+      throw serverError('Could not create seed node')
     }
 
     try {
@@ -74,17 +86,17 @@ export default defineEventHandler(async (event): Promise<RabbitHoleList | Rabbit
     catch (e) {
       await db
         .update(rabbitHoles)
-        .set({ status: 'incomplete', updatedAt: new Date() })
+        .set({ status: HOLE_STATUS_INCOMPLETE, updatedAt: new Date() })
         .where(eq(rabbitHoles.id, hole.id))
       throw createError({
         statusCode: 502,
         statusMessage: e instanceof Error ? e.message : 'Bootstrap failed',
-        data: { rabbitHoleId: hole.id, status: 'incomplete' },
+        data: { rabbitHoleId: hole.id, status: HOLE_STATUS_INCOMPLETE },
       })
     }
 
     return loadHoleGraph(hole.id, session.user.id)
   }
 
-  throw createError({ statusCode: 405, statusMessage: 'Method not allowed' })
+  throw methodNotAllowed()
 })

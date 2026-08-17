@@ -1,19 +1,19 @@
 ## 1. Conventions and strict lint/format
 
-- [ ] 1.1 Fill `openspec/config.yaml` `context` with craft rules (layers, naming, readability-over-cleverness, literals/regex, token consumption, lint style freeze: 2-space / single quotes / no semis)
-- [ ] 1.2 Enable `@nuxt/eslint` stylistic, tooling, and formatters; add `eslint-plugin-format` (and any required peers); wire options in `nuxt.config` / generated eslint path as documented
-- [ ] 1.3 Add stricter app rules: `no-nested-ternary`, moderate `complexity` / `max-depth`, keep existing type-safety and `as never` bans; tune after first run if expand orchestration needs extracted helpers first
-- [ ] 1.4 Add `.editorconfig` and npm scripts `lint:fix` (and/or `format`); document in README
-- [ ] 1.5 Run autofix once as a dedicated mechanical commit; ensure `npm run lint` and `npm run typecheck` pass
+- [x] 1.1 Fill `openspec/config.yaml` `context` with craft rules (layers, naming, readability-over-cleverness, literals/regex, token consumption, lint style freeze: 2-space / single quotes / no semis)
+- [x] 1.2 Enable `@nuxt/eslint` stylistic, tooling, and formatters; add `eslint-plugin-format` (and any required peers); wire options in `nuxt.config` / generated eslint path as documented
+- [x] 1.3 Add stricter app rules: `no-nested-ternary`, moderate `complexity` / `max-depth`, keep existing type-safety and `as never` bans; tune after first run if expand orchestration needs extracted helpers first
+- [x] 1.4 Add `.editorconfig` and npm scripts `lint:fix` (and/or `format`); document in README
+- [x] 1.5 Run autofix once as a dedicated mechanical commit; ensure `npm run lint` and `npm run typecheck` pass
 
 ## 2. Server service splits and literals
 
-- [ ] 2.1 Create `server/services/` layout for expand, youtube, rabbit-holes, auth; keep only log/validate/session/sentry in `server/utils/`
-- [ ] 2.2 Split `server/utils/expand.ts` into budget, fork-selector (AI), expand-node, bootstrap modules; update API imports
-- [ ] 2.3 Split `server/utils/youtube.ts` into video-id (pure), api/cache, related-candidates; keep/move pure topic helpers under `server/lib` as appropriate
-- [ ] 2.4 Move rabbit-hole mappers / `loadHoleGraph` and auth user helpers into services; thin handlers remain validators + delegates
-- [ ] 2.5 Name domain regex/constants (YouTube id pattern, expand fan-out counts, title/prompt caps where shared); add shared error message helpers; use domain enums/helpers at call sites instead of bare status/kind strings where practical
-- [ ] 2.6 Readability pass on server hotspots (config resolution helpers, cache bypass boolean guards, conflict `toNode` fetch, AI candidate line building)
+- [x] 2.1 Create `server/services/` layout for expand, youtube, rabbit-holes, auth; keep only log/validate/session/sentry in `server/utils/`
+- [x] 2.2 Split `server/utils/expand.ts` into budget, fork-selector (AI), expand-node, bootstrap modules; update API imports
+- [x] 2.3 Split `server/utils/youtube.ts` into video-id (pure), api/cache, related-candidates; keep/move pure topic helpers under `server/lib` as appropriate
+- [x] 2.4 Move rabbit-hole mappers / `loadHoleGraph` and auth user helpers into services; thin handlers remain validators + delegates
+- [x] 2.5 Name domain regex/constants (YouTube id pattern, expand fan-out counts, title/prompt caps where shared); add shared error message helpers; use domain enums/helpers at call sites instead of bare status/kind strings where practical
+- [x] 2.6 Readability pass on server hotspots (config resolution helpers, cache bypass boolean guards, conflict `toNode` fetch, AI candidate line building)
 
 ## 3. App middleware, composables, graph, naming
 

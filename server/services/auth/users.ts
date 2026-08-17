@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm'
-import { useDb, users } from '../db'
+import { useDb, users } from '../../db'
 
 export async function upsertGoogleUser(input: {
   sub: string

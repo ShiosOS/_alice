@@ -1,4 +1,4 @@
-import { acceptTerms } from '../../utils/auth-users'
+import { acceptTerms } from '../../services/auth/users'
 
 export default defineEventHandler(async (event) => {
   const session = await requireSession(event)

@@ -2,13 +2,21 @@ import { and, eq } from 'drizzle-orm'
 import type { RabbitHoleGraph, RabbitHoleRenameResponse } from '../../../shared/types/rabbit-holes'
 import { renameRabbitHoleBodySchema } from '../../../shared/types/rabbit-holes'
 import { rabbitHoles, useDb } from '../../db'
-import { loadHoleGraph, toRabbitHoleSummary } from '../../utils/rabbit-holes'
+import { RABBIT_HOLE_TITLE_MAX } from '../../services/expand/constants'
+import { loadHoleGraph } from '../../services/rabbit-holes/load-graph'
+import { toRabbitHoleSummary } from '../../services/rabbit-holes/mappers'
+import {
+  ErrorMessage,
+  badRequest,
+  methodNotAllowed,
+  notFound,
+} from '../../utils/errors'
 import { readZodBody } from '../../utils/validate'
 
 export default defineEventHandler(async (event): Promise<RabbitHoleGraph | RabbitHoleRenameResponse | { ok: true }> => {
   const session = await requireSession(event)
   const id = getRouterParam(event, 'id')
-  if (!id) throw createError({ statusCode: 400, statusMessage: 'Missing id' })
+  if (!id) throw badRequest(ErrorMessage.missingId)
 
   if (event.method === 'GET') {
     return loadHoleGraph(id, session.user.id)
@@ -19,10 +27,10 @@ export default defineEventHandler(async (event): Promise<RabbitHoleGraph | Rabbi
     const db = useDb()
     const [updated] = await db
       .update(rabbitHoles)
-      .set({ title: body.title.slice(0, 200), updatedAt: new Date() })
+      .set({ title: body.title.slice(0, RABBIT_HOLE_TITLE_MAX), updatedAt: new Date() })
       .where(and(eq(rabbitHoles.id, id), eq(rabbitHoles.userId, session.user.id)))
       .returning()
-    if (!updated) throw createError({ statusCode: 404, statusMessage: 'Rabbit Hole not found' })
+    if (!updated) throw notFound(ErrorMessage.rabbitHoleNotFound)
     return { rabbitHole: toRabbitHoleSummary(updated) }
   }
 
@@ -32,9 +40,9 @@ export default defineEventHandler(async (event): Promise<RabbitHoleGraph | Rabbi
       .delete(rabbitHoles)
       .where(and(eq(rabbitHoles.id, id), eq(rabbitHoles.userId, session.user.id)))
       .returning()
-    if (!deleted.length) throw createError({ statusCode: 404, statusMessage: 'Rabbit Hole not found' })
+    if (!deleted.length) throw notFound(ErrorMessage.rabbitHoleNotFound)
     return { ok: true }
   }
 
-  throw createError({ statusCode: 405, statusMessage: 'Method not allowed' })
+  throw methodNotAllowed()
 })

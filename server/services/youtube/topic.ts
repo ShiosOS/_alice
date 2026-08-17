@@ -1,3 +1,5 @@
+import { ErrorMessage, serverError } from '../../utils/errors'
+
 export type TopicContext = {
   /** Short domain label, e.g. "computer security / privacy" */
   domain: string
@@ -56,7 +58,7 @@ function aiConfig() {
   const baseUrl = (config.aiBaseUrl || process.env.NUXT_AI_BASE_URL || 'https://api.openai.com/v1').replace(/\/$/, '')
   const model = config.aiModel || process.env.NUXT_AI_MODEL || 'gpt-4o-mini'
   if (!apiKey) {
-    throw createError({ statusCode: 500, statusMessage: 'AI API key not configured' })
+    throw serverError(ErrorMessage.aiKeyMissing)
   }
   return { apiKey, baseUrl, model }
 }
