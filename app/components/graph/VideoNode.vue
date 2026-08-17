@@ -12,55 +12,57 @@ const n = computed(() => props.data.graphNode)
 <template>
   <div
     :class="cn(
-      'w-[220px] overflow-hidden rounded-md border bg-card text-card-foreground shadow-sm',
-      data.isSeed ? 'border-primary' : 'border-border',
-      data.onPath && 'ring-1 ring-primary/70',
-      !n.available && 'opacity-50',
-      selected && 'ring-2 ring-foreground/80',
+      'box-border flex h-[210px] w-[260px] flex-col overflow-hidden rounded-lg border bg-[#121820]/95 text-card-foreground shadow-[0_0_0_1px_rgba(196,165,116,0.08)]',
+      'border-primary/55',
+      data.isSeed && 'border-primary shadow-[0_0_24px_rgba(196,165,116,0.18)]',
+      data.onPath && 'border-primary',
+      selected && 'border-primary ring-1 ring-primary/80',
+      !n.available && 'opacity-45',
     )"
   >
-    <Handle id="t" type="target" :position="Position.Top" class="!h-2 !w-2 !border-0 !bg-primary" />
-    <img
-      v-if="n.thumbUrl"
-      :src="n.thumbUrl"
-      :alt="n.title"
-      class="aspect-video w-full object-cover"
-      width="220"
-      height="124"
-      draggable="false"
-    >
-    <div
-      v-else
-      class="flex aspect-video items-center justify-center bg-secondary text-xs text-muted-foreground"
-    >
-      No thumbnail
+    <Handle
+      id="t"
+      type="target"
+      :position="Position.Top"
+      class="!h-1.5 !w-1.5 !border-0 !bg-primary !opacity-0"
+    />
+    <div class="relative shrink-0">
+      <img
+        v-if="n.thumbUrl"
+        :src="n.thumbUrl"
+        :alt="n.title"
+        class="aspect-[16/9] h-[146px] w-full object-cover"
+        width="260"
+        height="146"
+        draggable="false"
+      >
+      <div
+        v-else
+        class="flex h-[146px] w-full items-center justify-center bg-[#1a2433] text-xs text-muted-foreground"
+      >
+        No thumbnail
+      </div>
+      <span
+        v-if="data.onPath"
+        class="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground"
+        aria-label="On Path"
+      >
+        ✓
+      </span>
     </div>
-    <div class="space-y-1 p-2">
-      <p class="line-clamp-2 font-display text-xs leading-snug text-foreground">
+    <div class="space-y-1 px-3 py-2.5">
+      <p class="line-clamp-2 font-display text-[13px] leading-snug text-[#f0e6d4]">
         {{ n.title }}
       </p>
-      <p v-if="n.channelTitle" class="truncate text-[10px] text-muted-foreground">
+      <p v-if="n.channelTitle" class="truncate text-[11px] text-muted-foreground">
         {{ n.channelTitle }}
       </p>
-      <div class="flex gap-1 pt-1">
-        <button
-          type="button"
-          class="nodrag flex-1 rounded border border-primary px-1.5 py-1 text-[10px] text-primary disabled:opacity-40"
-          :disabled="data.busy || !n.available"
-          @click.stop="data.onWatch(n.id)"
-        >
-          Watch
-        </button>
-        <button
-          type="button"
-          class="nodrag flex-1 rounded border border-border px-1.5 py-1 text-[10px] text-foreground disabled:opacity-40"
-          :disabled="data.busy"
-          @click.stop="data.onExpand(n.id)"
-        >
-          Expand
-        </button>
-      </div>
     </div>
-    <Handle id="s" type="source" :position="Position.Bottom" class="!h-2 !w-2 !border-0 !bg-primary" />
+    <Handle
+      id="s"
+      type="source"
+      :position="Position.Bottom"
+      class="!h-1.5 !w-1.5 !border-0 !bg-primary !opacity-0"
+    />
   </div>
 </template>
