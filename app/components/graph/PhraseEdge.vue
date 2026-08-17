@@ -5,11 +5,11 @@ import { BaseEdge, EdgeLabelRenderer, getSmoothStepPath } from '@vue-flow/core'
 
 const props = defineProps<EdgeProps<PhraseEdgeData>>()
 
-/** Orthogonal straight segments with sharp bends (not curves). */
+/** Orthogonal straight segments with rounded bends. */
 const path = computed(() => getSmoothStepPath({
   ...props,
-  borderRadius: 0,
-  offset: 16,
+  borderRadius: 24,
+  offset: 20,
 }))
 </script>
 
