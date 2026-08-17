@@ -6,6 +6,9 @@
         <p class="text-sm text-muted-foreground">
           Fixture map for pan / zoom / drag / reset. Not wired to the API.
         </p>
+        <p v-if="status" class="mt-1 text-sm text-primary">
+          {{ status }}
+        </p>
       </div>
       <Button variant="secondary" type="button" @click="simulateExpand">
         Simulate Expand on seed
@@ -26,7 +29,6 @@
 
 <script setup lang="ts">
 import type { GraphEdge, GraphNode } from '#shared/types/rabbit-holes'
-import { toast } from 'vue-sonner'
 import { Button } from '@/components/ui/button'
 
 definePageMeta({
