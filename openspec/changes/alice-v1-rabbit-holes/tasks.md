@@ -1,10 +1,10 @@
 ## 1. Project foundation
 
-- [ ] 1.1 Scaffold Nuxt + TypeScript + Vue app in the repo with lint/typecheck scripts
-- [ ] 1.2 Add env/config skeleton for database, auth, YouTube, AI, and app URL (server-only secrets)
+- [x] 1.1 Scaffold Nuxt + TypeScript + Vue app in the repo with lint/typecheck scripts
+- [x] 1.2 Add env/config skeleton for database, auth, YouTube, AI, and app URL (server-only secrets)
 - [ ] 1.3 Create Railway project with Nuxt web service deploy (env vars, HTTPS) as the production host
 - [ ] 1.4 Add custom domain `alice.shiosos.dev`: Railway custom domain + Cloudflare DNS on `shiosos.dev`; set `APP_URL=https://alice.shiosos.dev`
-- [ ] 1.5 Add CI for lint/typecheck on PRs and deploy from main to Railway
+- [x] 1.5 Add CI for lint/typecheck on PRs and deploy from main to Railway
 
 ## 2. Database and domain schema
 
