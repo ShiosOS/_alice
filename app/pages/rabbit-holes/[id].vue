@@ -57,6 +57,7 @@ type Node = {
   id: string
   videoId: string
   title: string
+  channelTitle?: string | null
   thumbUrl: string | null
   available: boolean
 }

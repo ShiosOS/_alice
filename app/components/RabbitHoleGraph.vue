@@ -1,6 +1,14 @@
 <template>
   <div class="graph-wrap">
-    <div ref="viewport" class="viewport" @pointerdown="onPointerDown" @pointermove="onPointerMove" @pointerup="onPointerUp">
+    <div
+      ref="viewportEl"
+      class="viewport"
+      @pointerdown="onPanDown"
+      @pointermove="onPanMove"
+      @pointerup="onPanUp"
+      @pointercancel="onPanUp"
+      @lostpointercapture="onPanUp"
+    >
       <svg class="canvas" :viewBox="`${view.x} ${view.y} ${view.w} ${view.h}`">
         <g v-for="edge in layout.edges" :key="edge.id">
           <line
@@ -16,17 +24,33 @@
           v-for="node in layout.nodes"
           :key="node.id"
           class="node"
-          :class="{ path: pathIds.has(node.id), seed: node.videoId === seedVideoId, focused: focusedId === node.id, unavailable: !node.available }"
-          @click.stop="focusedId = node.id"
+          :class="{
+            path: pathIds.has(node.id),
+            seed: node.videoId === seedVideoId,
+            focused: focusedId === node.id,
+            unavailable: !node.available,
+          }"
+          @pointerdown.stop="onNodePointerDown($event, node.id)"
         >
-          <circle :cx="node.x" :cy="node.y" r="28" />
+          <!-- Larger invisible hit target -->
+          <circle class="hit" :cx="node.x" :cy="node.y" r="36" />
+          <circle class="dot" :cx="node.x" :cy="node.y" r="28" />
           <text :x="node.x" :y="node.y + 4" text-anchor="middle">{{ shortTitle(node.title) }}</text>
         </g>
       </svg>
     </div>
 
-    <aside v-if="focused" class="panel">
+    <aside v-if="focused" ref="panelEl" class="panel">
+      <img
+        v-if="focused.thumbUrl"
+        class="thumb"
+        :src="focused.thumbUrl"
+        :alt="focused.title"
+        width="320"
+        height="180"
+      >
       <h2>{{ focused.title }}</h2>
+      <p v-if="focused.channelTitle" class="channel">{{ focused.channelTitle }}</p>
       <p v-if="!focused.available" class="warn">Unavailable on YouTube</p>
       <div class="panel-actions">
         <button type="button" :disabled="busy || !focused.available" @click="$emit('watch', focused.id)">
@@ -37,6 +61,9 @@
         </button>
       </div>
     </aside>
+    <aside v-else class="panel muted-panel">
+      <p>Select a node to see details, watch on YouTube, or expand.</p>
+    </aside>
   </div>
 </template>
 
@@ -45,6 +72,7 @@ type GNode = {
   id: string
   videoId: string
   title: string
+  channelTitle?: string | null
   thumbUrl: string | null
   available: boolean
 }
@@ -70,9 +98,12 @@ defineEmits<{
 
 const focusedId = ref<string | null>(null)
 const focused = computed(() => props.nodes.find((n) => n.id === focusedId.value) || null)
+const panelEl = ref<HTMLElement | null>(null)
+const viewportEl = ref<HTMLElement | null>(null)
 
 const view = reactive({ x: -40, y: -40, w: 900, h: 640 })
-const dragging = ref(false)
+const panning = ref(false)
+const panMoved = ref(false)
 const last = reactive({ x: 0, y: 0 })
 
 const layout = computed(() => {
@@ -88,7 +119,6 @@ const layout = computed(() => {
     return { nodes: [] as Array<GNode & { x: number, y: number }>, edges: [] as Array<GEdge & { x1: number, y1: number, x2: number, y2: number, mx: number, my: number }> }
   }
 
-  // Tree layout: depth rows
   const depth = new Map<string, number>()
   const queue = [seed.id]
   depth.set(seed.id, 0)
@@ -116,7 +146,6 @@ const layout = computed(() => {
       pos.set(id, { x, y })
     })
   }
-  // orphans
   for (const n of props.nodes) {
     if (!pos.has(n.id)) pos.set(n.id, { x: 80, y: 80 + pos.size * 40 })
   }
@@ -141,32 +170,58 @@ const layout = computed(() => {
 watch(
   () => props.nodes,
   (nodes) => {
-    if (!focusedId.value && nodes[0]) focusedId.value = nodes.find((n) => n.videoId === props.seedVideoId)?.id || nodes[0].id
+    if (!nodes.length) {
+      focusedId.value = null
+      return
+    }
+    const stillThere = focusedId.value && nodes.some((n) => n.id === focusedId.value)
+    if (!stillThere) {
+      focusedId.value = nodes.find((n) => n.videoId === props.seedVideoId)?.id || nodes[0]?.id || null
+    }
   },
   { immediate: true },
 )
+
+watch(focusedId, async () => {
+  if (!import.meta.client) return
+  await nextTick()
+  panelEl.value?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+})
 
 function shortTitle(title: string) {
   return title.length > 18 ? `${title.slice(0, 16)}…` : title
 }
 
-function onPointerDown(ev: PointerEvent) {
-  dragging.value = true
+function onNodePointerDown(ev: PointerEvent, id: string) {
+  // Nodes never start a pan; selection is immediate.
+  if (ev.button !== undefined && ev.button !== 0) return
+  focusedId.value = id
+}
+
+function onPanDown(ev: PointerEvent) {
+  if (ev.button !== undefined && ev.button !== 0) return
+  panning.value = true
+  panMoved.value = false
   last.x = ev.clientX
   last.y = ev.clientY
   ;(ev.currentTarget as HTMLElement).setPointerCapture(ev.pointerId)
 }
-function onPointerMove(ev: PointerEvent) {
-  if (!dragging.value) return
-  const dx = (ev.clientX - last.x) * (view.w / 600)
-  const dy = (ev.clientY - last.y) * (view.h / 420)
+function onPanMove(ev: PointerEvent) {
+  if (!panning.value) return
+  const dxPx = ev.clientX - last.x
+  const dyPx = ev.clientY - last.y
+  if (Math.abs(dxPx) + Math.abs(dyPx) > 3) panMoved.value = true
+  if (!panMoved.value) return
+  const dx = dxPx * (view.w / 600)
+  const dy = dyPx * (view.h / 420)
   view.x -= dx
   view.y -= dy
   last.x = ev.clientX
   last.y = ev.clientY
 }
-function onPointerUp() {
-  dragging.value = false
+function onPanUp() {
+  panning.value = false
+  panMoved.value = false
 }
 </script>
 
@@ -177,7 +232,8 @@ function onPointerUp() {
 }
 @media (min-width: 900px) {
   .graph-wrap {
-    grid-template-columns: 1fr 16rem;
+    grid-template-columns: 1fr minmax(16rem, 20rem);
+    align-items: start;
   }
 }
 .viewport {
@@ -186,6 +242,10 @@ function onPointerUp() {
   height: min(70vh, 640px);
   overflow: hidden;
   touch-action: none;
+  cursor: grab;
+}
+.viewport:active {
+  cursor: grabbing;
 }
 .canvas {
   width: 100%;
@@ -199,39 +259,67 @@ function onPointerUp() {
   fill: var(--muted);
   font-size: 11px;
   text-anchor: middle;
+  pointer-events: none;
 }
-.node circle {
+.node {
+  cursor: pointer;
+}
+.node .hit {
+  fill: transparent;
+  stroke: none;
+}
+.node .dot {
   fill: #1a2433;
   stroke: #6b7c90;
   stroke-width: 2;
-  cursor: pointer;
+  pointer-events: none;
 }
 .node text {
   fill: var(--fg);
   font-size: 10px;
   pointer-events: none;
 }
-.node.path circle {
+.node.path .dot {
   stroke: var(--accent);
   stroke-width: 3;
 }
-.node.seed circle {
+.node.seed .dot {
   fill: #2a2118;
   stroke: var(--accent);
 }
-.node.focused circle {
+.node.focused .dot {
   stroke: #e8eef4;
+  stroke-width: 3;
 }
-.node.unavailable circle {
+.node.unavailable {
   opacity: 0.45;
 }
 .panel {
   border: 1px solid var(--line);
   padding: 1rem;
+  background: rgba(8, 12, 18, 0.55);
+}
+.muted-panel {
+  color: var(--muted);
+}
+.thumb {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--line);
 }
 .panel h2 {
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.35rem;
   font-size: 1.1rem;
+  line-height: 1.3;
+}
+.channel {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 .panel-actions {
   display: flex;
@@ -245,6 +333,10 @@ function onPointerUp() {
   color: var(--accent);
   font: inherit;
   cursor: pointer;
+}
+.panel button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 .warn {
   color: #e08888;
