@@ -9,8 +9,12 @@
 5. Configure env vars from `.env.example` (map `NUXT_*` as listed).
 6. Set `NUXT_PUBLIC_APP_URL=https://alice.shiosos.dev`.
 7. Enable Postgres backups in the Railway dashboard (Point-in-Time / automatic backups).
+8. Run migrations against `DATABASE_URL`: `npm run db:push` (dev) or apply `server/db/migrations/0000_init.sql`.
 
-Build: Railway should run `npm ci` / `npm run build` via Nixpacks. Override build command to `npm run build` if prompted.
+### Backups restore check
+
+After enabling Railway Postgres backups, once verify you can see restore points in the Railway UI (or run a restore into a throwaway DB). Note the steps you used in your personal ops notes — do not skip this once the project exists.
+
 
 ## Custom domain (Cloudflare → Railway)
 

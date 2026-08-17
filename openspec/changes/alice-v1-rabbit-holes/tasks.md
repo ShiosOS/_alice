@@ -9,8 +9,8 @@
 ## 2. Database and domain schema
 
 - [ ] 2.1 Provision Railway Postgres, attach `DATABASE_URL` to the Nuxt service, and connect via migrations tooling
-- [ ] 2.2 Create tables for users, rabbit_holes, nodes, edges, path state/events, expand_ledger, youtube_cache
-- [ ] 2.3 Add indexes and uniqueness constraints from design (hole ownership queries, graph load by hole, ledger rate limits, cache PK)
+- [x] 2.2 Create tables for users, rabbit_holes, nodes, edges, path state/events, expand_ledger, youtube_cache
+- [x] 2.3 Add indexes and uniqueness constraints from design (hole ownership queries, graph load by hole, ledger rate limits, cache PK)
 - [ ] 2.4 Enable automated Postgres backups on Railway and verify restore docs exist
 
 ## 3. User auth

@@ -9,15 +9,22 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push"
   },
   "dependencies": {
+    "drizzle-orm": "^0.45.2",
     "nuxt": "^4.5.2",
+    "postgres": "^3.4.9",
     "vue": "^3.5.41",
     "vue-router": "^5.2.0"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.9.0",
+    "@types/node": "^26.2.0",
+    "drizzle-kit": "^0.31.10",
     "eslint": "^9.33.0",
     "typescript": "^5.9.2",
     "vue-tsc": "^3.0.5"
