@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import type { EdgeProps } from '@vue-flow/core'
 import type { PhraseEdgeData } from '~/utils/graph-layout'
-import { BaseEdge, EdgeLabelRenderer, getBezierPath } from '@vue-flow/core'
+import { BaseEdge, EdgeLabelRenderer, getSmoothStepPath } from '@vue-flow/core'
 
 const props = defineProps<EdgeProps<PhraseEdgeData>>()
 
-const path = computed(() => getBezierPath({
+/** Orthogonal straight segments with sharp bends (not curves). */
+const path = computed(() => getSmoothStepPath({
   ...props,
-  curvature: 0.25,
+  borderRadius: 0,
+  offset: 16,
 }))
 </script>
 
@@ -19,6 +21,7 @@ const path = computed(() => getBezierPath({
       stroke: 'var(--primary)',
       strokeWidth: 1.25,
       opacity: 0.85,
+      fill: 'none',
     }"
   />
   <EdgeLabelRenderer>
