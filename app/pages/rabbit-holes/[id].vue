@@ -14,12 +14,12 @@
     </p>
     <template v-else-if="holeGraph">
       <div class="pointer-events-none absolute top-4 left-4 z-20 max-w-lg space-y-2">
-        <div class="pointer-events-auto rounded-md border border-primary/30 bg-surface-panel/90 px-3 py-2 backdrop-blur">
+        <div class="pointer-events-auto ink-glass px-3 py-2">
           <div class="flex flex-wrap items-center gap-2">
             <input
               v-if="editing"
               v-model="draftTitle"
-              class="min-w-48 flex-1 rounded border border-border bg-surface-deep px-2 py-1 font-display text-lg text-foreground"
+              class="ink-title-input"
               @keyup.enter="saveTitle"
             >
             <h1
@@ -31,7 +31,7 @@
             <button
               v-if="!editing"
               type="button"
-              class="rounded border border-border px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
+              class="ink-chip-btn"
               @click="startEdit"
             >
               Rename
@@ -39,14 +39,14 @@
             <button
               v-else
               type="button"
-              class="rounded border border-primary/50 px-2 py-1 text-xs text-primary"
+              class="ink-chip-btn-primary"
               @click="saveTitle"
             >
               Save
             </button>
             <button
               type="button"
-              class="rounded border border-destructive/50 px-2 py-1 text-xs text-destructive"
+              class="ink-chip-btn-danger"
               @click="deleteRabbitHole"
             >
               Delete
@@ -58,7 +58,7 @@
           <button
             v-if="holeGraph.rabbitHole.status === 'incomplete'"
             type="button"
-            class="mt-2 rounded border border-primary/40 px-2 py-1 text-xs text-primary"
+            class="ink-chip-btn-primary mt-2"
             :disabled="isMutating"
             @click="retryBootstrap"
           >

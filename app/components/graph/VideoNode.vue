@@ -12,51 +12,50 @@ const n = computed(() => props.data.graphNode)
 <template>
   <div
     :class="cn(
-      'box-border flex h-[210px] w-[260px] flex-col overflow-hidden rounded-lg border bg-surface-panel/95 text-card-foreground shadow-[0_0_0_1px_rgba(196,165,116,0.08)]',
-      'border-primary/55',
-      data.isSeed && 'border-primary shadow-[0_0_24px_rgba(196,165,116,0.18)]',
-      data.onPath && 'border-primary',
-      selected && 'border-primary ring-1 ring-primary/80',
-      !n.available && 'opacity-45',
+      'graph-video-node',
+      data.isSeed && 'is-seed',
+      data.onPath && 'is-on-path',
+      selected && 'is-selected',
+      !n.available && 'is-unavailable',
     )"
   >
     <Handle
       id="t"
       type="target"
       :position="Position.Top"
-      class="!h-1.5 !w-1.5 !border-0 !bg-primary !opacity-0"
+      class="graph-handle"
     />
     <div class="relative shrink-0">
       <img
         v-if="n.thumbUrl"
         :src="n.thumbUrl"
         :alt="n.title"
-        class="aspect-[16/9] h-[146px] w-full object-cover"
+        class="graph-video-thumb"
         width="260"
         height="146"
         draggable="false"
       >
       <div
         v-else
-        class="flex h-[146px] w-full items-center justify-center bg-secondary text-xs text-muted-foreground"
+        class="graph-video-thumb-fallback"
       >
         No thumbnail
       </div>
       <span
         v-if="data.onPath"
-        class="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground"
+        class="graph-path-badge"
         aria-label="On Path"
       >
         ✓
       </span>
     </div>
     <div class="space-y-1 px-3 py-2.5">
-      <p class="line-clamp-2 font-display text-[13px] leading-snug text-title">
+      <p class="graph-node-title">
         {{ n.title }}
       </p>
       <p
         v-if="n.channelTitle"
-        class="truncate text-[11px] text-muted-foreground"
+        class="graph-node-channel"
       >
         {{ n.channelTitle }}
       </p>
@@ -65,7 +64,7 @@ const n = computed(() => props.data.graphNode)
       id="s"
       type="source"
       :position="Position.Bottom"
-      class="!h-1.5 !w-1.5 !border-0 !bg-primary !opacity-0"
+      class="graph-handle"
     />
   </div>
 </template>

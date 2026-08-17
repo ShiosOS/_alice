@@ -24,6 +24,7 @@ context: |
 
   ## UI consumption
   Pages use layout utilities + shared Button/Input/tokens. Do not redefine button/error/prose visuals per page or invent long utility soup for brand chrome. Wonderland ink tokens live in `app/assets/css/tailwind.css`.
+  Prefer `@layer components` names (`ink-*`, `graph-*`) over long arbitrary Tailwind strings (`w-[260px]`, `max-w-[calc(...)]`, `shadow-[...]`) in product SFCs. Leave `app/components/ui` (shadcn) alone. Geometry that JS needs (node size) stays as CSS vars synced with `graph-layout.ts`.
 
   ## Lint / format
   ESLint via `@nuxt/eslint` with stylistic + tooling + formatters. Frozen style: 2-space indent, single quotes, no semicolons. CI runs `lint`, `typecheck`, and tests.

@@ -15,7 +15,7 @@ export type PhraseEdgeData = {
   phrase: string
 }
 
-/** Must match VideoNode card box (w-[260px] + thumb + title block). */
+/** Must match CSS --graph-node-w / --graph-node-h in app/assets/css/tailwind.css */
 export const NODE_WIDTH = 260
 export const NODE_HEIGHT = 210
 /** Minimum gap between card edges after layout / drag. */

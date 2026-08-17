@@ -3,12 +3,10 @@
     class="flex flex-col"
     :class="fullBleed ? 'h-dvh overflow-hidden' : 'min-h-screen'"
   >
-    <header
-      class="z-30 flex shrink-0 items-center justify-between gap-4 border-b border-border/80 bg-background/90 px-5 py-4 backdrop-blur"
-    >
+    <header class="ink-shell-header">
       <NuxtLink
         to="/"
-        class="font-display text-2xl tracking-wide text-primary transition-opacity hover:opacity-90"
+        class="ink-brand"
       >
         _alice
       </NuxtLink>
@@ -16,14 +14,14 @@
         <template v-if="loggedIn">
           <NuxtLink
             to="/rabbit-holes"
-            class="text-muted-foreground transition-colors hover:text-foreground"
+            class="ink-nav-link"
             active-class="!text-primary"
           >
             Rabbit Holes
           </NuxtLink>
           <NuxtLink
             to="/account"
-            class="text-muted-foreground transition-colors hover:text-foreground"
+            class="ink-nav-link"
             active-class="!text-primary"
           >
             Account
@@ -45,17 +43,13 @@
       </nav>
     </header>
 
-    <main
-      :class="fullBleed
-        ? 'relative min-h-0 w-full flex-1 p-0'
-        : 'mx-auto w-full max-w-[1100px] flex-1 px-5 py-6 pb-8'"
-    >
+    <main :class="fullBleed ? 'ink-shell-main-bleed' : 'ink-shell-main'">
       <NuxtPage />
     </main>
 
     <footer
       v-if="!fullBleed"
-      class="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-border px-5 py-4 text-sm text-muted-foreground"
+      class="ink-shell-footer"
     >
       <span>Wonderland map for YouTube</span>
       <span class="flex gap-2">
