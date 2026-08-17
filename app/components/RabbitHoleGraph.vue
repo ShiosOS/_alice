@@ -217,15 +217,21 @@ function onNodeDragStop(ev: NodeDragEvent) {
   next.add(ev.node.id)
   draggedIds.value = next
   // Nudge other cards away so the dragged card never sits on top of another
-  const positions = resolveOverlaps(
-    flowNodes.value.map((n) => ({ id: n.id, position: { x: n.position.x, y: n.position.y } })),
-    { fixedIds: new Set([ev.node.id]) },
-  )
+  const input: { id: string, position: { x: number, y: number } }[] = []
+  for (const n of flowNodes.value) {
+    input.push({ id: n.id, position: { x: n.position.x, y: n.position.y } })
+  }
+  const positions = resolveOverlaps(input, { fixedIds: new Set([ev.node.id]) })
   const byId = new Map(positions.map((p) => [p.id, p.position]))
-  flowNodes.value = flowNodes.value.map((n) => {
+  for (const n of flowNodes.value) {
     const pos = byId.get(n.id)
-    return pos ? { ...n, position: pos } : n
-  })
+    if (pos) {
+      n.position.x = pos.x
+      n.position.y = pos.y
+    }
+  }
+  // trigger Vue Flow reactivity without cloning deep Node generics
+  flowNodes.value = flowNodes.value.slice()
 }
 
 function resetLayout() {
