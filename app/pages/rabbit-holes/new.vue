@@ -25,6 +25,8 @@
 </template>
 
 <script setup lang="ts">
+import type { RabbitHoleGraph } from '#shared/types/rabbit-holes'
+
 const { loggedIn, user } = useUserSession()
 if (import.meta.client) {
   watchEffect(() => {
@@ -40,23 +42,42 @@ const status = ref('')
 const error = ref('')
 const incompleteId = ref('')
 
+function incompleteHoleId(err: unknown): string | undefined {
+  if (typeof err !== 'object' || err === null || !('data' in err)) return undefined
+  const data = err.data
+  if (typeof data !== 'object' || data === null || !('data' in data)) return undefined
+  const inner = data.data
+  if (typeof inner !== 'object' || inner === null || !('rabbitHoleId' in inner)) return undefined
+  return typeof inner.rabbitHoleId === 'string' ? inner.rabbitHoleId : undefined
+}
+
+function fetchErrorMessage(err: unknown, fallback: string) {
+  if (typeof err === 'object' && err !== null && 'data' in err) {
+    const data = err.data
+    if (typeof data === 'object' && data !== null && 'message' in data && typeof data.message === 'string') {
+      return data.message
+    }
+  }
+  if (err instanceof Error) return err.message
+  return fallback
+}
+
 async function create() {
   busy.value = true
   error.value = ''
   status.value = 'Resolving seed and expanding forks…'
   incompleteId.value = ''
   try {
-    const res = await $fetch<{ rabbitHole: { id: string } }>('/api/rabbit-holes', {
+    const res = await $fetch<RabbitHoleGraph>('/api/rabbit-holes', {
       method: 'POST',
       body: { url: url.value, title: title.value || undefined },
     })
     await navigateTo(`/rabbit-holes/${res.rabbitHole.id}`)
   }
   catch (e: unknown) {
-    const err = e as { data?: { data?: { rabbitHoleId?: string }, message?: string }, message?: string }
-    const id = err?.data?.data?.rabbitHoleId
+    const id = incompleteHoleId(e)
     if (id) incompleteId.value = id
-    error.value = err?.data?.message || err?.message || 'Could not start Rabbit Hole'
+    error.value = fetchErrorMessage(e, 'Could not start Rabbit Hole')
     status.value = ''
   }
   finally {

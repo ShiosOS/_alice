@@ -1,5 +1,13 @@
+import { z } from 'zod'
 import { upsertGoogleUser } from '../../utils/auth-users'
 import { captureServerException } from '../../utils/sentry'
+
+const googleProfileSchema = z.object({
+  sub: z.string().min(1),
+  email: z.string().email(),
+  name: z.string().nullish(),
+  picture: z.string().nullish(),
+})
 
 export default defineOAuthGoogleEventHandler({
   config: {
@@ -7,17 +15,21 @@ export default defineOAuthGoogleEventHandler({
   },
   async onSuccess(event, { user }) {
     try {
+      const profile = googleProfileSchema.safeParse(user)
+      if (!profile.success) {
+        throw createError({ statusCode: 401, statusMessage: 'Google profile missing email' })
+      }
       const record = await upsertGoogleUser({
-        sub: user.sub,
-        email: user.email,
-        name: user.name,
-        image: user.picture,
+        sub: profile.data.sub,
+        email: profile.data.email,
+        name: profile.data.name,
+        image: profile.data.picture,
       })
       if (!record) {
         throw createError({ statusCode: 500, statusMessage: 'Could not create user' })
       }
 
-      await setUserSession(event as never, {
+      await saveSession(event, {
         user: {
           id: record.id,
           email: record.email,
@@ -29,18 +41,18 @@ export default defineOAuthGoogleEventHandler({
       })
 
       if (!record.termsAcceptedAt) {
-        return sendRedirect(event as never, '/terms-accept')
+        return redirect(event, '/terms-accept')
       }
-      return sendRedirect(event as never, '/rabbit-holes')
+      return redirect(event, '/rabbit-holes')
     }
     catch (error) {
       captureServerException(error, { route: '/auth/google' })
-      return sendRedirect(event as never, '/?authError=1')
+      return redirect(event, '/?authError=1')
     }
   },
   onError(event, error) {
     console.error('Google OAuth error', error)
     captureServerException(error, { route: '/auth/google', phase: 'oauth' })
-    return sendRedirect(event as never, '/?authError=1')
+    return redirect(event, '/?authError=1')
   },
 })

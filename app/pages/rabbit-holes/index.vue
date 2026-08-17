@@ -23,6 +23,8 @@
 </template>
 
 <script setup lang="ts">
+import type { RabbitHoleList, RabbitHoleSummary } from '#shared/types/rabbit-holes'
+
 const { loggedIn, user } = useUserSession()
 
 if (import.meta.client) {
@@ -32,22 +34,15 @@ if (import.meta.client) {
   })
 }
 
-type Hole = {
-  id: string
-  title: string
-  status: string
-  updatedAt: string
-}
-
 const pending = ref(true)
 const error = ref('')
-const holes = ref<Hole[]>([])
+const holes = ref<RabbitHoleSummary[]>([])
 
 async function load() {
   pending.value = true
   error.value = ''
   try {
-    const res = await $fetch<{ rabbitHoles: Hole[] }>('/api/rabbit-holes')
+    const res = await $fetch<RabbitHoleList>('/api/rabbit-holes')
     holes.value = res.rabbitHoles
   }
   catch (e) {

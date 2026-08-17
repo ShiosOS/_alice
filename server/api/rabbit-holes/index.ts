@@ -1,11 +1,14 @@
 import { eq } from 'drizzle-orm'
+import type { RabbitHoleGraph, RabbitHoleList } from '../../../shared/types/rabbit-holes'
+import { createRabbitHoleBodySchema } from '../../../shared/types/rabbit-holes'
 import { nodes, rabbitHoles, useDb } from '../../db'
 import { bootstrapRabbitHole } from '../../utils/expand'
-import { loadHoleGraph } from '../../utils/rabbit-holes'
+import { loadHoleGraph, toRabbitHoleSummary } from '../../utils/rabbit-holes'
+import { readZodBody } from '../../utils/validate'
 import { fetchVideoMeta, parseYoutubeVideoId } from '../../utils/youtube'
 
-export default defineEventHandler(async (event) => {
-  const session = await requireUserSession(event as never)
+export default defineEventHandler(async (event): Promise<RabbitHoleList | RabbitHoleGraph> => {
+  const session = await requireSession(event)
   const db = useDb()
 
   if (event.method === 'GET') {
@@ -15,15 +18,15 @@ export default defineEventHandler(async (event) => {
       .from(rabbitHoles)
       .where(eq(rabbitHoles.userId, session.user.id))
       .orderBy(desc(rabbitHoles.updatedAt))
-    return { rabbitHoles: holes }
+    return { rabbitHoles: holes.map(toRabbitHoleSummary) }
   }
 
   if (event.method === 'POST') {
     if (!session.user.termsAccepted) {
       throw createError({ statusCode: 403, statusMessage: 'Accept Terms before creating Rabbit Holes' })
     }
-    const body = await readBody<{ url?: string, title?: string }>(event)
-    const videoId = body.url ? parseYoutubeVideoId(body.url) : null
+    const body = await readZodBody(event, createRabbitHoleBodySchema)
+    const videoId = parseYoutubeVideoId(body.url)
     if (!videoId) {
       throw createError({ statusCode: 400, statusMessage: 'Invalid YouTube URL' })
     }

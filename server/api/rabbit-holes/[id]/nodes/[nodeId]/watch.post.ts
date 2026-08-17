@@ -1,9 +1,10 @@
 import { and, eq } from 'drizzle-orm'
+import type { WatchResponse } from '../../../../../../shared/types/rabbit-holes'
 import { nodes, pathEvents, rabbitHoles, useDb } from '~~/server/db'
 import { youtubeWatchUrl } from '~~/server/utils/youtube'
 
-export default defineEventHandler(async (event) => {
-  const session = await requireUserSession(event as never)
+export default defineEventHandler(async (event): Promise<WatchResponse> => {
+  const session = await requireSession(event)
   const id = getRouterParam(event, 'id')
   const nodeId = getRouterParam(event, 'nodeId')
   if (!id || !nodeId) throw createError({ statusCode: 400, statusMessage: 'Missing params' })

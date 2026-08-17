@@ -9,6 +9,7 @@ import {
   uniqueIndex,
   index,
 } from 'drizzle-orm/pg-core'
+import { holeStatuses, ledgerStatuses, pathKinds } from '../../shared/types/rabbit-holes'
 
 export const users = pgTable('users', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -30,7 +31,7 @@ export const rabbitHoles = pgTable(
       .references(() => users.id, { onDelete: 'cascade' }),
     title: text('title').notNull(),
     seedVideoId: text('seed_video_id').notNull(),
-    status: text('status').notNull().default('ready'), // ready | incomplete
+    status: text('status', { enum: holeStatuses }).notNull().default('ready'),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
@@ -91,7 +92,7 @@ export const pathEvents = pgTable(
     nodeId: uuid('node_id')
       .notNull()
       .references(() => nodes.id, { onDelete: 'cascade' }),
-    kind: text('kind').notNull().default('visited'), // visited | watched
+    kind: text('kind', { enum: pathKinds }).notNull().default('visited'),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (t) => [
@@ -111,7 +112,7 @@ export const expandLedger = pgTable(
       .notNull()
       .references(() => rabbitHoles.id, { onDelete: 'cascade' }),
     nodeId: uuid('node_id').references(() => nodes.id, { onDelete: 'set null' }),
-    status: text('status').notNull(), // success | failed | rejected
+    status: text('status', { enum: ledgerStatuses }).notNull(),
     model: text('model'),
     promptTokens: integer('prompt_tokens'),
     completionTokens: integer('completion_tokens'),

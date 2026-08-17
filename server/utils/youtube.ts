@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import { buildTopicSearchQuery } from '../lib/youtube-topic'
 import {
   fallbackTopicFromMeta,
@@ -42,6 +43,33 @@ export type YoutubeVideoMeta = {
 export type YoutubeCandidate = YoutubeVideoMeta & {
   description?: string
 }
+
+const topicContextSchema = z.object({
+  domain: z.string(),
+  summary: z.string(),
+  themes: z.array(z.string()),
+  entities: z.array(z.string()),
+  searchQueries: z.array(z.string()),
+  avoid: z.array(z.string()),
+})
+
+const youtubeCandidateSchema = z.object({
+  videoId: z.string().min(1),
+  title: z.string(),
+  channelTitle: z.string().nullable(),
+  thumbUrl: z.string().nullable(),
+  available: z.boolean(),
+  description: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  categoryId: z.string().nullable().optional(),
+  categoryLabel: z.string().nullable().optional(),
+})
+
+const relatedCachePayloadSchema = z.object({
+  strategy: z.string().optional(),
+  topic: topicContextSchema.optional(),
+  candidates: z.array(youtubeCandidateSchema),
+})
 
 export { buildTopicSearchQuery, descriptionTopicHints } from '../lib/youtube-topic'
 
@@ -135,11 +163,7 @@ export async function fetchVideoMeta(videoId: string): Promise<YoutubeVideoMeta>
   }
 }
 
-type RelatedCachePayload = {
-  strategy?: string
-  topic?: TopicContext
-  candidates: YoutubeCandidate[]
-}
+type RelatedCachePayload = z.infer<typeof relatedCachePayloadSchema>
 
 async function readCache(videoId: string) {
   const { useDb, youtubeCache } = await import('../db')
@@ -153,12 +177,12 @@ async function readCache(videoId: string) {
     await db.delete(youtubeCache).where(eq(youtubeCache.videoId, videoId))
     return null
   }
-  const payload = cached.relatedPayload as RelatedCachePayload
-  if (payload.strategy !== CANDIDATE_STRATEGY) {
+  const parsed = relatedCachePayloadSchema.safeParse(cached.relatedPayload)
+  if (!parsed.success || parsed.data.strategy !== CANDIDATE_STRATEGY) {
     await db.delete(youtubeCache).where(eq(youtubeCache.videoId, videoId))
     return null
   }
-  return payload
+  return parsed.data
 }
 
 async function writeCache(videoId: string, payload: RelatedCachePayload) {
