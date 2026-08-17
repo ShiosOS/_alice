@@ -86,7 +86,9 @@ Before inviting others:
    - Enable billing alerts on the GCP project.
    - Set a daily quota alert below the default 10,000 units.
    - Keep `NUXT_EXPAND_DAILY_BUDGET` low (default 50 expands/user/day).
-2. **AI provider (OpenAI or compatible):**
+2. **AI provider (OpenAI or compatible, e.g. OpenRouter):**
+   - `NUXT_AI_API_KEY` must match `NUXT_AI_BASE_URL` (OpenRouter keys → `https://openrouter.ai/api/v1`; OpenAI keys → `https://api.openai.com/v1`).
+   - OpenRouter models use vendor-prefixed ids (e.g. `openai/gpt-4o-mini`).
    - Hard monthly spend cap / budget alert in the vendor console.
    - Keep `NUXT_EXPAND_DISABLED=true` as an emergency switch on non-prod.
 3. **Railway:** workspace spend alerts if available.
