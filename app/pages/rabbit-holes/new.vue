@@ -2,10 +2,10 @@
   <section class="max-w-lg space-y-6">
     <div class="space-y-2">
       <h1 class="font-display text-3xl text-foreground">
-        Start a new Rabbit Hole
+        Start from a video
       </h1>
       <p class="text-muted-foreground">
-        Paste a YouTube URL as your seed. We’ll grow a first map of named forks.
+        Paste a YouTube link. You can name it, or we’ll use the video title.
       </p>
     </div>
     <form
@@ -13,7 +13,7 @@
       @submit.prevent="create"
     >
       <div class="space-y-2">
-        <Label for="seed-url">YouTube URL</Label>
+        <Label for="seed-url">YouTube link</Label>
         <Input
           id="seed-url"
           v-model="url"
@@ -23,19 +23,19 @@
         />
       </div>
       <div class="space-y-2">
-        <Label for="hole-title">Title (optional)</Label>
+        <Label for="hole-title">Name (optional)</Label>
         <Input
           id="hole-title"
           v-model="title"
           type="text"
-          placeholder="Defaults to the video title"
+          placeholder="Video title if blank"
         />
       </div>
       <Button
         type="submit"
         :disabled="isMutating"
       >
-        {{ isMutating ? 'Growing the first graph…' : 'Start Rabbit Hole' }}
+        {{ isMutating ? 'Looking up the video…' : 'Start' }}
       </Button>
     </form>
     <p
@@ -108,7 +108,7 @@ function fetchErrorMessage(err: unknown, fallback: string) {
 async function create() {
   isMutating.value = true
   error.value = ''
-  status.value = 'Resolving seed and expanding forks…'
+  status.value = 'Looking up the video and first next steps…'
   incompleteId.value = ''
   try {
     const res = await $fetch<RabbitHoleGraph>('/api/rabbit-holes', {

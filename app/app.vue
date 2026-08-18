@@ -10,63 +10,54 @@
       >
         _alice
       </NuxtLink>
-      <nav class="flex items-center gap-4 text-sm text-foreground">
-        <template v-if="loggedIn">
-          <NuxtLink
-            to="/rabbit-holes"
-            class="ink-nav-link"
-            active-class="!text-primary"
-          >
-            Rabbit Holes
-          </NuxtLink>
-          <NuxtLink
-            to="/account"
-            class="ink-nav-link"
-            active-class="!text-primary"
-          >
-            Account
-          </NuxtLink>
-          <Button
-            variant="ghost"
-            size="sm"
-            as-child
-          >
-            <a href="/auth/logout">Sign out</a>
-          </Button>
-        </template>
+      <nav
+        v-if="loggedIn"
+        class="flex items-center gap-4 text-sm text-foreground"
+      >
+        <NuxtLink
+          to="/rabbit-holes"
+          class="ink-nav-link"
+          active-class="!text-foreground !font-medium"
+        >
+          Rabbit Holes
+        </NuxtLink>
+        <NuxtLink
+          to="/account"
+          class="ink-nav-link"
+          active-class="!text-foreground !font-medium"
+        >
+          Account
+        </NuxtLink>
         <Button
-          v-else
+          variant="ghost"
+          size="sm"
           as-child
         >
-          <a href="/auth/google">Sign in with Google</a>
+          <a href="/auth/logout">Sign out</a>
         </Button>
       </nav>
     </header>
 
     <main :class="fullBleed ? 'ink-shell-main-bleed' : 'ink-shell-main'">
-      <NuxtPage />
+      <div
+        :key="route.fullPath"
+        :class="fullBleed ? undefined : 'ink-page-enter'"
+      >
+        <NuxtPage />
+      </div>
     </main>
 
     <footer
       v-if="!fullBleed"
       class="ink-shell-footer"
     >
-      <span>Rabbit Holes for YouTube</span>
+      <span>Maps for YouTube rabbit holes</span>
       <span class="flex gap-2">
-        <NuxtLink
-          to="/privacy"
-          class="hover:text-foreground"
-        >Privacy</NuxtLink>
+        <NuxtLink to="/privacy">Privacy</NuxtLink>
         <span aria-hidden="true">·</span>
-        <NuxtLink
-          to="/terms"
-          class="hover:text-foreground"
-        >Terms</NuxtLink>
+        <NuxtLink to="/terms">Terms</NuxtLink>
         <span aria-hidden="true">·</span>
-        <NuxtLink
-          to="/about"
-          class="hover:text-foreground"
-        >About</NuxtLink>
+        <NuxtLink to="/about">About</NuxtLink>
       </span>
     </footer>
 

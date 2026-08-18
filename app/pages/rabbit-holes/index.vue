@@ -8,7 +8,7 @@
         v-if="showHeaderCta"
         as-child
       >
-        <NuxtLink to="/rabbit-holes/new">Start a new Rabbit Hole</NuxtLink>
+        <NuxtLink to="/rabbit-holes/new">New Rabbit Hole</NuxtLink>
       </Button>
     </header>
 
@@ -27,17 +27,17 @@
     <EmptyState
       v-else-if="!holes.length"
       title="No Rabbit Holes yet"
-      description="Start from a YouTube seed and grow a map of intentional forks."
+      description="Paste a YouTube link to start. You’ll get a few next steps from that video."
     >
       <template #action>
         <Button as-child>
-          <NuxtLink to="/rabbit-holes/new">Start a new Rabbit Hole</NuxtLink>
+          <NuxtLink to="/rabbit-holes/new">Start from a video</NuxtLink>
         </Button>
       </template>
     </EmptyState>
     <ul
       v-else
-      class="divide-y divide-border"
+      class="ink-list-panel"
     >
       <li
         v-for="hole in holes"
@@ -45,12 +45,18 @@
       >
         <NuxtLink
           :to="`/rabbit-holes/${hole.id}`"
-          class="flex flex-col gap-1 py-3.5 transition-colors hover:text-primary"
+          class="ink-list-row"
         >
-          <strong class="font-medium text-foreground">{{ hole.title }}</strong>
-          <span class="text-sm text-muted-foreground">
-            {{ hole.status }} · updated {{ formatDate(hole.updatedAt) }}
+          <span class="min-w-0">
+            <strong class="block font-medium text-foreground">{{ hole.title }}</strong>
+            <span class="text-sm text-muted-foreground">
+              {{ hole.status }} · updated {{ formatDate(hole.updatedAt) }}
+            </span>
           </span>
+          <ChevronRight
+            class="ink-list-row-chevron"
+            aria-hidden="true"
+          />
         </NuxtLink>
       </li>
     </ul>
@@ -58,6 +64,7 @@
 </template>
 
 <script setup lang="ts">
+import { ChevronRight } from '@lucide/vue'
 import { Button } from '@/components/ui/button'
 import { showRabbitHoleListHeaderCta } from '~/utils/rabbit-hole-list-chrome'
 

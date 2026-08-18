@@ -55,6 +55,9 @@
 }
 .prose h1,
 .prose h2 {
-  color: var(--primary);
+  color: var(--foreground);
+}
+a {
+  color: var(--link);
 }
 </style>
