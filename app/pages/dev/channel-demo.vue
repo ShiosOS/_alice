@@ -54,12 +54,16 @@ const nodes = [
   node('n1', 'aaaaaaaaaaa', 'The fall of ancient empires', 'Historia'),
   node('n2', 'bbbbbbbbbbb', 'Follow the leaders', 'Historia'),
   node('n3', 'ccccccccccc', 'Sideways theory', 'Historia'),
+  node('n4', 'ddddddddddd', 'Compare collapses', 'Historia'),
+  node('n5', 'eeeeeeeeeee', 'Curiouser culture', 'Historia'),
 ]
 
 const edges: GraphEdge[] = [
   { id: 'e1', rabbitHoleId: 'demo', fromNodeId: 'n0', toNodeId: 'n1', phrase: 'deeper into antiquity', createdAt: now },
   { id: 'e2', rabbitHoleId: 'demo', fromNodeId: 'n0', toNodeId: 'n2', phrase: 'follow the leaders', createdAt: now },
   { id: 'e3', rabbitHoleId: 'demo', fromNodeId: 'n0', toNodeId: 'n3', phrase: 'sideways theory', createdAt: now },
+  { id: 'e4', rabbitHoleId: 'demo', fromNodeId: 'n1', toNodeId: 'n4', phrase: 'compare collapses', createdAt: now },
+  { id: 'e5', rabbitHoleId: 'demo', fromNodeId: 'n1', toNodeId: 'n5', phrase: 'curiouser culture', createdAt: now },
 ]
 
 const holeGraph = ref<RabbitHoleGraph>({

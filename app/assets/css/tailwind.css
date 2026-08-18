@@ -190,6 +190,102 @@
     @apply font-medium text-foreground no-underline;
   }
 
+  .channel-arrival {
+    @apply border-l border-primary/40 pl-3;
+  }
+
+  .channel-shaft {
+    @apply mb-6;
+  }
+
+  .channel-shaft-list {
+    @apply relative m-0 list-none p-0;
+    padding-left: 0.85rem;
+  }
+
+  .channel-shaft-list::before {
+    content: '';
+    position: absolute;
+    left: 0.2rem;
+    top: 0.4rem;
+    bottom: 0.4rem;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .channel-shaft-step {
+    @apply relative pb-3 last:pb-0;
+  }
+
+  .channel-shaft-phrase {
+    @apply mb-1 pl-4 text-sm italic text-primary;
+  }
+
+  .channel-shaft-node {
+    @apply flex w-full items-center gap-2 pl-4 text-left text-sm text-muted-foreground hover:text-foreground disabled:cursor-default;
+  }
+
+  .channel-shaft-node.is-current {
+    @apply font-semibold text-foreground;
+  }
+
+  .channel-shaft-dot {
+    position: absolute;
+    left: 0;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: var(--border);
+    border: 1px solid var(--background);
+  }
+
+  .channel-shaft-node.is-current .channel-shaft-dot {
+    background: var(--primary);
+  }
+
+  .channel-forks {
+    @apply mt-8 border-t border-border pt-4;
+  }
+
+  .channel-forks-list {
+    @apply relative m-0 list-none p-0;
+    padding-left: 0.85rem;
+  }
+
+  .channel-forks-list::before {
+    content: '';
+    position: absolute;
+    left: 0.2rem;
+    top: 0.25rem;
+    bottom: 0.25rem;
+    width: 1px;
+    background: color-mix(in srgb, var(--primary) 35%, var(--border));
+  }
+
+  .channel-fork-item {
+    @apply relative pb-2 last:pb-0;
+  }
+
+  .channel-fork-phrase {
+    @apply mb-1;
+  }
+
+  .channel-fork-row {
+    @apply border-b-0 py-2 pl-4;
+  }
+
+  .channel-fork-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 1.75rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--primary) 50%, var(--border));
+    border: 1px solid var(--background);
+  }
+
   /* Wide channel: main column + Path rail */
   .channel-surface {
     @apply w-full;

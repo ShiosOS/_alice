@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { RabbitHoleGraph } from '#shared/types/rabbit-holes'
 import {
+  ancestorChainToFocus,
   childForksForNode,
   findNodeById,
   pathTrailNodes,
   resolveDefaultFocusId,
 } from '~/utils/channel-graph'
+import ConnectionShaft from '~/components/rabbit-hole/ConnectionShaft.vue'
 import FocusBlock from '~/components/rabbit-hole/FocusBlock.vue'
 import ForkBlockList from '~/components/rabbit-hole/ForkBlockList.vue'
 import HoleHeader from '~/components/rabbit-hole/HoleHeader.vue'
@@ -61,6 +63,22 @@ const forks = computed(() => {
   return childForksForNode(props.holeGraph, focusedId.value)
 })
 
+const chain = computed(() => {
+  if (!focusedId.value) return []
+  return ancestorChainToFocus(props.holeGraph, focusedId.value)
+})
+
+/** Ancestors above the focused node (structural connections). */
+const ancestors = computed(() => {
+  if (chain.value.length <= 1) return []
+  return chain.value.slice(0, -1)
+})
+
+const arrivalPhrase = computed(() => {
+  const tip = chain.value[chain.value.length - 1]
+  return tip?.inboundPhrase ?? null
+})
+
 const trail = computed(() => pathTrailNodes(props.holeGraph))
 
 function setFocus(nodeId: string) {
@@ -100,6 +118,18 @@ defineExpose({
 
     <div class="channel-layout">
       <div class="channel-main">
+        <ConnectionShaft
+          :chain="ancestors"
+          @select="setFocus"
+        />
+
+        <p
+          v-if="arrivalPhrase"
+          class="channel-arrival mb-3"
+        >
+          <span class="channel-shaft-phrase">{{ arrivalPhrase }}</span>
+        </p>
+
         <FocusBlock
           v-if="focused"
           :node="focused"

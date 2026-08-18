@@ -21,7 +21,7 @@ const emit = defineEmits<{
     aria-label="Path"
   >
     <p class="mb-2 text-xs uppercase tracking-wide text-muted-foreground">
-      Path
+      Path watched
     </p>
     <div
       class="channel-path-trail"

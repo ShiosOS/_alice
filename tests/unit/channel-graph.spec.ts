@@ -6,8 +6,10 @@ import type {
   RabbitHoleGraph,
 } from '../../shared/types/rabbit-holes'
 import {
+  ancestorChainToFocus,
   childForksForNode,
   findNodeById,
+  inboundEdgeToNode,
   pathTrailNodes,
   resolveDefaultFocusId,
 } from '../../app/utils/channel-graph'
@@ -121,5 +123,22 @@ describe('channel-graph helpers', () => {
       ],
     })
     expect(pathTrailNodes(g).map(n => n.id)).toEqual(['n0', 'n1', 'n2'])
+  })
+
+  it('walks ancestor chain with inbound phrases', () => {
+    const g = graph({
+      nodes: [seed, a, b],
+      edges: [
+        edge('e1', 'n0', 'n1', 'deeper into antiquity'),
+        edge('e2', 'n1', 'n2', 'compare collapses'),
+      ],
+      path: [],
+    })
+    expect(inboundEdgeToNode(g, 'n2')?.phrase).toBe('compare collapses')
+    const chain = ancestorChainToFocus(g, 'n2')
+    expect(chain.map(s => s.node.id)).toEqual(['n0', 'n1', 'n2'])
+    expect(chain[0]?.inboundPhrase).toBeNull()
+    expect(chain[1]?.inboundPhrase).toBe('deeper into antiquity')
+    expect(chain[2]?.inboundPhrase).toBe('compare collapses')
   })
 })

@@ -10,6 +10,13 @@ export type ChannelFork = {
   node: GraphNode
 }
 
+/** One step on the structural shaft from seed toward focus. */
+export type ChainStep = {
+  node: GraphNode
+  /** Phrase on the edge into this node; null for the seed. */
+  inboundPhrase: string | null
+}
+
 /** Prefer last Path node when present; otherwise the seed node. */
 export function resolveDefaultFocusId(graph: RabbitHoleGraph): string | null {
   const path = graph.path
@@ -32,6 +39,48 @@ export function findNodeById(
   nodeId: string,
 ): GraphNode | null {
   return nodes.find(n => n.id === nodeId) ?? null
+}
+
+/** First inbound edge to `nodeId` (tree parent), if any. */
+export function inboundEdgeToNode(
+  graph: RabbitHoleGraph,
+  nodeId: string,
+): GraphEdge | null {
+  return graph.edges.find(e => e.toNodeId === nodeId) ?? null
+}
+
+/**
+ * Structural chain from seed (or root) down to `focusId`, with inbound phrases.
+ * Walks parent edges; stops if a cycle appears.
+ */
+export function ancestorChainToFocus(
+  graph: RabbitHoleGraph,
+  focusId: string,
+): ChainStep[] {
+  const byId = new Map(graph.nodes.map(n => [n.id, n]))
+  const focus = byId.get(focusId)
+  if (!focus) return []
+
+  const upward: ChainStep[] = []
+  const seen = new Set<string>()
+  let currentId: string | null = focusId
+
+  while (currentId) {
+    if (seen.has(currentId)) break
+    seen.add(currentId)
+
+    const node = byId.get(currentId)
+    if (!node) break
+
+    const inbound = inboundEdgeToNode(graph, currentId)
+    upward.push({
+      node,
+      inboundPhrase: inbound?.phrase ?? null,
+    })
+    currentId = inbound?.fromNodeId ?? null
+  }
+
+  return upward.reverse()
 }
 
 /** Outbound forks from `fromNodeId`, with phrase + child node. */
