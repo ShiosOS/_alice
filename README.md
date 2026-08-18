@@ -6,8 +6,8 @@ Wonderland-inspired map for YouTube: Rabbit Holes, intentional forks, watch on Y
 
 - Nuxt 4 + Vue + TypeScript
 - Postgres (Railway)
-- Staging: `https://alice-staging.shiosos.dev` (auto from `main`)
-- Production: `https://alice.shiosos.dev` (promote: `git push origin origin/main:production`)
+- Staging: `https://alice-staging.shiosas.dev` (auto from `main`)
+- Production: `https://alice.shiosas.dev` (promote: `git push origin origin/main:production`)
 
 ## Local
 
@@ -33,6 +33,16 @@ Integration and e2e need `DATABASE_URL` / `NUXT_DATABASE_URL` and a ≥32-char `
 
 See `docs/deploy.md` for Railway + Cloudflare and `docs/smoke.md` for **PR CI** vs **promote gate** (`scripts/e2e-smoke.mjs`).
 
+## Contributing
+
+- [CONTRIBUTING.md](CONTRIBUTING.md) — setup, branch model, PR expectations
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) — community standards
+- [SECURITY.md](SECURITY.md) — private vulnerability reporting
+- [SUPPORT.md](SUPPORT.md) — where to get help
+- [docs/github-public-hardening.md](docs/github-public-hardening.md) — public visibility + branch protection checklist
+
+Please open PRs against `main`. Do not commit on `production` (fast-forward promote only).
+
 ## Craft & testing (OpenSpec)
 
 Active change: `openspec/changes/code-craft-standards/`.
@@ -45,3 +55,7 @@ Capability specs (until archived into main specs):
 Frozen style: 2-space indent, single quotes, no semicolons (`@nuxt/eslint` stylistic + formatters).
 
 Product SFCs prefer `@layer components` names (`ink-*`, `channel-*`) in `app/assets/css/tailwind.css` over long arbitrary Tailwind strings; leave `app/components/ui` alone.
+
+## License
+
+[MIT](LICENSE)
