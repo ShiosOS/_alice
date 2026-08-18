@@ -2,8 +2,9 @@
   <article class="prose">
     <h1>About `_alice`</h1>
     <p>
-      `_alice` is a Wonderland map for YouTube: start from a seed video, grow a navigable graph of how
-      it branches (with short direction phrases), keep a Path of what you’ve opened, and watch on YouTube.
+      `_alice` helps you follow a YouTube topic without getting lost: start from one video,
+      see clear next steps with short direction labels, come back to what you already opened,
+      and watch on YouTube.
     </p>
     <p>
       <strong>`_alice` is not affiliated with, endorsed by, or sponsored by YouTube or Google.</strong>
@@ -24,10 +25,10 @@
   line-height: 1.55;
 }
 .prose h1 {
-  color: var(--primary);
+  color: var(--foreground);
 }
 a {
-  color: var(--primary);
+  color: var(--link);
   text-decoration: underline;
 }
 </style>
