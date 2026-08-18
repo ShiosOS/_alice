@@ -12,6 +12,16 @@ Maintainer checklist for a public `_alice` plus protected `main` / `production`.
 | Branch protection `main` | **On** — see below |
 | Branch protection `production` | **On** — see below |
 
+### Bypass / override (who can ignore checks)
+
+Classic branch protection has no per-user bypass list. Bypass is tied to the
+**repository Admin** role via “Do not include administrators”
+(`enforce_admins: false`).
+
+- **Can override today:** `@ShiosOS` only (sole Admin collaborator)
+- **Cannot override:** everyone else (Write/Triage/Read, bots, fork PRs)
+- **Keep it that way:** never grant anyone else **Admin**; invite contributors as **Write** (or less)
+
 ### `main` (trunk → staging)
 
 - Require a pull request before merging
@@ -19,7 +29,7 @@ Maintainer checklist for a public `_alice` plus protected `main` / `production`.
 - Dismiss stale reviews: yes
 - Require Code Owner reviews: **no** (CODEOWNERS still routes review requests)
 - Require status checks: **`check`** (CI job), branches must be up to date
-- Enforce for admins: **yes**
+- Enforce for admins: **no** (owner Admin can merge/override; others cannot)
 - Allow force pushes / deletions: **no**
 - Require conversation resolution: **yes**
 
@@ -28,7 +38,7 @@ Maintainer checklist for a public `_alice` plus protected `main` / `production`.
 Promotion remains `git push origin origin/main:production` (no PR required).
 
 - Require status checks: **`check`** (same SHA already green on `main`)
-- Enforce for admins: **yes**
+- Enforce for admins: **no** (same Admin-only bypass as `main`)
 - Allow force pushes / deletions: **no**
 - No required pull-request reviews (so FF promote still works)
 
@@ -47,7 +57,7 @@ gh api -X PUT repos/ShiosOS/_alice/branches/main/protection \
   --input - <<'EOF'
 {
   "required_status_checks": { "strict": true, "contexts": ["check"] },
-  "enforce_admins": true,
+  "enforce_admins": false,
   "required_pull_request_reviews": {
     "required_approving_review_count": 0,
     "dismiss_stale_reviews": true,
@@ -66,7 +76,7 @@ gh api -X PUT repos/ShiosOS/_alice/branches/production/protection \
   --input - <<'EOF'
 {
   "required_status_checks": { "strict": true, "contexts": ["check"] },
-  "enforce_admins": true,
+  "enforce_admins": false,
   "required_pull_request_reviews": null,
   "restrictions": null,
   "allow_force_pushes": false,
