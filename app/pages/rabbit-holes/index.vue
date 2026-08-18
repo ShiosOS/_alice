@@ -4,7 +4,10 @@
       <h1 class="font-display text-3xl text-foreground">
         Rabbit Holes
       </h1>
-      <Button as-child>
+      <Button
+        v-if="showHeaderCta"
+        as-child
+      >
         <NuxtLink to="/rabbit-holes/new">Start a new Rabbit Hole</NuxtLink>
       </Button>
     </header>
@@ -21,13 +24,11 @@
     >
       {{ error }}
     </p>
-    <EmptyState v-else-if="!holes.length">
-      <template #title>
-        No Rabbit Holes yet
-      </template>
-      <template #description>
-        Start from a YouTube seed and grow a map of intentional forks.
-      </template>
+    <EmptyState
+      v-else-if="!holes.length"
+      title="No Rabbit Holes yet"
+      description="Start from a YouTube seed and grow a map of intentional forks."
+    >
       <template #action>
         <Button as-child>
           <NuxtLink to="/rabbit-holes/new">Start a new Rabbit Hole</NuxtLink>
@@ -58,12 +59,19 @@
 
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
+import { showRabbitHoleListHeaderCta } from '~/utils/rabbit-hole-list-chrome'
 
 definePageMeta({
   middleware: ['auth', 'terms'],
 })
 
 const { pending, error, holes } = useRabbitHoleList()
+
+const showHeaderCta = computed(() => showRabbitHoleListHeaderCta({
+  pending: pending.value,
+  error: error.value,
+  holeCount: holes.value.length,
+}))
 
 function formatDate(v: string) {
   try {

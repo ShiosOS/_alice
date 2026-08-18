@@ -1,12 +1,23 @@
+<script setup lang="ts">
+withDefaults(defineProps<{
+  title?: string
+  description?: string
+}>(), {
+  title: 'Nothing here yet',
+  description: '',
+})
+</script>
+
 <template>
   <div class="mx-auto flex max-w-md flex-col items-start gap-4 py-10">
     <h2 class="font-display text-2xl text-foreground">
-      <slot name="title">
-        Nothing here yet
-      </slot>
+      {{ title }}
     </h2>
-    <p class="leading-relaxed text-muted-foreground">
-      <slot name="description" />
+    <p
+      v-if="description"
+      class="leading-relaxed text-muted-foreground"
+    >
+      {{ description }}
     </p>
     <div
       v-if="$slots.action"

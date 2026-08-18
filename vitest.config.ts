@@ -1,4 +1,5 @@
 import { fileURLToPath } from 'node:url'
+import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vitest/config'
 
 const root = fileURLToPath(new URL('./', import.meta.url))
@@ -18,6 +19,7 @@ export default defineConfig({
         'server/lib/**',
         'app/utils/merge-expand-patch.ts',
         'app/utils/channel-graph.ts',
+        'app/utils/rabbit-hole-list-chrome.ts',
         'shared/**',
       ],
       thresholds: {
@@ -29,11 +31,13 @@ export default defineConfig({
     },
     projects: [
       {
+        plugins: [vue()],
         resolve: {
           alias: {
             '~': appDir,
             '~~': root,
             '#shared': sharedDir,
+            '@': appDir,
           },
         },
         test: {
