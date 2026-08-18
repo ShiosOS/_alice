@@ -243,6 +243,62 @@
     transform: translate3d(22px, 0, 0);
   }
 
+  .ink-example-trail.is-shown .ink-example-line,
+  .ink-example-trail.is-entering .ink-example-line {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .ink-example-trail.is-entering .ink-example-line {
+    transition:
+      opacity 480ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .ink-example-trail.is-entering .ink-example-line:nth-child(1) {
+    transition-delay: 0ms;
+  }
+
+  .ink-example-trail.is-entering .ink-example-line:nth-child(2) {
+    transition-delay: 90ms;
+  }
+
+  .ink-example-trail.is-entering .ink-example-line:nth-child(3) {
+    transition-delay: 180ms;
+  }
+
+  .ink-example-trail.is-exiting .ink-example-line {
+    opacity: 0;
+    transform: translate3d(-18px, 0, 0);
+    transition:
+      opacity 320ms ease,
+      transform 320ms ease;
+  }
+
+  .ink-example-trail.is-exiting .ink-example-line:nth-child(1) {
+    transition-delay: 0ms;
+  }
+
+  .ink-example-trail.is-exiting .ink-example-line:nth-child(2) {
+    transition-delay: 50ms;
+  }
+
+  .ink-example-trail.is-exiting .ink-example-line:nth-child(3) {
+    transition-delay: 100ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ink-example-line {
+      transform: none !important;
+    }
+
+    .ink-example-trail.is-entering .ink-example-line,
+    .ink-example-trail.is-exiting .ink-example-line {
+      transition: opacity 200ms linear !important;
+      transition-delay: 0ms !important;
+    }
+  }
+
   .ink-list-panel {
     @apply overflow-hidden rounded-md bg-surface-panel;
     box-shadow:
