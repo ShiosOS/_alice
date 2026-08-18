@@ -1,11 +1,11 @@
 ## 1. EmptyState API
 
-- [ ] 1.1 Change `EmptyState` to take `title` and `description` props (defaults: title `Nothing here yet`, description empty) and keep `action` as a slot
-- [ ] 1.2 Update `app/pages/rabbit-holes/index.vue` to pass those props instead of `#title` / `#description` slots
+- [x] 1.1 Change `EmptyState` to take `title` and `description` props (defaults: title `Nothing here yet`, description empty) and keep `action` as a slot
+- [x] 1.2 Update `app/pages/rabbit-holes/index.vue` to pass those props instead of `#title` / `#description` slots
 
 ## 2. Single empty CTA on the list
 
-- [ ] 2.1 Hide the Rabbit Holes list header “Start a new Rabbit Hole” button when the library is empty (after load, no error), so only EmptyState owns that CTA
+- [x] 2.1 Hide the Rabbit Holes list header “Start a new Rabbit Hole” button when the library is empty (after load, no error), so only EmptyState owns that CTA
 
 ## 3. Regression test
 
