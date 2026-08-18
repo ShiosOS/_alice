@@ -512,7 +512,7 @@
     top: 0;
     bottom: 0;
     width: 1px;
-    background: color-mix(in oklab, var(--foreground) 22%, transparent);
+    background: color-mix(in oklab, var(--foreground) 28%, transparent);
   }
 
   .channel-outline-root-mark {
@@ -534,6 +534,12 @@
   .channel-outline-elbow {
     @apply relative shrink-0;
     width: 0.95rem;
+    --elbow-y: 0.75rem;
+  }
+
+  .channel-outline-row:has(.channel-outline-phrase) .channel-outline-elbow {
+    /* Meet the title line, not the inbound phrase above it. */
+    --elbow-y: 1.55rem;
   }
 
   .channel-outline-elbow::before {
@@ -541,9 +547,9 @@
     position: absolute;
     left: 0.3rem;
     top: 0;
-    height: 0.8rem;
+    height: var(--elbow-y);
     width: 1px;
-    background: color-mix(in oklab, var(--foreground) 22%, transparent);
+    background: color-mix(in oklab, var(--foreground) 28%, transparent);
   }
 
   .channel-outline-elbow:not(.is-last)::before {
@@ -555,10 +561,10 @@
     content: '';
     position: absolute;
     left: 0.3rem;
-    top: 0.8rem;
+    top: var(--elbow-y);
     width: 0.5rem;
     height: 1px;
-    background: color-mix(in oklab, var(--foreground) 22%, transparent);
+    background: color-mix(in oklab, var(--foreground) 28%, transparent);
   }
 
   .channel-outline-row[data-depth='0'] .channel-outline-body {
