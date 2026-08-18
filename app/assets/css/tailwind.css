@@ -61,7 +61,7 @@
   --atmosphere-cool: #ebe6df;
   --atmosphere-warm: #f0ebe4;
 
-  --content-max: 42rem;
+  --content-max: 72rem;
 
   --bg: var(--background);
   --fg: var(--foreground);
@@ -164,15 +164,21 @@
   .channel-focus-thumb {
     @apply w-full object-cover;
     aspect-ratio: 16 / 9;
+    max-height: 28rem;
   }
 
   .channel-focus-thumb-fallback {
     @apply flex w-full items-center justify-center bg-secondary text-sm text-muted-foreground;
     aspect-ratio: 16 / 9;
+    max-height: 28rem;
   }
 
   .channel-path-trail {
     @apply flex flex-wrap items-center gap-x-1 gap-y-1 text-sm text-muted-foreground;
+  }
+
+  .channel-path-trail.is-stack {
+    @apply flex-col items-stretch gap-1;
   }
 
   .channel-path-segment {
@@ -181,5 +187,48 @@
 
   .channel-path-segment.is-current {
     @apply font-medium text-foreground no-underline;
+  }
+
+  /* Wide channel: main column + Path rail */
+  .channel-surface {
+    @apply w-full;
+  }
+
+  .channel-layout {
+    @apply flex flex-col gap-8;
+  }
+
+  @media (min-width: 1024px) {
+    .channel-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 16rem;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    .channel-main {
+      min-width: 0;
+    }
+
+    .channel-aside {
+      position: sticky;
+      top: 1.25rem;
+      border-top: none;
+      border-left: 1px solid var(--border);
+      padding-top: 0;
+      padding-left: 1.5rem;
+      margin-top: 0;
+    }
+
+    .channel-focus {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(14rem, 1fr);
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .channel-focus-media {
+      min-width: 0;
+    }
   }
 }
