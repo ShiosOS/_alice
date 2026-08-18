@@ -7,7 +7,8 @@ import { showRabbitHoleListHeaderCta } from '../../app/utils/rabbit-hole-list-ch
 
 const EMPTY_TITLE = 'No Rabbit Holes yet'
 const FALLBACK_TITLE = 'Nothing here yet'
-const START_CTA = 'Start a new Rabbit Hole'
+const START_CTA = 'Start from a video'
+const EMPTY_DESCRIPTION = 'Paste a YouTube link to start. You’ll get a few next steps from that video.'
 
 describe('EmptyState', () => {
   it('shows only the provided title, not the fallback', () => {
@@ -66,7 +67,7 @@ describe('empty Rabbit Holes library chrome', () => {
           holeCount === 0
             ? h(EmptyState, {
                 title: EMPTY_TITLE,
-                description: 'Start from a YouTube seed and grow a map of intentional forks.',
+                description: EMPTY_DESCRIPTION,
               }, {
                 action: () => h('a', { href: '/rabbit-holes/new' }, START_CTA),
               })

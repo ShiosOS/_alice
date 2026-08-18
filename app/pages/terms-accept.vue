@@ -7,12 +7,12 @@
       Before using Rabbit Holes, please accept the
       <NuxtLink
         to="/terms"
-        class="text-primary underline underline-offset-4"
+        class="text-link underline underline-offset-4"
       >Terms of Use</NuxtLink>
       and review the
       <NuxtLink
         to="/privacy"
-        class="text-primary underline underline-offset-4"
+        class="text-link underline underline-offset-4"
       >Privacy Policy</NuxtLink>.
     </p>
     <Button
