@@ -97,6 +97,33 @@ describe('channel-graph helpers', () => {
     expect(resolveDefaultFocusId(g)).toBe('n2')
   })
 
+  it('falls back past Path when the last visit is missing from nodes', () => {
+    const g = graph({
+      nodes: [seed, a],
+      edges: [],
+      path: [path('p1', 'gone', '2026-01-01T01:00:00.000Z')],
+    })
+    expect(resolveDefaultFocusId(g)).toBe('n0')
+  })
+
+  it('falls back to first node when seed video is missing', () => {
+    const g = graph({
+      nodes: [a, b],
+      edges: [],
+      path: [],
+    })
+    expect(resolveDefaultFocusId(g)).toBe('n1')
+  })
+
+  it('returns null when the graph has no nodes', () => {
+    const g = graph({
+      nodes: [],
+      edges: [],
+      path: [],
+    })
+    expect(resolveDefaultFocusId(g)).toBeNull()
+  })
+
   it('lists child forks with phrases', () => {
     const g = graph({
       nodes: [seed, a, b],
@@ -157,6 +184,21 @@ describe('channel-graph helpers', () => {
       ['n0', 0, null],
       ['n1', 1, 'deeper into antiquity'],
       ['n2', 1, 'sideways theory'],
+    ])
+  })
+
+  it('appends orphan nodes outside the seed tree at depth 0', () => {
+    const orphan = node('n9', 'orphan-yt', 'Orphan')
+    const g = graph({
+      nodes: [seed, a, orphan],
+      edges: [edge('e1', 'n0', 'n1', 'deeper into antiquity')],
+      path: [],
+    })
+    const rows = graphOutlineRows(g)
+    expect(rows.map(r => [r.node.id, r.depth, r.inboundPhrase])).toEqual([
+      ['n0', 0, null],
+      ['n1', 1, 'deeper into antiquity'],
+      ['n9', 0, null],
     ])
   })
 })
