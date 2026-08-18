@@ -55,7 +55,7 @@
     "@vue/test-utils": "^2.4.11",
     "@vueuse/core": "^14.4.0",
     "drizzle-kit": "^0.31.10",
-    "eslint": "^9.33.0",
+    "eslint": "^10.8.1",
     "eslint-plugin-format": "^2.0.1",
     "happy-dom": "^20.11.2",
     "playwright": "^1.62.1",
