@@ -61,7 +61,8 @@
   --atmosphere-cool: #ebe6df;
   --atmosphere-warm: #f0ebe4;
 
-  --content-max: 72rem;
+  /* Near-full viewport; keep modest side padding via shell px */
+  --content-max: min(90rem, calc(100vw - 2.5rem));
 
   --bg: var(--background);
   --fg: var(--foreground);
@@ -109,7 +110,7 @@
   }
 
   .ink-shell-main {
-    @apply mx-auto w-full flex-1 px-5 py-6 pb-8;
+    @apply mx-auto w-full flex-1 px-5 py-6 pb-8 sm:px-8 lg:px-10;
     max-width: var(--content-max);
   }
 
