@@ -33,6 +33,8 @@ Integration and e2e need `DATABASE_URL` / `NUXT_DATABASE_URL` and a ≥32-char `
 
 See `docs/deploy.md` for Railway + Cloudflare and `docs/smoke.md` for **PR CI** vs **promote gate** (`scripts/e2e-smoke.mjs`).
 
+Product horizon: [`docs/ROADMAP.md`](docs/ROADMAP.md) (Now / Next / Later).
+
 ## Craft & testing (OpenSpec)
 
 Active change: `openspec/changes/code-craft-standards/`.
