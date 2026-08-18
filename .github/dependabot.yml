@@ -8,6 +8,12 @@ updates:
     open-pull-requests-limit: 10
     labels:
       - dependencies
+    # TypeScript 7 is a native compiler without the JS programmatic API.
+    # vue-tsc / nuxt typecheck still require the TypeScript 6 API.
+    ignore:
+      - dependency-name: typescript
+        versions:
+          - '>=7'
     groups:
       production-minor:
         dependency-type: production
