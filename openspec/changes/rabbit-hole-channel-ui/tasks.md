@@ -30,6 +30,6 @@
 
 ## 6. Verification
 
-- [ ] 6.1 Update or add thin tests/fixtures for channel focus / fork / Path helpers and any broken canvas assumptions
-- [ ] 6.2 Manually verify mobile and desktop: open hole, focus fork, Expand, Watch→Path, incomplete retry
-- [ ] 6.3 Run lint, typecheck, and unit/nuxt test suites relevant to the change
+- [x] 6.1 Update or add thin tests/fixtures for channel focus / fork / Path helpers and any broken canvas assumptions
+- [x] 6.2 Manually verify mobile and desktop: open hole, focus fork, Expand, Watch→Path, incomplete retry
+- [x] 6.3 Run lint, typecheck, and unit/nuxt test suites relevant to the change
