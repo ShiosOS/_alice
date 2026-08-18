@@ -1,10 +1,10 @@
 <template>
   <section class="max-w-xl space-y-5">
-    <h1 class="font-display text-4xl font-normal text-primary sm:text-5xl">
+    <h1 class="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
       _alice
     </h1>
-    <p class="text-lg leading-relaxed text-foreground/90">
-      A personal Wonderland map for going deep on a YouTube topic. Paste a seed,
+    <p class="text-lg leading-relaxed text-muted-foreground">
+      A personal map for going deep on a YouTube topic. Paste a seed,
       see how it branches, keep Rabbit Holes for each curiosity.
     </p>
     <div>

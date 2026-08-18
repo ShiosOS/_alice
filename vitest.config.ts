@@ -17,6 +17,7 @@ export default defineConfig({
         'server/services/expand/constants.ts',
         'server/lib/**',
         'app/utils/merge-expand-patch.ts',
+        'app/utils/channel-graph.ts',
         'shared/**',
       ],
       thresholds: {

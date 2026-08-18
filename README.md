@@ -1,6 +1,6 @@
 # _alice
 
-Wonderland map for YouTube: Rabbit Holes, intentional forks, watch on YouTube.
+Wonderland-inspired map for YouTube: Rabbit Holes, intentional forks, watch on YouTube.
 
 ## Stack
 
@@ -44,4 +44,4 @@ Capability specs (until archived into main specs):
 
 Frozen style: 2-space indent, single quotes, no semicolons (`@nuxt/eslint` stylistic + formatters).
 
-Product SFCs prefer `@layer components` names (`ink-*`, `graph-*`) in `app/assets/css/tailwind.css` over long arbitrary Tailwind strings; leave `app/components/ui` alone.
+Product SFCs prefer `@layer components` names (`ink-*`, `channel-*`) in `app/assets/css/tailwind.css` over long arbitrary Tailwind strings; leave `app/components/ui` alone.
