@@ -1,0 +1,7 @@
+# Default owners for review routing once the repo is public and CODEOWNERS is enforced.
+* @ShiosOS
+
+/.github/ @ShiosOS
+/docs/ @ShiosOS
+/openspec/ @ShiosOS
+/server/ @ShiosOS

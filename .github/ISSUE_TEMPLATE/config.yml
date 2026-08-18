@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/ShiosOS/_alice/security/advisories/new
+    about: Report security issues privately — do not file a public issue.
+  - name: Contributing guide
+    url: https://github.com/ShiosOS/_alice/blob/main/CONTRIBUTING.md
+    about: Setup, branch model, and PR expectations.
+  - name: Support
+    url: https://github.com/ShiosOS/_alice/blob/main/SUPPORT.md
+    about: Where to ask for help.
