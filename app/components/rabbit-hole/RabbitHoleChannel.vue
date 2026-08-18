@@ -4,14 +4,15 @@ import {
   ancestorChainToFocus,
   childForksForNode,
   findNodeById,
+  graphOutlineRows,
   pathTrailNodes,
   resolveDefaultFocusId,
 } from '~/utils/channel-graph'
+import ChannelAside from '~/components/rabbit-hole/ChannelAside.vue'
 import ConnectionShaft from '~/components/rabbit-hole/ConnectionShaft.vue'
 import FocusBlock from '~/components/rabbit-hole/FocusBlock.vue'
 import ForkBlockList from '~/components/rabbit-hole/ForkBlockList.vue'
 import HoleHeader from '~/components/rabbit-hole/HoleHeader.vue'
-import PathTrail from '~/components/rabbit-hole/PathTrail.vue'
 
 const props = defineProps<{
   holeGraph: RabbitHoleGraph
@@ -80,6 +81,12 @@ const arrivalPhrase = computed(() => {
 })
 
 const trail = computed(() => pathTrailNodes(props.holeGraph))
+
+const outlineRows = computed(() => graphOutlineRows(props.holeGraph))
+
+const pathIds = computed(
+  () => new Set(props.holeGraph.path.map(entry => entry.nodeId)),
+)
 
 function setFocus(nodeId: string) {
   focusedId.value = nodeId
@@ -150,10 +157,11 @@ defineExpose({
         />
       </div>
 
-      <PathTrail
+      <ChannelAside
+        :outline-rows="outlineRows"
         :trail="trail"
         :focused-id="focusedId"
-        stacked
+        :path-ids="pathIds"
         @select="setFocus"
       />
     </div>

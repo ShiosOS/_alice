@@ -130,3 +130,54 @@ export function pathTrailNodes(graph: RabbitHoleGraph): GraphNode[] {
 
   return trail
 }
+
+export type OutlineRow = {
+  node: GraphNode
+  depth: number
+  inboundPhrase: string | null
+}
+
+/**
+ * Depth-first outline of the whole hole from the seed (or first root).
+ * Orphan nodes with no path from seed are appended at depth 0.
+ */
+export function graphOutlineRows(graph: RabbitHoleGraph): OutlineRow[] {
+  const byId = new Map(graph.nodes.map(n => [n.id, n]))
+  const children = new Map<string, ChannelFork[]>()
+
+  for (const edge of graph.edges) {
+    const list = children.get(edge.fromNodeId) || []
+    const node = byId.get(edge.toNodeId)
+    if (!node) continue
+    list.push({ edge, node })
+    children.set(edge.fromNodeId, list)
+  }
+
+  const rows: OutlineRow[] = []
+  const visited = new Set<string>()
+
+  function walk(nodeId: string, depth: number, inboundPhrase: string | null) {
+    if (visited.has(nodeId)) return
+    const node = byId.get(nodeId)
+    if (!node) return
+    visited.add(nodeId)
+    rows.push({ node, depth, inboundPhrase })
+    const forks = children.get(nodeId) || []
+    for (const fork of forks) {
+      walk(fork.node.id, depth + 1, fork.edge.phrase)
+    }
+  }
+
+  const seedNode = graph.nodes.find(n => n.videoId === graph.rabbitHole.seedVideoId)
+  if (seedNode) {
+    walk(seedNode.id, 0, null)
+  }
+
+  for (const node of graph.nodes) {
+    if (!visited.has(node.id)) {
+      walk(node.id, 0, null)
+    }
+  }
+
+  return rows
+}

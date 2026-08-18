@@ -9,6 +9,7 @@ import {
   ancestorChainToFocus,
   childForksForNode,
   findNodeById,
+  graphOutlineRows,
   inboundEdgeToNode,
   pathTrailNodes,
   resolveDefaultFocusId,
@@ -140,5 +141,22 @@ describe('channel-graph helpers', () => {
     expect(chain[0]?.inboundPhrase).toBeNull()
     expect(chain[1]?.inboundPhrase).toBe('deeper into antiquity')
     expect(chain[2]?.inboundPhrase).toBe('compare collapses')
+  })
+
+  it('builds a depth-first outline of the whole hole', () => {
+    const g = graph({
+      nodes: [seed, a, b],
+      edges: [
+        edge('e1', 'n0', 'n1', 'deeper into antiquity'),
+        edge('e2', 'n0', 'n2', 'sideways theory'),
+      ],
+      path: [],
+    })
+    const rows = graphOutlineRows(g)
+    expect(rows.map(r => [r.node.id, r.depth, r.inboundPhrase])).toEqual([
+      ['n0', 0, null],
+      ['n1', 1, 'deeper into antiquity'],
+      ['n2', 1, 'sideways theory'],
+    ])
   })
 })

@@ -17,8 +17,7 @@ const emit = defineEmits<{
 <template>
   <nav
     v-if="trail.length"
-    class="channel-aside mt-10 border-t border-border pt-4 lg:mt-0"
-    aria-label="Path"
+    aria-label="Path watched"
   >
     <p class="mb-2 text-xs uppercase tracking-wide text-muted-foreground">
       Path watched

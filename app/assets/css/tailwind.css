@@ -286,6 +286,35 @@
     border: 1px solid var(--background);
   }
 
+  .channel-outline {
+    @apply mb-2;
+  }
+
+  .channel-outline-list {
+    @apply m-0 list-none space-y-2 p-0;
+  }
+
+  .channel-outline-row {
+    @apply min-w-0;
+    padding-left: calc(var(--outline-depth, 0) * 0.75rem);
+  }
+
+  .channel-outline-phrase {
+    @apply mb-0.5 text-[11px] italic leading-snug text-primary;
+  }
+
+  .channel-outline-node {
+    @apply block w-full truncate text-left text-sm text-muted-foreground hover:text-foreground;
+  }
+
+  .channel-outline-node.is-current {
+    @apply font-semibold text-foreground;
+  }
+
+  .channel-outline-node.is-on-path:not(.is-current) {
+    @apply text-foreground/80;
+  }
+
   /* Wide channel: main column + Path rail */
   .channel-surface {
     @apply w-full;
@@ -298,7 +327,7 @@
   @media (min-width: 1024px) {
     .channel-layout {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 16rem;
+      grid-template-columns: minmax(0, 1fr) 18rem;
       gap: 2.5rem;
       align-items: start;
     }
@@ -310,6 +339,8 @@
     .channel-aside {
       position: sticky;
       top: 1.25rem;
+      max-height: calc(100vh - 2.5rem);
+      overflow: auto;
       border-top: none;
       border-left: 1px solid var(--border);
       padding-top: 0;
