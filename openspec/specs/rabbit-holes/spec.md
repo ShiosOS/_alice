@@ -16,6 +16,11 @@ The system SHALL present an authenticated user’s Rabbit Holes, newest activity
 - **WHEN** an authenticated user has no Rabbit Holes
 - **THEN** the system offers a clear action to “Start a new Rabbit Hole”
 
+#### Scenario: Single empty-state voice
+- **WHEN** an authenticated user has no Rabbit Holes (including after deleting their last Rabbit Hole)
+- **THEN** the list surface shows exactly one empty-library title and exactly one primary “Start a new Rabbit Hole” call to action
+- **AND** the default empty-pattern fallback title MUST NOT appear alongside the Rabbit Holes empty title
+
 ### Requirement: Start a new Rabbit Hole from URL
 The system SHALL create a Rabbit Hole from a user-supplied YouTube video URL (seed), resolve the seed video, and associate the hole with the authenticated user.
 
