@@ -180,10 +180,30 @@ describe('channel-graph helpers', () => {
       path: [],
     })
     const rows = graphOutlineRows(g)
-    expect(rows.map(r => [r.node.id, r.depth, r.inboundPhrase])).toEqual([
-      ['n0', 0, null],
-      ['n1', 1, 'deeper into antiquity'],
-      ['n2', 1, 'sideways theory'],
+    expect(rows.map(r => [r.node.id, r.depth, r.inboundPhrase, r.guides])).toEqual([
+      ['n0', 0, null, []],
+      ['n1', 1, 'deeper into antiquity', [true]],
+      ['n2', 1, 'sideways theory', [false]],
+    ])
+  })
+
+  it('marks continuing ancestor rails for nested siblings', () => {
+    const c = node('n3', 'c-yt', 'Child of A')
+    const g = graph({
+      nodes: [seed, a, b, c],
+      edges: [
+        edge('e1', 'n0', 'n1', 'deeper into antiquity'),
+        edge('e2', 'n0', 'n2', 'sideways theory'),
+        edge('e3', 'n1', 'n3', 'nested'),
+      ],
+      path: [],
+    })
+    const rows = graphOutlineRows(g)
+    expect(rows.map(r => [r.node.id, r.depth, r.guides])).toEqual([
+      ['n0', 0, []],
+      ['n1', 1, [true]],
+      ['n3', 2, [true, false]],
+      ['n2', 1, [false]],
     ])
   })
 
@@ -195,10 +215,10 @@ describe('channel-graph helpers', () => {
       path: [],
     })
     const rows = graphOutlineRows(g)
-    expect(rows.map(r => [r.node.id, r.depth, r.inboundPhrase])).toEqual([
-      ['n0', 0, null],
-      ['n1', 1, 'deeper into antiquity'],
-      ['n9', 0, null],
+    expect(rows.map(r => [r.node.id, r.depth, r.inboundPhrase, r.guides])).toEqual([
+      ['n0', 0, null, []],
+      ['n1', 1, 'deeper into antiquity', [false]],
+      ['n9', 0, null, []],
     ])
   })
 })

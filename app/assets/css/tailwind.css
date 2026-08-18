@@ -488,12 +488,85 @@
   }
 
   .channel-outline-list {
-    @apply m-0 list-none space-y-2 p-0;
+    @apply m-0 list-none space-y-1 p-0;
   }
 
   .channel-outline-row {
-    @apply min-w-0;
-    padding-left: calc(var(--outline-depth, 0) * 0.75rem);
+    @apply flex min-w-0 items-stretch gap-0;
+  }
+
+  .channel-outline-gutter {
+    @apply relative flex shrink-0;
+    width: calc(0.7rem + var(--outline-depth, 0) * 0.95rem);
+  }
+
+  .channel-outline-rail {
+    @apply relative shrink-0;
+    width: 0.95rem;
+  }
+
+  .channel-outline-rail.has-line::before {
+    content: '';
+    position: absolute;
+    left: 0.3rem;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: color-mix(in oklab, var(--foreground) 22%, transparent);
+  }
+
+  .channel-outline-root-mark {
+    @apply relative shrink-0;
+    width: 0.7rem;
+  }
+
+  .channel-outline-root-mark::before {
+    content: '';
+    position: absolute;
+    left: 0.12rem;
+    top: 0.65rem;
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 9999px;
+    background: var(--foreground);
+  }
+
+  .channel-outline-elbow {
+    @apply relative shrink-0;
+    width: 0.95rem;
+  }
+
+  .channel-outline-elbow::before {
+    content: '';
+    position: absolute;
+    left: 0.3rem;
+    top: 0;
+    height: 0.8rem;
+    width: 1px;
+    background: color-mix(in oklab, var(--foreground) 22%, transparent);
+  }
+
+  .channel-outline-elbow:not(.is-last)::before {
+    bottom: 0;
+    height: auto;
+  }
+
+  .channel-outline-elbow::after {
+    content: '';
+    position: absolute;
+    left: 0.3rem;
+    top: 0.8rem;
+    width: 0.5rem;
+    height: 1px;
+    background: color-mix(in oklab, var(--foreground) 22%, transparent);
+  }
+
+  .channel-outline-row[data-depth='0'] .channel-outline-body {
+    @apply pl-1;
+  }
+
+  .channel-outline-body {
+    @apply min-w-0 flex-1 py-0.5;
   }
 
   .channel-outline-phrase {
@@ -501,7 +574,11 @@
   }
 
   .channel-outline-node {
-    @apply block w-full truncate text-left text-sm text-muted-foreground hover:text-foreground;
+    @apply block w-full truncate text-left text-sm leading-snug text-muted-foreground transition-colors duration-150 hover:text-foreground;
+  }
+
+  .channel-outline-node.is-root {
+    @apply font-medium text-foreground;
   }
 
   .channel-outline-node.is-current {
