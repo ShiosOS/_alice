@@ -11,8 +11,10 @@ import {
   findNodeById,
   graphOutlineRows,
   inboundEdgeToNode,
+  outlineAncestorIds,
   pathTrailNodes,
   resolveDefaultFocusId,
+  visibleOutlineRows,
 } from '../../app/utils/channel-graph'
 
 const now = '2026-01-01T00:00:00.000Z'
@@ -180,10 +182,10 @@ describe('channel-graph helpers', () => {
       path: [],
     })
     const rows = graphOutlineRows(g)
-    expect(rows.map(r => [r.node.id, r.depth, r.inboundPhrase, r.guides])).toEqual([
-      ['n0', 0, null, []],
-      ['n1', 1, 'deeper into antiquity', [true]],
-      ['n2', 1, 'sideways theory', [false]],
+    expect(rows.map(r => [r.node.id, r.depth, r.inboundPhrase, r.guides, r.parentId, r.hasChildren])).toEqual([
+      ['n0', 0, null, [], null, true],
+      ['n1', 1, 'deeper into antiquity', [true], 'n0', false],
+      ['n2', 1, 'sideways theory', [false], 'n0', false],
     ])
   })
 
@@ -199,12 +201,48 @@ describe('channel-graph helpers', () => {
       path: [],
     })
     const rows = graphOutlineRows(g)
-    expect(rows.map(r => [r.node.id, r.depth, r.guides])).toEqual([
-      ['n0', 0, []],
-      ['n1', 1, [true]],
-      ['n3', 2, [true, false]],
-      ['n2', 1, [false]],
+    expect(rows.map(r => [r.node.id, r.depth, r.guides, r.hasChildren])).toEqual([
+      ['n0', 0, [], true],
+      ['n1', 1, [true], true],
+      ['n3', 2, [true, false], false],
+      ['n2', 1, [false], false],
     ])
+  })
+
+  it('hides descendants when a branch is collapsed', () => {
+    const c = node('n3', 'c-yt', 'Child of A')
+    const g = graph({
+      nodes: [seed, a, b, c],
+      edges: [
+        edge('e1', 'n0', 'n1', 'deeper into antiquity'),
+        edge('e2', 'n0', 'n2', 'sideways theory'),
+        edge('e3', 'n1', 'n3', 'nested'),
+      ],
+      path: [],
+    })
+    const rows = graphOutlineRows(g)
+    expect(visibleOutlineRows(rows, new Set(['n1'])).map(r => r.node.id)).toEqual([
+      'n0',
+      'n1',
+      'n2',
+    ])
+    expect(visibleOutlineRows(rows, new Set(['n0'])).map(r => r.node.id)).toEqual(['n0'])
+  })
+
+  it('lists ancestor ids for expand-to-focus', () => {
+    const c = node('n3', 'c-yt', 'Child of A')
+    const g = graph({
+      nodes: [seed, a, b, c],
+      edges: [
+        edge('e1', 'n0', 'n1', 'deeper into antiquity'),
+        edge('e2', 'n0', 'n2', 'sideways theory'),
+        edge('e3', 'n1', 'n3', 'nested'),
+      ],
+      path: [],
+    })
+    const rows = graphOutlineRows(g)
+    expect(outlineAncestorIds(rows, 'n3')).toEqual(['n0', 'n1'])
+    expect(outlineAncestorIds(rows, 'n0')).toEqual([])
   })
 
   it('appends orphan nodes outside the seed tree at depth 0', () => {

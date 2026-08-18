@@ -488,11 +488,28 @@
   }
 
   .channel-outline-list {
-    @apply m-0 list-none space-y-1 p-0;
+    @apply m-0 list-none space-y-0.5 p-0;
   }
 
   .channel-outline-row {
-    @apply flex min-w-0 items-stretch gap-0;
+    @apply flex min-w-0 items-stretch gap-0 rounded-sm transition-[background-color] duration-150;
+  }
+
+  .channel-outline-row:hover {
+    @apply bg-secondary/70;
+  }
+
+  .channel-outline-row:hover .channel-outline-node {
+    @apply text-foreground;
+  }
+
+  .channel-outline-row:hover .channel-outline-toggle-icon {
+    @apply text-foreground/70;
+    transform: translateX(1px);
+  }
+
+  .channel-outline-row:hover .channel-outline-toggle.is-expanded .channel-outline-toggle-icon {
+    transform: rotate(90deg) translateX(1px);
   }
 
   .channel-outline-gutter {
@@ -567,12 +584,34 @@
     background: color-mix(in oklab, var(--foreground) 28%, transparent);
   }
 
+  .channel-outline-toggle,
+  .channel-outline-toggle-spacer {
+    @apply mt-0.5 flex size-5 shrink-0 items-center justify-center;
+  }
+
+  .channel-outline-row:has(.channel-outline-phrase) .channel-outline-toggle,
+  .channel-outline-row:has(.channel-outline-phrase) .channel-outline-toggle-spacer {
+    margin-top: 1.15rem;
+  }
+
+  .channel-outline-toggle {
+    @apply rounded-sm text-muted-foreground transition-colors duration-150 hover:bg-secondary hover:text-foreground;
+  }
+
+  .channel-outline-toggle-icon {
+    @apply size-3.5 transition-[color,transform] duration-150;
+  }
+
+  .channel-outline-toggle.is-expanded .channel-outline-toggle-icon {
+    transform: rotate(90deg);
+  }
+
   .channel-outline-row[data-depth='0'] .channel-outline-body {
-    @apply pl-1;
+    @apply pl-0.5;
   }
 
   .channel-outline-body {
-    @apply min-w-0 flex-1 py-0.5;
+    @apply min-w-0 flex-1 py-0.5 pr-1;
   }
 
   .channel-outline-phrase {
@@ -580,7 +619,7 @@
   }
 
   .channel-outline-node {
-    @apply block w-full truncate text-left text-sm leading-snug text-muted-foreground transition-colors duration-150 hover:text-foreground;
+    @apply block w-full truncate text-left text-sm leading-snug text-muted-foreground transition-colors duration-150;
   }
 
   .channel-outline-node.is-root {
@@ -593,6 +632,23 @@
 
   .channel-outline-node.is-on-path:not(.is-current) {
     @apply text-foreground/80;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .channel-outline-row,
+    .channel-outline-node,
+    .channel-outline-toggle,
+    .channel-outline-toggle-icon {
+      transition: none !important;
+    }
+
+    .channel-outline-row:hover .channel-outline-toggle-icon {
+      transform: none;
+    }
+
+    .channel-outline-row:hover .channel-outline-toggle.is-expanded .channel-outline-toggle-icon {
+      transform: rotate(90deg);
+    }
   }
 
   /* Wide channel: main column + Path rail */

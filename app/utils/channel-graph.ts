@@ -135,6 +135,8 @@ export type OutlineRow = {
   node: GraphNode
   depth: number
   inboundPhrase: string | null
+  parentId: string | null
+  hasChildren: boolean
   /**
    * Tree guide flags, length === depth.
    * For columns 0..depth-2: true draws a continuing vertical rail.
@@ -166,31 +168,75 @@ export function graphOutlineRows(graph: RabbitHoleGraph): OutlineRow[] {
     nodeId: string,
     depth: number,
     inboundPhrase: string | null,
+    parentId: string | null,
     guides: boolean[],
   ) {
     if (visited.has(nodeId)) return
     const node = byId.get(nodeId)
     if (!node) return
     visited.add(nodeId)
-    rows.push({ node, depth, inboundPhrase, guides })
     const forks = children.get(nodeId) || []
+    rows.push({
+      node,
+      depth,
+      inboundPhrase,
+      parentId,
+      hasChildren: forks.length > 0,
+      guides,
+    })
     for (let i = 0; i < forks.length; i++) {
       const fork = forks[i]!
       const hasMoreSiblings = i < forks.length - 1
-      walk(fork.node.id, depth + 1, fork.edge.phrase, [...guides, hasMoreSiblings])
+      walk(fork.node.id, depth + 1, fork.edge.phrase, nodeId, [...guides, hasMoreSiblings])
     }
   }
 
   const seedNode = graph.nodes.find(n => n.videoId === graph.rabbitHole.seedVideoId)
   if (seedNode) {
-    walk(seedNode.id, 0, null, [])
+    walk(seedNode.id, 0, null, null, [])
   }
 
   for (const node of graph.nodes) {
     if (!visited.has(node.id)) {
-      walk(node.id, 0, null, [])
+      walk(node.id, 0, null, null, [])
     }
   }
 
   return rows
+}
+
+/** Hide descendants of collapsed branch nodes. */
+export function visibleOutlineRows(
+  rows: OutlineRow[],
+  collapsedIds: ReadonlySet<string>,
+): OutlineRow[] {
+  if (collapsedIds.size === 0) return rows
+  const hidden = new Set<string>()
+  const visible: OutlineRow[] = []
+  for (const row of rows) {
+    if (row.parentId && hidden.has(row.parentId)) {
+      hidden.add(row.node.id)
+      continue
+    }
+    if (collapsedIds.has(row.node.id)) {
+      hidden.add(row.node.id)
+    }
+    visible.push(row)
+  }
+  return visible
+}
+
+/** Ancestor node ids from root down to (but not including) the focus. */
+export function outlineAncestorIds(
+  rows: OutlineRow[],
+  nodeId: string,
+): string[] {
+  const byId = new Map(rows.map(r => [r.node.id, r]))
+  const chain: string[] = []
+  let current = byId.get(nodeId)
+  while (current?.parentId) {
+    chain.unshift(current.parentId)
+    current = byId.get(current.parentId)
+  }
+  return chain
 }
