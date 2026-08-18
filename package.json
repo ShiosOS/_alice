@@ -61,7 +61,7 @@
     "playwright": "^1.62.1",
     "shadcn-nuxt": "^2.8.2",
     "tailwindcss": "^4.3.3",
-    "typescript": "^7.0.2",
+    "typescript": "^6.0.3",
     "vitest": "^4.1.10",
     "vue-tsc": "^3.0.5"
   }
