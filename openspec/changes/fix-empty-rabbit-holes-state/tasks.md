@@ -9,9 +9,9 @@
 
 ## 3. Regression test
 
-- [ ] 3.1 Add a unit/component test that mounts EmptyState with a custom title and asserts the fallback title does not appear
-- [ ] 3.2 Add a unit/component test (thin list-empty harness or equivalent) that when there are zero holes, exactly one empty-library title and exactly one “Start a new Rabbit Hole” CTA are present
+- [x] 3.1 Add a unit/component test that mounts EmptyState with a custom title and asserts the fallback title does not appear
+- [x] 3.2 Add a unit/component test (thin list-empty harness or equivalent) that when there are zero holes, exactly one empty-library title and exactly one “Start a new Rabbit Hole” CTA are present
 
 ## 4. Verify
 
-- [ ] 4.1 Run the new unit tests and confirm they pass
+- [x] 4.1 Run the new unit tests and confirm they pass
