@@ -2,8 +2,8 @@ schema: spec-driven
 
 # Project context — shown to AI when creating artifacts.
 context: |
-  Tech stack: Nuxt 4, Vue 3, TypeScript (strict + noUncheckedIndexedAccess), Nitro, Drizzle/Postgres, Zod, nuxt-auth-utils, Tailwind v4 + shadcn-vue, Vue Flow.
-  Domain: _alice — Wonderland map for YouTube Rabbit Holes (intentional forks, Path, Expand).
+  Tech stack: Nuxt 4, Vue 3, TypeScript (strict + noUncheckedIndexedAccess), Nitro, Drizzle/Postgres, Zod, nuxt-auth-utils, Tailwind v4 + shadcn-vue.
+  Domain: _alice — Rabbit Holes for YouTube (intentional forks, Path, Expand; Are.na-inspired channel UI).
 
   ## Layers
   - `server/api` + `server/routes`: thin handlers (validate → call service → map).
@@ -24,7 +24,7 @@ context: |
 
   ## UI consumption
   Pages use layout utilities + shared Button/Input/tokens. Do not redefine button/error/prose visuals per page or invent long utility soup for brand chrome. Wonderland ink tokens live in `app/assets/css/tailwind.css`.
-  Prefer `@layer components` names (`ink-*`, `graph-*`) over long arbitrary Tailwind strings (`w-[260px]`, `max-w-[calc(...)]`, `shadow-[...]`) in product SFCs. Leave `app/components/ui` (shadcn) alone. Geometry that JS needs (node size) stays as CSS vars synced with `graph-layout.ts`.
+  Prefer `@layer components` names (`ink-*`, `channel-*`) over long arbitrary Tailwind strings (`w-[260px]`, `max-w-[calc(...)]`, `shadow-[...]`) in product SFCs. Leave `app/components/ui` (shadcn) alone.
 
   ## Lint / format
   ESLint via `@nuxt/eslint` with stylistic + tooling + formatters. Frozen style: 2-space indent, single quotes, no semicolons. CI runs `lint`, `typecheck`, and tests.

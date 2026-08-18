@@ -51,7 +51,7 @@
       v-if="!fullBleed"
       class="ink-shell-footer"
     >
-      <span>Wonderland map for YouTube</span>
+      <span>Rabbit Holes for YouTube</span>
       <span class="flex gap-2">
         <NuxtLink
           to="/privacy"
@@ -82,7 +82,7 @@ useHead({
   link: [
     {
       rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;1,400&display=swap',
+      href: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap',
     },
   ],
 })
