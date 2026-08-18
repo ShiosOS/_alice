@@ -98,29 +98,34 @@ defineExpose({
       @retry-bootstrap="emit('retryBootstrap')"
     />
 
-    <FocusBlock
-      v-if="focused"
-      :node="focused"
-      :is-mutating="isMutating"
-      @watch="onWatch"
-      @expand="onExpand"
-    />
-    <p
-      v-else
-      class="text-sm text-muted-foreground"
-    >
-      No videos in this Rabbit Hole yet.
-    </p>
+    <div class="channel-layout">
+      <div class="channel-main">
+        <FocusBlock
+          v-if="focused"
+          :node="focused"
+          :is-mutating="isMutating"
+          @watch="onWatch"
+          @expand="onExpand"
+        />
+        <p
+          v-else
+          class="text-sm text-muted-foreground"
+        >
+          No videos in this Rabbit Hole yet.
+        </p>
 
-    <ForkBlockList
-      :forks="forks"
-      @select="setFocus"
-    />
+        <ForkBlockList
+          :forks="forks"
+          @select="setFocus"
+        />
+      </div>
 
-    <PathTrail
-      :trail="trail"
-      :focused-id="focusedId"
-      @select="setFocus"
-    />
+      <PathTrail
+        :trail="trail"
+        :focused-id="focusedId"
+        stacked
+        @select="setFocus"
+      />
+    </div>
   </div>
 </template>
