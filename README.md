@@ -45,12 +45,14 @@ Please open PRs against `main`. Do not commit on `production` (fast-forward prom
 
 ## Craft & testing (OpenSpec)
 
-Active change: `openspec/changes/code-craft-standards/`.
+No active OpenSpec changes. Main specs live under `openspec/specs/`.
 
-Capability specs (until archived into main specs):
-
-- `openspec/changes/code-craft-standards/specs/code-craft/spec.md` — layers, naming, readability, literals, token consumption, lint style
-- `openspec/changes/code-craft-standards/specs/automated-testing/spec.md` — unit / integration / thin e2e pyramid and coverage gates
+- `openspec/specs/code-craft/spec.md` — layers, naming, readability, literals, token consumption, lint style
+- `openspec/specs/automated-testing/spec.md` — unit / integration / thin e2e pyramid and coverage gates
+- `openspec/specs/ui-design-system/spec.md` — shared tokens, chrome components, color-only Wonderland mood (no costume art)
+- `openspec/specs/hole-channel-surface/spec.md` — scroll-first channel as the hole UI
+- `openspec/specs/shell-visual-system/spec.md` — cool-map climate for shell and channel
+- `openspec/specs/shell-home-ui/spec.md` — signed-out home copy, Sign in hierarchy, Example trail
 
 Frozen style: 2-space indent, single quotes, no semicolons (`@nuxt/eslint` stylistic + formatters).
 
